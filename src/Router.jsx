@@ -6,8 +6,6 @@ export default function Router() {
   return (
     <Routes>
       <Route path="/" element={<Home />} />
-      {/* oiiiii */}
-      {/* testanmdo EDu 69 */}
     </Routes>
   );
 }
