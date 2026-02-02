@@ -1,16 +1,31 @@
 import { useState, useEffect } from 'react';
-import { Box, Container, Grid, Typography, Button, Card, CardContent, List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
+import {
+    Box,
+    Container,
+    Typography,
+    Button,
+    List,
+    ListItem,
+    ListItemIcon,
+    ListItemText,
+    Tabs,
+    Tab,
+    Paper,
+    Stack
+} from '@mui/material';
+import Grid from '@mui/material/Grid'; // Atualizado para Grid2 no MUI v6
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
 // ! :: PLACEHOLDER DE DADOS ::
-/**
- *  @description Quando o Firebase estiver ativo, esta constante será substituída pelos dados vindos do Firestore.
- *  @constant {Array<Object>} INITIAL_DATA - Dados iniciais de serviços.
- */
 const INITIAL_DATA = [
     {
         id: 'pessoal',
+        label: 'Para Você', // Nome curto para a aba
         title: 'Desenvolvimento Pessoal',
+        description: 'Potencialize quem você é. Descubra suas forças e elimine as travas que impedem seu crescimento pessoal.',
+        // Placeholder de imagem: trocar por URLs reais de fotos de eventos/palestras
+        image: 'https://images.unsplash.com/photo-1544717297-fa95b6ee9643?q=80&w=1000&auto=format&fit=crop',
         items: [
             'Mapeamento de perfil comportamental',
             'Mentalidade e atitude',
@@ -21,77 +36,151 @@ const INITIAL_DATA = [
     },
     {
         id: 'profissional',
+        label: 'Para Carreira',
         title: 'Desenvolvimento Profissional',
+        description: 'Estratégias de alto impacto para alavancar sua carreira e liderança no ambiente corporativo.',
+        image: 'https://images.unsplash.com/photo-1552664730-d307ca884978?q=80&w=1000&auto=format&fit=crop',
         items: [
-            'Mapeamento de perfil comportamental',
-            'Mentalidade e atitude',
-            'Conhecimento x competência',
-            'Psicologia dos relacionamentos',
-            'Teoria dos Estados de Poder'
+            'Liderança e Gestão de Pessoas',
+            'Comunicação Assertiva',
+            'Inteligência Emocional no Trabalho',
+            'Gestão de Conflitos',
+            'Produtividade e Alta Performance'
         ]
     },
     {
         id: 'mentorias',
-        title: 'Mentorias',
+        label: 'Exclusive',
+        title: 'Mentorias VIP',
+        description: 'Acompanhamento próximo e personalizado para quem busca resultados extraordinários em tempo recorde.',
+        image: 'https://images.unsplash.com/photo-1517048676732-d65bc937f952?q=80&w=1000&auto=format&fit=crop',
         items: [
-            'Mapeamento de perfil comportamental',
-            'Mentalidade e atitude',
-            'Conhecimento x competência',
-            'Psicologia dos relacionamentos',
+            'Sessões 1:1 Exclusivas',
+            'Plano de Ação Personalizado',
+            'Acesso direto via WhatsApp',
+            'Análise de Cenários Críticos',
             'Leitura do "Código de barras de gente"'
         ]
     }
 ];
 
 /**
- * @description Sessão que exibe a lista de serviços oferecidos.
- * Cada serviço é apresentado em um cartão com título, lista de itens e botão de solicitação.
- * @returns {JSX.Element} Sessão ServicesList
+ * @todo Componentizar cada parte (Tabs, TabPanel, ServiceDetails) para melhorar legibilidade e manutenção
+ * @todo Adicionar animações/transições entre mudanças de abas
+ * @todo Aplicar Firebase para carregar os dados reais dos serviços
+ * @returns Componente ServicesList que exibe uma lista de serviços com navegação por abas
  */
 export default function ServicesList() {
-    // Estado que armazenará os serviços. Inicia com o placeholder, mas será preenchido pela API futuramente.
     const [services, setServices] = useState(INITIAL_DATA);
+    const [activeTab, setActiveTab] = useState(0);
+
+    const handleTabChange = (event, newValue) => {
+        setActiveTab(newValue);
+    };
+
+    // Pega o serviço ativo baseado na aba selecionada
+    const currentService = services[activeTab];
 
     return (
-        <Box sx={{ py: 10 }}>
+        <Box sx={{ py: 8, backgroundColor: '#fff' }}>
             <Container maxWidth="lg">
-                <Grid container spacing={4}>
 
-                    {services.map((service) => (
-                        <Grid key={service.id || service.title} size={{ xs: 12, md: 4 }} sx={{ boxShadow: 3 }}>
+                {/* Cabeçalho da Seção */}
+                <Box sx={{ mb: 6, textAlign: 'center' }}>
+                    <Typography variant="overline" sx={{ color: '#C5A669', fontWeight: 'bold', letterSpacing: 2 }}>
+                        NOSSAS SOLUÇÕES
+                    </Typography>
+                    <Typography variant="h4" sx={{ color: '#333', fontWeight: 'bold', mt: 1 }}>
+                        Escolha como quer evoluir hoje
+                    </Typography>
+                </Box>
 
-                            {/* Card que podemos componentizar */}
-                            <Card sx={{ height: '100%', borderTop: '4px solid #C5A669', display: 'flex', flexDirection: 'column' }}>
+                {/* Navegação por Abas */}
+                <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 4, display: 'flex', justifyContent: 'center' }}>
+                    <Tabs
+                        value={activeTab}
+                        onChange={handleTabChange}
+                        variant="scrollable"
+                        scrollButtons="auto"
+                        textColor="primary"
+                        indicatorColor="primary"
+                        sx={{
+                            '& .MuiTab-root': { fontSize: '1.1rem', fontWeight: 500, textTransform: 'none', px: 4 },
+                            '& .Mui-selected': { color: '#009688 !important' },
+                            '& .MuiTabs-indicator': { backgroundColor: '#009688' }
+                        }}
+                    >
+                        {services.map((service, index) => (
+                            <Tab key={index} label={service.label} />
+                        ))}
+                    </Tabs>
+                </Box>
 
+                {/* Conteúdo da Aba Ativa */}
+                <Paper
+                    elevation={0}
+                    sx={{ p: 0, overflow: 'hidden', borderRadius: 4, bgcolor: '#f9f9f9' }}
+                >
+                    <Grid container>
+                        {/* Coluna da Imagem (Visual) */}
+                        <Grid size={{ xs: 12, md: 5 }}>
+                            <Box
+                                component="img"
+                                src={currentService.image}
+                                alt={currentService.title}
+                                sx={{
+                                    width: '100%',
+                                    height: { xs: 300, md: '100%' },
+                                    objectFit: 'cover',
+                                    display: 'block'
+                                }}
+                            />
+                        </Grid>
 
-                                <CardContent sx={{ flexGrow: 1 }}>
-                                    <Typography variant="h5" sx={{ color: '#009688', fontWeight: 'bold', mb: 3 }}>
-                                        {service.title}
-                                    </Typography>
+                        {/* Coluna do Texto (Conteúdo) */}
+                        <Grid size={{ xs: 12, md: 7 }}>
+                            <Box sx={{ p: { xs: 4, md: 6 }, display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'center' }}>
+                                <Typography variant="h4" component="h3" sx={{ color: '#009688', fontWeight: 'bold', mb: 2 }}>
+                                    {currentService.title}
+                                </Typography>
 
+                                <Typography variant="body1" sx={{ color: '#555', mb: 4, lineHeight: 1.8 }}>
+                                    {currentService.description}
+                                </Typography>
+
+                                <Box sx={{ mb: 4 }}>
                                     <List>
-                                        {service.items.map((item, index) => (
-                                            <ListItem key={index} disableGutters>
+                                        {currentService.items.map((item, idx) => (
+                                            <ListItem key={idx} disableGutters sx={{ py: 0.5 }}>
                                                 <ListItemIcon sx={{ minWidth: 35 }}>
                                                     <CheckCircleIcon sx={{ color: '#C5A669' }} fontSize="small" />
                                                 </ListItemIcon>
-                                                <ListItemText primary={item} />
+                                                <ListItemText primary={item} primaryTypographyProps={{ variant: 'body2', fontWeight: 500 }} />
                                             </ListItem>
                                         ))}
                                     </List>
-                                </CardContent>
-
-                                <Box sx={{ p: 2 }}>
-                                    {/* Botão que podemos componentizar */}
-                                    <Button variant="contained" fullWidth sx={{ backgroundColor: '#009688', '&:hover': { backgroundColor: '#00796b' } }}>
-                                        Solicitar
-                                    </Button>
                                 </Box>
-                            </Card>
-                        </Grid>
-                    ))}
 
-                </Grid>
+                                <Button
+                                    variant="contained"
+                                    size="large"
+                                    endIcon={<ArrowForwardIcon />}
+                                    sx={{
+                                        backgroundColor: '#009688',
+                                        color: '#fff',
+                                        py: 1.5,
+                                        px: 4,
+                                        width: 'fit-content',
+                                        '&:hover': { backgroundColor: '#00796b' }
+                                    }}
+                                >
+                                    Quero saber mais sobre {currentService.label}
+                                </Button>
+                            </Box>
+                        </Grid>
+                    </Grid>
+                </Paper>
+
             </Container>
         </Box>
     );
