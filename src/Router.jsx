@@ -16,9 +16,9 @@ export default function Router() {
       <Routes>
         {/* Rotas Públicas */}
         <Route path="/" element={<Home />} />
-        {/* <Route path="/about" element={<About />} />
-        <Route path="/contact" element={<Contact />} />
-        <Route path="/training" element={<Training />} /> */}
+        {/* <Route path="/about" element={<About />} /> */}
+        {/* <Route path="/contact" element={<Contact />} /> */}
+        <Route path="/training" element={<Training />} />
 
         {/* Rotas Admin */}
         {/* <Route path="/admin/dashboard" element={<Dashboard />} /> */}
