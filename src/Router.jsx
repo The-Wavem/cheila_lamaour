@@ -1,11 +1,28 @@
-import React from "react";
-import { Routes, Route, Link } from "react-router-dom";
-import Home from "./pages/Home";
+import React, { Suspense, lazy } from "react";
+import { Routes, Route } from "react-router-dom";
+
+// Importações Lazy
+const Home = lazy(() => import("@pages/public/Home"));
+const About = lazy(() => import("@pages/public/About"));
+const Contact = lazy(() => import("@pages/public/Contact"));
+const Training = lazy(() => import("@pages/public/Training"));
+const Dashboard = lazy(() => import("@pages/admin/dashboard"));
 
 export default function Router() {
   return (
-    <Routes>
-      <Route path="/" element={<Home />} />
-    </Routes>
+    /** Suspense apenas como tapa-burado para carregamento assíncrono,
+     mais para frente iremos melhorar isso e colocar um componente de loading específico */
+    <Suspense fallback={<div>Carregando...</div>}>
+      <Routes>
+        {/* Rotas Públicas */}
+        <Route path="/" element={<Home />} />
+        {/* <Route path="/about" element={<About />} />
+        <Route path="/contact" element={<Contact />} />
+        <Route path="/training" element={<Training />} /> */}
+
+        {/* Rotas Admin */}
+        {/* <Route path="/admin/dashboard" element={<Dashboard />} /> */}
+      </Routes>
+    </Suspense>
   );
 }
