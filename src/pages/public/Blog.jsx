@@ -1,17 +1,25 @@
 import styles from "./style.module.css";
+import FilterAltRoundedIcon from '@mui/icons-material/FilterAltRounded';
+import { Container } from "@mui/material";
+import IconButton from '@mui/material/IconButton'
+
+
 
 export default function Blog() {
   return (
     <>
       <header className={styles.header}></header>
       <main className={styles.main}>
-        <section className={styles.firstsection}>
+        <Container  maxWidth='xs' sx={{ display: "flex", flexDirection: "row", paddingInline: "150px" }}>
           <h1>Blog</h1>
           <div>
             <h2>Todas as postagens</h2>
-            <button className={styles.filterbutton}>...</button>
+            {/* <button className={styles.filterbutton}><FilterAltRoundedIcon /></button> */}
+            <IconButton aria-label="icone" style={{ borderRadius: "100%", padding: "24px" }}>
+              <FilterAltRoundedIcon sx={{ fontSize: 36 }} />
+            </IconButton>
           </div>
-        </section>
+        </Container>
         <section className={styles.cardsection}>
           <div className={styles.upcards}>
             <div className={styles.card}>
@@ -65,5 +73,5 @@ export default function Blog() {
       </main>
       <footer className={styles.footer}></footer>
     </>
-  ) 
+  )
 }
