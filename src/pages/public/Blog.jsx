@@ -1,77 +1,29 @@
-import styles from "./style.module.css";
-import FilterAltRoundedIcon from '@mui/icons-material/FilterAltRounded';
-import { Container } from "@mui/material";
-import IconButton from '@mui/material/IconButton'
-
-
+import { AppBar, Box, Button, Toolbar} from "@mui/material";
+import FirstSection from "@/sections/blog/firstsection";
+import CardSection from "@/sections/blog/CardSection";
 
 export default function Blog() {
   return (
     <>
-      <header className={styles.header}></header>
-      <main className={styles.main}>
-        <Container  maxWidth='xs' sx={{ display: "flex", flexDirection: "row", paddingInline: "150px" }}>
-          <h1>Blog</h1>
-          <div>
-            <h2>Todas as postagens</h2>
-            {/* <button className={styles.filterbutton}><FilterAltRoundedIcon /></button> */}
-            <IconButton aria-label="icone" style={{ borderRadius: "100%", padding: "24px" }}>
-              <FilterAltRoundedIcon sx={{ fontSize: 36 }} />
-            </IconButton>
-          </div>
-        </Container>
-        <section className={styles.cardsection}>
-          <div className={styles.upcards}>
-            <div className={styles.card}>
-              <div className={styles.cardpic}>
-                <h3>Mindset</h3>
-              </div>
-              <div className={styles.card_desc}>
-                <h2 className={styles.date}>12 de Dezembro, 2025</h2>
-                <h1>Titulo</h1>
-                <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Doloremque dolorum tempore aliquam iste, aperiam asperiores quibusdam praesentium voluptatem ipsa minus molestiae impedit explicabo rerum consequatur esse soluta adipisci. Error, sit!</p>
-                <h2 className={styles.articlebutton}>Ler artigo →</h2>
-              </div>
-            </div>
-            <div className={styles.card}>
-              <div className={styles.cardpic}>
-                <h3>Crescimento</h3>
-              </div>
-              <div className={styles.card_desc}>
-                <h2 className={styles.date}>23 de Novembro, 2025</h2>
-                <h1>Titulo</h1>
-                <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Doloremque dolorum tempore aliquam iste, aperiam asperiores quibusdam praesentium voluptatem ipsa minus molestiae impedit explicabo rerum consequatur esse soluta adipisci. Error, sit!</p>
-                <h2 className={styles.articlebutton}>Ler artigo →</h2>
-              </div>
-            </div>
-          </div>
-          <div className={styles.downcards}>
-            <div className={styles.card}>
-              <div className={styles.cardpic}>
-                <h3>Relacionamento</h3>
-              </div>
-              <div className={styles.card_desc}>
-                <h2 className={styles.date}>11 de maio, 2025</h2>
-                <h1>Titulo</h1>
-                <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Doloremque dolorum tempore aliquam iste, aperiam asperiores quibusdam praesentium voluptatem ipsa minus molestiae impedit explicabo rerum consequatur esse soluta adipisci. Error, sit!</p>
-                <h2 className={styles.articlebutton}>Ler artigo →</h2>
-              </div>
-            </div>
-            <div className={styles.card}>
-              <div className={styles.cardpic}>
-                <h3>Propósito</h3>
-              </div>
-              <div className={styles.card_desc}>
-                <h2 className={styles.date}>21 de janeiro, 2025</h2>
-                <h1>Titulo</h1>
-                <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Doloremque dolorum tempore aliquam iste, aperiam asperiores quibusdam praesentium voluptatem ipsa minus molestiae impedit explicabo rerum consequatur esse soluta adipisci. Error, sit!</p>
-                <h2 className={styles.articlebutton}>Ler artigo →</h2>
-              </div>
-            </div>
-          </div>
-        </section>
-      </main>
-      <footer className={styles.footer}></footer>
+      <AppBar position="static" sx={{padding: 3}}>
+        <Toolbar>
+          <Button 
+            sx={{color: "black", fontSize: 30, borderRadius: "100%", backgroundColor: "white"}}>
+              CL
+          </Button>
+        </Toolbar>
+      </AppBar>
+
+      {/* Chamando as seções aqui */}
+      <FirstSection></FirstSection>
+      <CardSection></CardSection>
+      
+      <Box sx={{backgroundColor: "black", padding: 3, textAlign: "center", position: "relative", bottom: "0", width: "100%"}}>
+        <Button 
+          sx={{color: "black", fontSize: 30, borderRadius: "100%", backgroundColor: "white"}}>
+            CL
+        </Button>
+      </Box>
     </>
-  )
+  );
 }
