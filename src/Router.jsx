@@ -7,6 +7,7 @@ const About = lazy(() => import("@pages/public/About"));
 const Contact = lazy(() => import("@pages/public/Contact"));
 const Training = lazy(() => import("@pages/public/Training"));
 const Dashboard = lazy(() => import("@pages/admin/dashboard"));
+const BlogManager = lazy(() => import("@pages/admin/BlogManager"));
 const AdminLayout = lazy(() => import("@components/layout/AdminLayout"));
 
 export default function Router() {
@@ -28,7 +29,8 @@ export default function Router() {
           <Route index element={<Dashboard />} />
 
           {/* Futuras rotas (apenas placeholders por enquanto) */}
-          <Route path="blog" element={<h1>Gerenciar Blog Aqui</h1>} />
+          <Route path="blog" element={<BlogManager />} />
+          <Route path="blog/novo" element={<h1>Editor de Novo Artigo</h1>} />
           <Route path="leads" element={<h1>Lista de Leads Aqui</h1>} />
         </Route>
       </Routes>
