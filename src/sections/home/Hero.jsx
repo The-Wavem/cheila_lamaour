@@ -4,6 +4,7 @@ import Imagem from '@/assets/pose1.png';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import EmailIcon from '@mui/icons-material/Email';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
+import { Link } from 'react-router-dom';
 
 const Hero = () => {
     return (
@@ -24,11 +25,11 @@ const Hero = () => {
                 padding: 0
             }}>
 
-                <AppBar 
-                    position="static" 
-                    color="transparent" 
-                    elevation={0} 
-                    sx={{ 
+                <AppBar
+                    position="static"
+                    color="transparent"
+                    elevation={0}
+                    sx={{
                         width: '100%',
                         backdropFilter: 'blur(10px)',
                         background: 'rgba(255, 255, 255, 0.95)',
@@ -64,8 +65,8 @@ const Hero = () => {
 
                         {/* navegação */}
                         <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center', gap: 0 }}>
-                            <Button 
-                                color="inherit" 
+                            <Button
+                                color="inherit"
                                 href="#home"
                                 sx={{
                                     fontFamily: "'Poppins', sans-serif",
@@ -84,8 +85,8 @@ const Hero = () => {
                                 Home
                             </Button>
                             <Divider orientation="vertical" flexItem sx={{ mx: 3, bgcolor: 'rgba(0, 0, 0, 0.1)' }} />
-                            <Button 
-                                color="inherit" 
+                            <Button
+                                color="inherit"
                                 href="#sobre"
                                 sx={{
                                     fontFamily: "'Poppins', sans-serif",
@@ -104,9 +105,10 @@ const Hero = () => {
                                 Sobre Mim
                             </Button>
                             <Divider orientation="vertical" flexItem sx={{ mx: 2, bgcolor: 'rgba(0, 0, 0, 0.1)' }} />
-                            <Button 
-                                color="inherit" 
-                                href="#mentoria"
+                            <Button
+                                component={Link}
+                                to="/agenda"
+                                color="inherit"
                                 sx={{
                                     fontFamily: "'Poppins', sans-serif",
                                     fontWeight: 500,
@@ -124,8 +126,8 @@ const Hero = () => {
                                 Agendar Mentoria
                             </Button>
                             <Divider orientation="vertical" flexItem sx={{ mx: 2, bgcolor: 'rgba(0, 0, 0, 0.1)' }} />
-                            <Button 
-                                color="inherit" 
+                            <Button
+                                color="inherit"
                                 href="#blog"
                                 sx={{
                                     fontFamily: "'Poppins', sans-serif",
@@ -144,8 +146,8 @@ const Hero = () => {
                                 Blog
                             </Button>
                             <Divider orientation="vertical" flexItem sx={{ mx: 2, bgcolor: 'rgba(0, 0, 0, 0.1)' }} />
-                            <Button 
-                                color="inherit" 
+                            <Button
+                                color="inherit"
                                 href="#treinamento"
                                 sx={{
                                     fontFamily: "'Poppins', sans-serif",
@@ -195,7 +197,7 @@ const Hero = () => {
                     <Box sx={{
                         position: 'absolute',
                         left: '22%',
-                        top: '200px',  
+                        top: '200px',
                         width: '250px',
                         height: '250px',
                         background: 'linear-gradient(135deg, #FBAE36 0%, #f59e0b 100%)',
@@ -219,7 +221,7 @@ const Hero = () => {
                     <Box sx={{
                         position: 'absolute',
                         left: '40%',
-                        top: '540px',     
+                        top: '540px',
                         width: '250px',
                         height: '250px',
                         background: 'linear-gradient(135deg, #FBAE36 0%, #f59e0b 100%)',
@@ -286,9 +288,9 @@ const Hero = () => {
                         }}
                     />
 
-                    <Box sx={{ 
-                        display: 'flex', 
-                        flexDirection: 'column', 
+                    <Box sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
                         alignItems: 'flex-start',
                         marginLeft: '45%',
                         zIndex: 3
