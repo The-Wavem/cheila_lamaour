@@ -14,7 +14,7 @@ const FirstSection = () => {
             <Typography variant="h2" 
               sx={{fontSize: "35px", fontWeight: "lighter", "color": "black"}}>Todas as postagens</Typography>
             <IconButton aria-label="icone" 
-              sx={{ borderRadius: "100%", padding: "10px", backgroundColor: "white", border: "1px solid #00000091", transition: "0.5s", '&:hover': {backgroundColor: "#e6e4e4"}, '.MuiTouchRipple-child': {backgroundColor: "#ffffff00"}}}>
+              sx={{ borderRadius: "100%", padding: "10px", backgroundColor: "white", border: "1px solid #00000091", transition: "0.5s", '&:hover': {backgroundColor: "#e6e4e4"}, '.MuiTouchRipple-child': {display: "none"}}}>
               <FilterAltRoundedIcon sx={{ fontSize: 36 }} />
             </IconButton>
           </Box>
