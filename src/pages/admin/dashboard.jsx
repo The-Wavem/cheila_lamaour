@@ -1,20 +1,31 @@
-import { Typography, Box } from '@mui/material';
-import StatsOverview from '@sections/admin/dashboard/StatsOverview';
+import { Box, Typography } from '@mui/material';
+import DashboardHeader from '@/sections/admin/dashboard/DashboardHeader'; // Novo
+import StatsOverview from '@/sections/admin/dashboard/StatsOverview'; // Já existia (Cards de números)
+import ActionWidgets from '@/sections/admin/dashboard/ActionWidgets'; // Novo
 
 export default function Dashboard() {
     return (
         <Box>
-            <Typography variant="h4" sx={{ mb: 4, fontWeight: 'bold', color: '#333' }}>
-                Bem-vinda, Cheila!
-            </Typography>
+            {/* 1. Cabeçalho com Data */}
+            <DashboardHeader />
 
-            {/* Seção de Métricas */}
+            {/* 2. Visão Geral (Números Grandes) */}
             <StatsOverview />
 
-            {/* Espaço para gráficos ou últimas atividades futuramente */}
-            <Typography variant="h6" sx={{ mb: 2 }}>Últimas Atividades</Typography>
-            <Box sx={{ p: 4, bgcolor: 'white', borderRadius: 2, textAlign: 'center', color: '#999' }}>
-                Gráficos virão aqui em breve...
+            <Box sx={{ mt: 4 }}>
+                <Typography variant="h6" sx={{ mb: 2, fontWeight: 'bold', color: '#555' }}>
+                    Painel de Controle
+                </Typography>
+
+                {/* 3. Widgets de Ação, Editor e Bloco de Notas */}
+                <ActionWidgets />
+            </Box>
+
+            {/* Área futura para o Gráfico */}
+            <Box sx={{ mt: 5, p: 4, bgcolor: 'white', borderRadius: 3, textAlign: 'center', border: '1px dashed #ccc' }}>
+                <Typography color="text.secondary">
+                    📈 Gráfico de Performance Semanal (Em desenvolvimento...)
+                </Typography>
             </Box>
         </Box>
     );
