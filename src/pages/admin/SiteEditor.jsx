@@ -3,7 +3,8 @@ import { Box, Paper, Typography, Divider } from '@mui/material';
 import EditorSidebar from '@/sections/admin/site-editor/EditorSidebar';
 import HomeEditor from '@/sections/admin/site-editor/forms/HomeEditor';
 import ServicesEditor from '@/sections/admin/site-editor/forms/ServicesEditor';
-// Importe os outros forms (AboutEditor, ContactEditor) quando criar
+import ContactEditor from '@/sections/admin/site-editor/forms/ContactEditor';
+import AboutEditor from '@/sections/admin/site-editor/forms/AboutEditor';
 
 export default function SiteEditor() {
   const [activeTab, setActiveTab] = useState('home');
@@ -13,8 +14,8 @@ export default function SiteEditor() {
     switch (activeTab) {
       case 'home': return <HomeEditor />;
       case 'services': return <ServicesEditor />;
-      case 'about': return <Typography sx={{p:4}}>Editor da página Sobre (Em construção)</Typography>;
-      case 'contact': return <Typography sx={{p:4}}>Editor da página Contato (Em construção)</Typography>;
+      case 'about': return <AboutEditor />;
+      case 'contact': return <ContactEditor />;
       default: return null;
     }
   };
