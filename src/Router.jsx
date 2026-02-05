@@ -11,6 +11,7 @@ const BlogManager = lazy(() => import("@pages/admin/BlogManager"));
 const AdminLayout = lazy(() => import("@components/layout/AdminLayout"));
 const BlogEditorPage = lazy(() => import("@pages/admin/BlogEditorPage"));
 const LeadsManager = lazy(() => import("@pages/admin/LeadsManager"));
+const SiteEditor = lazy(() => import("@pages/admin/SiteEditor"));
 
 export default function Router() {
   return (
@@ -35,6 +36,9 @@ export default function Router() {
 
           {/* Admin - Leads */}
           <Route path="leads" element={<LeadsManager />} />
+
+          {/* admin - Site Editor */}
+          <Route path="editor" element={<SiteEditor />} />
         </Route>
 
         {/* Admin - Blog (Editor) */}

@@ -19,6 +19,7 @@ export default function AdminLayout() {
         { text: 'Visão Geral', icon: <DashboardIcon />, path: '/admin' },
         { text: 'Blog & Artigos', icon: <ArticleIcon />, path: '/admin/blog' },
         { text: 'Leads (Contatos)', icon: <PeopleIcon />, path: '/admin/leads' },
+        { text: 'Editor do Site', icon: <ArticleIcon />, path: '/admin/editor' },
     ];
 
     const drawerContent = (
