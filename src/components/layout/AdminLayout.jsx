@@ -39,12 +39,19 @@ export default function AdminLayout() {
     const drawerContent = (
         <Box sx={{ height: '100%', bgcolor: '#009688', color: 'white', overflowX: 'hidden', display: 'flex', flexDirection: 'column' }}>
             {/* Header do Menu */}
-            <Toolbar sx={{ justifyContent: isSidebarOpen ? 'space-between' : 'center', px: [1, 2] }}>
-                {isSidebarOpen && (
-                    <Typography variant="subtitle1" fontWeight="bold" noWrap>
-                        Cheila Lamour
-                    </Typography>
-                )}
+            <Toolbar sx={{ justifyContent: 'space-between', px: [1, 2] }}>
+                {/* CORREÇÃO 1: Título sempre visível no Mobile (xs), condicional no Desktop (sm) */}
+                <Typography 
+                    variant="subtitle1" 
+                    fontWeight="bold" 
+                    noWrap
+                    sx={{
+                        display: { xs: 'block', sm: isSidebarOpen ? 'block' : 'none' }
+                    }}
+                >
+                    Cheila Lamour
+                </Typography>
+                
                 <IconButton onClick={handleSidebarCollapse} sx={{ color: 'white', display: { xs: 'none', sm: 'flex' } }}>
                     {isSidebarOpen ? <ChevronLeftIcon /> : <MenuIcon />}
                 </IconButton>
@@ -55,12 +62,14 @@ export default function AdminLayout() {
             <List sx={{ flexGrow: 1, mt: 2 }}>
                 {menuItems.map((item) => (
                     <ListItem key={item.text} disablePadding sx={{ display: 'block' }}>
-                        <Tooltip title={!isSidebarOpen ? item.text : ""} placement="right">
+                        <Tooltip title={isSidebarOpen ? "" : item.text} placement="right"> 
+                            {/* Dica: Tooltip vazia se menu aberto, texto se fechado (só desktop precisa disso) */}
                             <ListItemButton
                                 onClick={() => navigate(item.path)}
                                 sx={{
                                     minHeight: 48,
-                                    justifyContent: isSidebarOpen ? 'initial' : 'center',
+                                    // CORREÇÃO 2: Alinhamento sempre inicial no Mobile
+                                    justifyContent: { xs: 'initial', sm: isSidebarOpen ? 'initial' : 'center' },
                                     px: 2.5,
                                     bgcolor: location.pathname === item.path ? 'rgba(255,255,255,0.2)' : 'transparent',
                                     '&:hover': { bgcolor: 'rgba(255,255,255,0.1)' }
@@ -69,7 +78,8 @@ export default function AdminLayout() {
                                 <ListItemIcon
                                     sx={{
                                         minWidth: 0,
-                                        mr: isSidebarOpen ? 2 : 'auto',
+                                        // CORREÇÃO 3: Margem sempre 2 no Mobile
+                                        mr: { xs: 2, sm: isSidebarOpen ? 2 : 'auto' },
                                         justifyContent: 'center',
                                         color: 'white'
                                     }}
@@ -78,7 +88,11 @@ export default function AdminLayout() {
                                 </ListItemIcon>
                                 <ListItemText
                                     primary={item.text}
-                                    sx={{ opacity: isSidebarOpen ? 1 : 0, whiteSpace: 'nowrap' }}
+                                    // CORREÇÃO 4: Opacidade sempre 1 no Mobile
+                                    sx={{ 
+                                        opacity: { xs: 1, sm: isSidebarOpen ? 1 : 0 }, 
+                                        whiteSpace: 'nowrap' 
+                                    }}
                                 />
                             </ListItemButton>
                         </Tooltip>
@@ -90,11 +104,31 @@ export default function AdminLayout() {
             <List>
                 <ListItem disablePadding sx={{ display: 'block' }}>
                     <Tooltip title={!isSidebarOpen ? "Sair" : ""} placement="right">
-                        <ListItemButton onClick={() => alert("Logout")} sx={{ minHeight: 48, justifyContent: isSidebarOpen ? 'initial' : 'center', px: 2.5 }}>
-                            <ListItemIcon sx={{ minWidth: 0, mr: isSidebarOpen ? 2 : 'auto', justifyContent: 'center', color: '#ffcccb' }}>
+                        <ListItemButton 
+                            onClick={() => alert("Logout")} 
+                            sx={{ 
+                                minHeight: 48, 
+                                justifyContent: { xs: 'initial', sm: isSidebarOpen ? 'initial' : 'center' }, 
+                                px: 2.5 
+                            }}
+                        >
+                            <ListItemIcon 
+                                sx={{ 
+                                    minWidth: 0, 
+                                    mr: { xs: 2, sm: isSidebarOpen ? 2 : 'auto' }, 
+                                    justifyContent: 'center', 
+                                    color: '#ffcccb' 
+                                }}
+                            >
                                 <LogoutIcon />
                             </ListItemIcon>
-                            <ListItemText primary="Sair" sx={{ opacity: isSidebarOpen ? 1 : 0, color: '#ffcccb' }} />
+                            <ListItemText 
+                                primary="Sair" 
+                                sx={{ 
+                                    opacity: { xs: 1, sm: isSidebarOpen ? 1 : 0 }, 
+                                    color: '#ffcccb' 
+                                }} 
+                            />
                         </ListItemButton>
                     </Tooltip>
                 </ListItem>
