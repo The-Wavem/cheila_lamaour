@@ -6,7 +6,28 @@ import EmailIcon from '@mui/icons-material/Email';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
 import { Link } from 'react-router-dom';
 
+// teste do banco (imports):
+import { db } from '../../services/firebaseConfig';
+import { collection, addDoc } from 'firebase/firestore';
+
 const Hero = () => {
+
+// Função de demonstração:
+const enviarDadosTeste = async () => {
+        try {
+            const docRef = await addDoc(collection(db, "teste_wavem"), {
+                mensagem: "TESTE 123",
+                timestamp: new Date(),
+                usuario: "Demo User"
+            });
+            console.log("Documento escrito com ID: ", docRef.id);
+            alert(`Sucesso! Dado enviado para o Firestore (ID: ${docRef.id})`);
+        } catch (e) {
+            console.error("Erro ao adicionar documento: ", e);
+            alert("Erro ao conectar com o banco.");
+        }
+    };
+    
     return (
         <>
             <style>
@@ -373,6 +394,7 @@ const Hero = () => {
                             </Button>
                             <Button
                                 variant="outlined"
+                                onClick={enviarDadosTeste} // função de teste do banco
                                 startIcon={<MenuBookIcon />}
                                 sx={{
                                     fontFamily: "'Poppins', sans-serif",
