@@ -8,6 +8,7 @@
       "@sections/*": ["src/sections/*"],
       "@services/*": ["src/services/*"],
       "@hooks/*": ["src/hooks/*"],
+      "@theme/*": ["src/theme/*"]
     }
   },
   "include": ["src"]
