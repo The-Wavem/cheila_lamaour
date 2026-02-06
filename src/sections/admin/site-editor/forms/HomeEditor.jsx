@@ -9,7 +9,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 
 // Recebe setIsDirty via props para controlar o estado da página pai
-export default function HomeEditor({ setIsDirty }) {
+export default function HomeEditor({ setIsDirty, onSaveSuccess }) {
 
   // Função genérica para marcar como "Sujo" ao digitar em campos estáticos
   const handleChange = () => {
@@ -17,12 +17,12 @@ export default function HomeEditor({ setIsDirty }) {
   };
 
   const handleSave = () => {
-    // Lógica futura de salvar no Firebase...
+    // Aplicar lógica de salvamento aqui Firebase
     console.log("Salvando dados...");
 
     // Depois de salvar com sucesso, limpamos o estado
     if (setIsDirty) setIsDirty(false);
-    alert("Alterações salvas com sucesso!");
+    onSaveSuccess();
   };
 
   // Estado para os Depoimentos (Lista Dinâmica)

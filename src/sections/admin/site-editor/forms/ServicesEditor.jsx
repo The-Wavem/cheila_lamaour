@@ -9,7 +9,7 @@ import SaveIcon from '@mui/icons-material/Save';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ImageIcon from '@mui/icons-material/Image';
 
-// Mock inicial atualizado (refletindo a nova estrutura com imagens)
+// Mock inicial
 const initialCards = [
     {
         id: 1,
@@ -27,23 +27,39 @@ const initialCards = [
     }
 ];
 
-export default function ServicesEditor() {
+// Recebe props do SiteEditor
+export default function ServicesEditor({ setIsDirty, onSaveSuccess }) {
     const [cards, setCards] = useState(initialCards);
+
+    // Função genérica para marcar como "Sujo"
+    const handleChange = () => {
+        if (setIsDirty) setIsDirty(true);
+    };
+
+    const handleSave = () => {
+        console.log("Salvando dados (Serviços)...");
+        if (setIsDirty) setIsDirty(false);
+        if (onSaveSuccess) onSaveSuccess();
+    };
 
     // --- FUNÇÕES DE MANIPULAÇÃO DA LISTA ---
     const handleAddTopic = (cardId) => {
+        handleChange(); // <--- Marca sujo
         setCards(cards.map(c => c.id === cardId ? { ...c, topics: [...c.topics, ''] } : c));
     };
 
     const handleRemoveTopic = (cardId, idx) => {
+        handleChange(); // <--- Marca sujo
         setCards(cards.map(c => c.id === cardId ? { ...c, topics: c.topics.filter((_, i) => i !== idx) } : c));
     };
 
     const handleTopicChange = (cardId, idx, val) => {
+        handleChange(); // <--- Marca sujo
         setCards(cards.map(c => c.id === cardId ? { ...c, topics: c.topics.map((t, i) => i === idx ? val : t) } : c));
     };
 
     const handleCardChange = (cardId, field, val) => {
+        handleChange(); // <--- Marca sujo
         setCards(cards.map(c => c.id === cardId ? { ...c, [field]: val } : c));
     };
 
@@ -55,7 +71,12 @@ export default function ServicesEditor() {
                     <Typography variant="h6" fontWeight="bold">Editando: Serviços e Treinamentos</Typography>
                     <Typography variant="caption" color="text.secondary">Gerencie os textos do Hero e os cards de serviço.</Typography>
                 </Box>
-                <Button variant="contained" startIcon={<SaveIcon />} sx={{ bgcolor: '#009688' }}>
+                <Button 
+                    variant="contained" 
+                    startIcon={<SaveIcon />} 
+                    sx={{ bgcolor: '#009688' }}
+                    onClick={handleSave} // <--- Botão Salvar
+                >
                     Salvar Tudo
                 </Button>
             </Box>
@@ -74,6 +95,7 @@ export default function ServicesEditor() {
                                 label="TÍTULO PRINCIPAL (H1)"
                                 fullWidth
                                 defaultValue="Treinamentos | Coaching | Palestras"
+                                onChange={handleChange} // <--- Monitorar
                             />
                             <TextField
                                 label="SUBTÍTULO / DESCRIÇÃO"
@@ -81,12 +103,14 @@ export default function ServicesEditor() {
                                 multiline
                                 rows={2}
                                 defaultValue="Soluções completas para o seu desenvolvimento e da sua empresa."
+                                onChange={handleChange} // <--- Monitorar
                             />
                             <TextField
                                 label="IMAGEM DE FUNDO (URL)"
                                 fullWidth
                                 placeholder="https://..."
                                 InputProps={{ startAdornment: <ImageIcon sx={{ color: 'action.active', mr: 1 }} /> }}
+                                onChange={handleChange} // <--- Monitorar
                             />
                         </Stack>
                     </AccordionDetails>

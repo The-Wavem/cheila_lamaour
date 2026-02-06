@@ -7,7 +7,20 @@ import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import EmailIcon from '@mui/icons-material/Email';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 
-export default function ContactEditor() {
+// Recebe props do SiteEditor
+export default function ContactEditor({ setIsDirty, onSaveSuccess }) {
+    
+    // Função genérica para marcar como "Sujo"
+    const handleChange = () => {
+        if (setIsDirty) setIsDirty(true);
+    };
+
+    const handleSave = () => {
+        console.log("Salvando dados (Contato)...");
+        if (setIsDirty) setIsDirty(false);
+        if (onSaveSuccess) onSaveSuccess();
+    };
+
     return (
         <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
             {/* Topo Fixo */}
@@ -16,7 +29,12 @@ export default function ContactEditor() {
                     <Typography variant="h6" fontWeight="bold">Editando: Página de Contato</Typography>
                     <Typography variant="caption" color="text.secondary">Gerencie os textos e canais de atendimento.</Typography>
                 </Box>
-                <Button variant="contained" startIcon={<SaveIcon />} sx={{ bgcolor: '#009688' }}>
+                <Button 
+                    variant="contained" 
+                    startIcon={<SaveIcon />} 
+                    sx={{ bgcolor: '#009688' }}
+                    onClick={handleSave} // <--- Botão Salvar
+                >
                     Salvar Alterações
                 </Button>
             </Box>
@@ -35,11 +53,13 @@ export default function ContactEditor() {
                             fullWidth
                             defaultValue="VAMOS CONVERSAR"
                             helperText="Aparece grande no topo da página."
+                            onChange={handleChange} // <--- Monitorar
                         />
                         <TextField
                             label="SUBTÍTULO DE IMPACTO"
                             fullWidth
                             defaultValue="Dê o próximo passo rumo à sua essência."
+                            onChange={handleChange}
                         />
                         <TextField
                             label="TEXTO DE APOIO (DESCRIÇÃO)"
@@ -47,6 +67,7 @@ export default function ContactEditor() {
                             multiline
                             rows={3}
                             defaultValue="Seja para alavancar sua carreira, equilibrar sua vida pessoal ou liderar com propósito. Estou aqui para guiar sua jornada de transformação."
+                            onChange={handleChange}
                         />
                     </Stack>
                 </Paper>
@@ -72,6 +93,7 @@ export default function ContactEditor() {
                                     </InputAdornment>
                                 ),
                             }}
+                            onChange={handleChange} // <--- Monitorar
                         />
                         <TextField
                             label="E-MAIL OFICIAL"
@@ -84,6 +106,7 @@ export default function ContactEditor() {
                                     </InputAdornment>
                                 ),
                             }}
+                            onChange={handleChange} // <--- Monitorar
                         />
                     </Stack>
                 </Paper>
@@ -99,8 +122,18 @@ export default function ContactEditor() {
                         <Box>
                             <Typography variant="caption" fontWeight="bold" color="text.secondary">TEXTOS DO FORMULÁRIO</Typography>
                             <Stack direction="row" spacing={2} sx={{ mt: 1 }}>
-                                <TextField label="TÍTULO DO FORMULÁRIO" fullWidth defaultValue="Envie uma mensagem" />
-                                <TextField label="INSTRUÇÃO" fullWidth defaultValue="Preencha o Formulário abaixo" />
+                                <TextField 
+                                    label="TÍTULO DO FORMULÁRIO" 
+                                    fullWidth 
+                                    defaultValue="Envie uma mensagem" 
+                                    onChange={handleChange}
+                                />
+                                <TextField 
+                                    label="INSTRUÇÃO" 
+                                    fullWidth 
+                                    defaultValue="Preencha o Formulário abaixo" 
+                                    onChange={handleChange}
+                                />
                             </Stack>
                         </Box>
 
@@ -114,15 +147,26 @@ export default function ContactEditor() {
                             </Stack>
 
                             <Stack spacing={2}>
-                                <TextField label="TÍTULO DO CARD" fullWidth defaultValue="Agenda Aberta" />
+                                <TextField 
+                                    label="TÍTULO DO CARD" 
+                                    fullWidth 
+                                    defaultValue="Agenda Aberta" 
+                                    onChange={handleChange}
+                                />
                                 <TextField
                                     label="TEXTO EXPLICATIVO"
                                     fullWidth
                                     multiline
                                     rows={2}
                                     defaultValue="Verifique meus horários disponíveis em tempo real e reserve o seu sem burocracia."
+                                    onChange={handleChange}
                                 />
-                                <TextField label="TEXTO DE STATUS" fullWidth defaultValue="Sessões de 'definição de tempo' disponíveis para a próxima semana." />
+                                <TextField 
+                                    label="TEXTO DE STATUS" 
+                                    fullWidth 
+                                    defaultValue="Sessões de 'definição de tempo' disponíveis para a próxima semana." 
+                                    onChange={handleChange}
+                                />
                             </Stack>
                         </Box>
                     </Stack>

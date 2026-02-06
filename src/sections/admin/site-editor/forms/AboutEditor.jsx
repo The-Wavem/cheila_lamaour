@@ -7,23 +7,42 @@ import SaveIcon from '@mui/icons-material/Save';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
-import MenuBookIcon from '@mui/icons-material/MenuBook'; // Ícone de Livro
+import MenuBookIcon from '@mui/icons-material/MenuBook';
 
-export default function AboutEditor() {
+// Recebe props do SiteEditor
+export default function AboutEditor({ setIsDirty, onSaveSuccess }) {
+
+    // Função genérica para marcar como "Sujo"
+    const handleChange = () => {
+        if (setIsDirty) setIsDirty(true);
+    };
+
+    const handleSave = () => {
+        // Lógica futura de salvar no Firebase...
+        console.log("Salvando dados (Sobre)...");
+
+        // Limpa estado sujo e avisa sucesso
+        if (setIsDirty) setIsDirty(false);
+        if (onSaveSuccess) onSaveSuccess();
+    };
+
     // Estado para os Livros (Lista Dinâmica)
     const [books, setBooks] = useState([
         { id: 1, title: 'Create Your Own Business', author: 'James Murdor', link: '#' }
     ]);
 
     const handleAddBook = () => {
+        handleChange(); // Marca modificado
         setBooks([...books, { id: Date.now(), title: '', author: '', link: '' }]);
     };
 
     const handleRemoveBook = (id) => {
+        handleChange(); // Marca modificado
         setBooks(books.filter(book => book.id !== id));
     };
 
     const handleBookChange = (id, field, value) => {
+        handleChange(); // Marca modificado
         setBooks(books.map(book => book.id === id ? { ...book, [field]: value } : book));
     };
 
@@ -35,7 +54,12 @@ export default function AboutEditor() {
                     <Typography variant="h6" fontWeight="bold">Editando: Sobre Mim</Typography>
                     <Typography variant="caption" color="text.secondary">Gerencie sua biografia e biblioteca.</Typography>
                 </Box>
-                <Button variant="contained" startIcon={<SaveIcon />} sx={{ bgcolor: '#009688' }}>
+                <Button
+                    variant="contained"
+                    startIcon={<SaveIcon />}
+                    sx={{ bgcolor: '#009688' }}
+                    onClick={handleSave} // <--- Ação de Salvar Padronizada
+                >
                     Salvar Alterações
                 </Button>
             </Box>
@@ -54,11 +78,13 @@ export default function AboutEditor() {
                                 label="NOME DE APRESENTAÇÃO"
                                 fullWidth
                                 defaultValue="Cheila Lamour"
+                                onChange={handleChange} // <--- Monitorar Alteração
                             />
                             <TextField
                                 label="SUBTÍTULO / CARGO"
                                 fullWidth
                                 defaultValue="Liderança Feminina e Gestão Humanizada em Curitiba e Online"
+                                onChange={handleChange}
                             />
                             <Divider />
 
@@ -70,6 +96,7 @@ export default function AboutEditor() {
                                 rows={2}
                                 defaultValue="Embaixadora da Divine Academie Française des Arts Lettres et Culture"
                                 helperText="Aparece em destaque logo abaixo do título."
+                                onChange={handleChange}
                             />
 
                             <Typography variant="caption" color="text.secondary" fontWeight="bold">A HISTÓRIA (TEXTO LONGO)</Typography>
@@ -78,8 +105,13 @@ export default function AboutEditor() {
                                 fullWidth
                                 multiline
                                 rows={8}
-                                defaultValue="Trabalho com projetos de Estruturas Metálicas desde que me formei..."
-                                helperText="Este é o texto principal que conta sua jornada da engenharia até a mentoria."
+                                defaultValue={`Trabalho com projetos de Estruturas Metálicas desde que me formei na UFPR.
+
+Com mais de 25 anos de experiência organizacional e liderando equipes, percebi que o maior desafio não era técnico, mas humano.
+
+Busquei especializações em Liderança Humanizada, Coaching e Análise Comportamental para transformar minha carreira e hoje ajudar outras mulheres a fazerem o mesmo.`}
+                                helperText="Pressione 'Enter' para criar novos parágrafos. O site respeitará essas quebras."
+                                onChange={handleChange}
                             />
                         </Stack>
                     </AccordionDetails>
@@ -115,6 +147,7 @@ export default function AboutEditor() {
                                                 fullWidth
                                                 size="small"
                                                 value={book.title}
+                                                // O onChange aqui já chama handleBookChange que chama handleChange
                                                 onChange={(e) => handleBookChange(book.id, 'title', e.target.value)}
                                             />
                                             <TextField
@@ -132,6 +165,9 @@ export default function AboutEditor() {
                                                 fullWidth
                                                 size="small"
                                                 placeholder="https://..."
+                                                // Adicione onChange={handleChange} se for um campo sem state vinculado direto nos books ainda, 
+                                                // mas idealmente vincule ao state
+                                                onChange={handleChange}
                                             />
                                             <TextField
                                                 label="Link de Compra (Botão)"
