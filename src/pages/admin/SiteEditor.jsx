@@ -5,17 +5,40 @@ import HomeEditor from '@/sections/admin/site-editor/forms/HomeEditor';
 import ServicesEditor from '@/sections/admin/site-editor/forms/ServicesEditor';
 import ContactEditor from '@/sections/admin/site-editor/forms/ContactEditor';
 import AboutEditor from '@/sections/admin/site-editor/forms/AboutEditor';
+import { useDirtyProtection } from '../../hooks/useDirtyProtection';
 
 export default function SiteEditor() {
   const [activeTab, setActiveTab] = useState('home');
+  const [isDirty, setIsDirty] = useState(false);
 
-  // Função para renderizar o form correto
+  // Ativa a proteção do navegador (fechar aba)
+  useDirtyProtection(isDirty);
+
+  // Função Interceptadora: Só troca de aba se confirmar
+  const handleTabChange = (newTabId) => {
+    if (activeTab === newTabId) return;
+
+    if (isDirty) {
+      const confirmLeave = window.confirm(
+        'Você tem alterações não salvas! Se mudar de aba agora, perderá tudo. Deseja sair mesmo assim?'
+      );
+      if (!confirmLeave) return; // Cancela a troca
+
+      // Se confirmou, limpa o estado e troca
+      setIsDirty(false);
+    }
+
+    setActiveTab(newTabId);
+  };
+
   const renderActiveForm = () => {
+    const props = { setIsDirty, isDirty };
+
     switch (activeTab) {
-      case 'home': return <HomeEditor />;
-      case 'services': return <ServicesEditor />;
-      case 'about': return <AboutEditor />;
-      case 'contact': return <ContactEditor />;
+      case 'home': return <HomeEditor {...props} />;
+      case 'services': return <ServicesEditor {...props} />;
+      case 'about': return <AboutEditor {...props} />;
+      case 'contact': return <ContactEditor {...props} />;
       default: return null;
     }
   };
@@ -29,7 +52,8 @@ export default function SiteEditor() {
             ESTRUTURA DO SITE
           </Typography>
         </Box>
-        <EditorSidebar activeTab={activeTab} onChangeTab={setActiveTab} />
+        {/* Usamos handleTabChange aqui em vez de setActiveTab direto */}
+        <EditorSidebar activeTab={activeTab} onChangeTab={handleTabChange} />
       </Paper>
 
       {/* Coluna da Direita: Área de Edição */}

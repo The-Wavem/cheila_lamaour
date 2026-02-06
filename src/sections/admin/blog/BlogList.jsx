@@ -20,7 +20,7 @@ export default function BlogList() {
     const navigate = useNavigate();
     const [rows, setRows] = useState(mockRows);
     
-    // Estado para o Input (Visual - Atualiza instantaneamente)
+    // Estado para o Input
     const [searchTerm, setSearchTerm] = useState('');
     
     // Estado para o Filtro (Lógica - Atualiza com atraso)
