@@ -8,272 +8,213 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 
-// Recebe setIsDirty via props para controlar o estado da página pai
-export default function HomeEditor({ setIsDirty, onSaveSuccess }) {
+const BRAND = {
+  teal: '#009688',
+  gold: '#C5A669',
+  bg: '#F4F6F8',
+  lightGold: '#FDFCF5'
+};
 
-  // Função genérica para marcar como "Sujo" ao digitar em campos estáticos
+export default function HomeEditor({ setIsDirty, onSaveSuccess }) {
+  // --- LÓGICA DE ESTADO (Herdada e Mantida) ---
+  const [testimonials, setTestimonials] = useState([
+    { id: 1, name: 'Nome de exemplo', text: 'A mentoria com a Cheila foi um divisor de águas na minha carreira...' }
+  ]);
+
   const handleChange = () => {
     if (setIsDirty) setIsDirty(true);
   };
 
   const handleSave = () => {
-    // Aplicar lógica de salvamento aqui Firebase
-    console.log("Salvando dados...");
-
-    // Depois de salvar com sucesso, limpamos o estado
+    console.log("Salvando dados da Home...");
+    // Aqui virá a lógica do Firebase
+    
     if (setIsDirty) setIsDirty(false);
-    onSaveSuccess();
+    onSaveSuccess && onSaveSuccess();
   };
 
-  // Estado para os Depoimentos (Lista Dinâmica)
-  const [testimonials, setTestimonials] = useState([
-    { id: 1, name: 'Nome de exemplo', text: 'A mentoria com a Cheila foi um divisor de águas na minha carreira...' }
-  ]);
-
   const handleAddTestimonial = () => {
-    handleChange(); // Marca como modificado
+    handleChange();
     setTestimonials([...testimonials, { id: Date.now(), name: '', text: '' }]);
   };
 
   const handleRemoveTestimonial = (id) => {
-    handleChange(); // Marca como modificado
+    handleChange();
     setTestimonials(testimonials.filter(t => t.id !== id));
   };
 
   const handleTestimonialChange = (id, field, value) => {
-    handleChange(); // Marca como modificado
+    handleChange();
     setTestimonials(testimonials.map(t => t.id === id ? { ...t, [field]: value } : t));
   };
 
+  // --- ESTILOS CUSTOMIZADOS ---
+  const accordionStyle = {
+    elevation: 0,
+    sx: {
+      mb: 2, borderRadius: '8px !important', border: '1px solid #eee',
+      '&:before': { display: 'none' }, // Remove linha padrão do MUI
+      '&.Mui-expanded': { borderLeft: `4px solid ${BRAND.gold}`, bgcolor: '#fff', boxShadow: '0 4px 12px rgba(0,0,0,0.05)' }
+    }
+  };
+
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-      {/* Topo Fixo */}
-      <Box sx={{ p: 3, borderBottom: '1px solid #eee', display: 'flex', justifyContent: 'space-between', alignItems: 'center', bgcolor: 'white' }}>
+    <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', bgcolor: BRAND.bg }}>
+      
+      {/* TOPO FIXO */}
+      <Box sx={{ 
+        p: 3, borderBottom: '1px solid #e0e0e0', display: 'flex', justifyContent: 'space-between', alignItems: 'center', bgcolor: 'white',
+        boxShadow: '0 2px 10px rgba(0,0,0,0.03)'
+      }}>
         <Box>
-          <Typography variant="h6" fontWeight="bold">Editando: Página Inicial</Typography>
-          <Typography variant="caption" color="text.secondary">Todos os textos da Home em um só lugar.</Typography>
+          <Typography variant="h6" sx={{ fontFamily: '"Playfair Display", serif', fontWeight: 'bold', color: '#333' }}>
+            Editando: Página Inicial
+          </Typography>
+          <Typography variant="caption" color="text.secondary">Gerencie os textos e seções da Home.</Typography>
         </Box>
-        <Button
-          variant="contained"
-          startIcon={<SaveIcon />}
-          sx={{ bgcolor: '#009688' }}
-          onClick={handleSave} // Ação de Salvar
+        <Button 
+          variant="contained" startIcon={<SaveIcon />} onClick={handleSave}
+          sx={{ bgcolor: BRAND.teal, fontWeight: 'bold', '&:hover': { bgcolor: '#00796b' } }}
         >
           Salvar Alterações
         </Button>
       </Box>
 
-      {/* Área de Scroll */}
-      <Box sx={{ p: 4, overflowY: 'auto', flexGrow: 1, bgcolor: '#f4f4f4' }}>
+      {/* ÁREA DE CONTEÚDO SCROLLÁVEL */}
+      <Box sx={{ p: 4, overflowY: 'auto', flexGrow: 1 }}>
 
-        {/* --- 1. SEÇÃO HERO (CAPA) --- */}
-        <Accordion defaultExpanded elevation={0} sx={{ mb: 2, borderRadius: '8px !important' }}>
-          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-            <Typography variant="subtitle1" fontWeight="bold" color="primary">1. SEÇÃO HERO (TOPO)</Typography>
+        {/* --- 1. SEÇÃO HERO --- */}
+        <Accordion defaultExpanded {...accordionStyle}>
+          <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: BRAND.gold }} />}>
+            <Typography variant="subtitle1" fontWeight="bold" color={BRAND.teal}>1. SEÇÃO HERO (TOPO)</Typography>
           </AccordionSummary>
-          <AccordionDetails>
+          <AccordionDetails sx={{ bgcolor: BRAND.lightGold, p: 3 }}>
             <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-              A primeira dobra do site. Mantenha o título curto e impactante.
+              A primeira impressão é a que fica. Defina a manchete principal do site.
             </Typography>
             <Stack spacing={3}>
-              <TextField
-                label="TÍTULO PRINCIPAL (HEADLINE)"
-                fullWidth
+              <TextField 
+                label="TÍTULO PRINCIPAL (HEADLINE)" fullWidth variant="filled"
+                InputProps={{ disableUnderline: true, style: { fontSize: '1.2rem', fontWeight: 'bold' } }}
+                onChange={handleChange}
                 defaultValue="Liderança Feminina e Gestão Humanizada"
-                onChange={handleChange}
+                sx={{ bgcolor: 'white', borderRadius: 1 }}
               />
-              <TextField
-                label="SUBTÍTULO"
-                fullWidth multiline rows={2}
+              <TextField 
+                label="SUBTÍTULO" fullWidth multiline rows={2} variant="filled" 
                 defaultValue="Mentora, Palestrante, Especialista em Liderança Feminina..."
-                onChange={handleChange}
+                InputProps={{ disableUnderline: true }} sx={{ bgcolor: 'white', borderRadius: 1 }} onChange={handleChange} 
               />
+              
               <Stack direction="row" spacing={2}>
-                <TextField
-                  label="TEXTO DO BOTÃO"
-                  fullWidth
-                  defaultValue="Entre em contato"
-                  onChange={handleChange}
-                />
-                <TextField
-                  label="LINK DO BOTÃO"
-                  fullWidth
-                  defaultValue="/contato"
-                  onChange={handleChange}
-                />
+                <TextField label="Texto do Botão" fullWidth size="small" defaultValue="Entre em contato" sx={{ bgcolor: 'white' }} onChange={handleChange} />
+                <TextField label="Link do Botão" fullWidth size="small" defaultValue="/contato" sx={{ bgcolor: 'white' }} onChange={handleChange} />
               </Stack>
             </Stack>
           </AccordionDetails>
         </Accordion>
 
-        {/* --- 2. SEÇÃO SOBRE (QUEM É CHEILA) --- */}
-        <Accordion elevation={0} sx={{ mb: 2, borderRadius: '8px !important' }}>
-          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-            <Typography variant="subtitle1" fontWeight="bold" color="primary">2. SEÇÃO "QUEM É CHEILA?"</Typography>
+        {/* --- 2. SEÇÃO SOBRE --- */}
+        <Accordion {...accordionStyle}>
+          <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: BRAND.gold }} />}>
+            <Typography variant="subtitle1" fontWeight="bold" color={BRAND.teal}>2. QUEM É CHEILA?</Typography>
           </AccordionSummary>
-          <AccordionDetails>
+          <AccordionDetails sx={{ p: 3 }}>
             <Stack spacing={3}>
-              <TextField
-                label="TÍTULO DA SEÇÃO"
-                fullWidth
-                defaultValue="Minha História"
-                onChange={handleChange}
+              <TextField 
+                label="TÍTULO DA SEÇÃO" fullWidth variant="outlined" size="small" 
+                defaultValue="Minha História" onChange={handleChange} 
               />
               <TextField
-                label="FRASE DE DESTAQUE (QUOTE)"
-                fullWidth
+                label="FRASE DE DESTAQUE (QUOTE)" fullWidth variant="filled"
                 defaultValue="É um prazer poder apresentar meu trabalho a você!"
-                helperText="Aparece em destaque antes do texto principal."
+                InputProps={{ disableUnderline: true, style: { fontStyle: 'italic', color: BRAND.gold } }}
+                sx={{ bgcolor: BRAND.lightGold }}
                 onChange={handleChange}
               />
-              <TextField
-                label="TEXTO DE APRESENTAÇÃO"
-                fullWidth
-                multiline
-                rows={10}
-                defaultValue={`Sou Cheila Lamour, Mentora, Palestrante, Especialista em Liderança Feminina.
-
-Mãe, esposa, Engenheira Civil com 25 anos de experiência organizacional e mais de 150 liderados. MBA em Liderança Humanizada. Analista Comportamental, certificação em Life, Leader, Executive & Business Coach.
-
-Aliando o conhecimento técnico às habilidades para lidar com gente, descobri meu propósito: ajudar outras pessoas a destravarem seu potencial.`}
-                helperText="Use 'Enter' para criar novos parágrafos. O site respeitará essas quebras."
-                onChange={handleChange}
-              />
-              <TextField
-                label="TEXTO DO BOTÃO"
-                fullWidth
-                defaultValue="Minha História Completa"
-                onChange={handleChange}
+              <TextField 
+                label="TEXTO DA BIO" fullWidth multiline rows={8} variant="outlined" 
+                placeholder="Escreva sobre sua trajetória..."
+                defaultValue={`Sou Cheila Lamour, Mentora, Palestrante, Especialista em Liderança Feminina...\n\nAliando o conhecimento técnico às habilidades para lidar com gente, descobri meu propósito.`}
+                onChange={handleChange} 
               />
             </Stack>
           </AccordionDetails>
         </Accordion>
 
-        {/* --- 3. SEÇÃO DESTAQUE DE SERVIÇOS --- */}
-        <Accordion elevation={0} sx={{ mb: 2, borderRadius: '8px !important' }}>
-          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-            <Typography variant="subtitle1" fontWeight="bold" color="primary">3. DESTAQUE DE SERVIÇOS</Typography>
+        {/* --- 3. SERVIÇOS --- */}
+        <Accordion {...accordionStyle}>
+          <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: BRAND.gold }} />}>
+            <Typography variant="subtitle1" fontWeight="bold" color={BRAND.teal}>3. DESTAQUE DE SERVIÇOS</Typography>
           </AccordionSummary>
-          <AccordionDetails>
-            <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-              Aqui você edita apenas os títulos gerais. Os cards de serviços são puxados automaticamente da aba "Serviços".
+          <AccordionDetails sx={{ p: 3 }}>
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+              Edite os títulos da seção. Os cards são automáticos.
             </Typography>
             <Stack spacing={3}>
-              <TextField
-                label="TÍTULO DA SEÇÃO"
-                fullWidth
-                defaultValue="Serviços Prestados"
-                onChange={handleChange}
-              />
-              <TextField
-                label="SUBTÍTULO DE IMPACTO"
-                fullWidth
-                defaultValue="Você é o seu maior investimento"
-                onChange={handleChange}
-              />
-              <TextField
-                label="TEXTO DO LINK DE RODAPÉ"
-                fullWidth
-                defaultValue="Ver todos os serviços e treinamentos"
-                onChange={handleChange}
-              />
+              <TextField label="Título da Seção" fullWidth size="small" defaultValue="Serviços Prestados" onChange={handleChange} />
+              <TextField label="Subtítulo de Impacto" fullWidth size="small" defaultValue="Você é o seu maior investimento" onChange={handleChange} />
             </Stack>
           </AccordionDetails>
         </Accordion>
 
-        {/* --- 4. SEÇÃO DEPOIMENTOS (REPEATER) --- */}
-        <Accordion elevation={0} sx={{ mb: 2, borderRadius: '8px !important' }}>
-          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-            <Typography variant="subtitle1" fontWeight="bold" color="primary">4. DEPOIMENTOS (CARROSSEL)</Typography>
+        {/* --- 4. DEPOIMENTOS --- */}
+        <Accordion {...accordionStyle}>
+          <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: BRAND.gold }} />}>
+            <Typography variant="subtitle1" fontWeight="bold" color={BRAND.teal}>4. DEPOIMENTOS</Typography>
           </AccordionSummary>
-          <AccordionDetails>
-            <TextField
-              label="TÍTULO DA SEÇÃO"
-              fullWidth
-              defaultValue="Depoimentos"
-              sx={{ mb: 3 }}
-              onChange={handleChange}
-            />
-
+          <AccordionDetails sx={{ p: 3 }}>
             <Stack spacing={2}>
               {testimonials.map((item, index) => (
-                <Paper key={item.id} variant="outlined" sx={{ p: 2, bgcolor: '#fafafa' }}>
-                  <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 1 }}>
-                    <Typography variant="caption" fontWeight="bold">DEPOIMENTO #{index + 1}</Typography>
-                    <IconButton size="small" color="error" onClick={() => handleRemoveTestimonial(item.id)}>
-                      <DeleteIcon fontSize="small" />
-                    </IconButton>
-                  </Stack>
-                  <Stack spacing={2}>
-                    <TextField
-                      label="O que a pessoa falou?"
-                      multiline
-                      rows={3}
-                      fullWidth
-                      value={item.text}
-                      // O onChange aqui já chama handleTestimonialChange que chama setIsDirty
-                      onChange={(e) => handleTestimonialChange(item.id, 'text', e.target.value)}
-                      placeholder="A mentoria foi um divisor de águas..."
-                    />
-                    <TextField
-                      label="Nome do Cliente"
-                      fullWidth
-                      size="small"
-                      value={item.name}
-                      // O onChange aqui já chama handleTestimonialChange que chama setIsDirty
-                      onChange={(e) => handleTestimonialChange(item.id, 'name', e.target.value)}
-                    />
-                  </Stack>
+                <Paper key={item.id} sx={{ p: 2, bgcolor: '#FAFAFA', border: '1px dashed #ccc', position: 'relative' }} elevation={0}>
+                   <Stack direction="row" justifyContent="space-between" alignItems="center">
+                      <Typography variant="caption" fontWeight="bold" color={BRAND.teal}>DEPOIMENTO #{index+1}</Typography>
+                      <IconButton size="small" color="error" onClick={() => handleRemoveTestimonial(item.id)}>
+                        <DeleteIcon fontSize="small" />
+                      </IconButton>
+                   </Stack>
+                   <Stack spacing={2} sx={{ mt: 1 }}>
+                     <TextField 
+                        fullWidth multiline rows={2} 
+                        placeholder="O que o cliente disse?" 
+                        variant="outlined" size="small"
+                        value={item.text}
+                        onChange={(e) => handleTestimonialChange(item.id, 'text', e.target.value)}
+                        sx={{ bgcolor: 'white' }}
+                     />
+                     <TextField 
+                        fullWidth placeholder="Nome do Cliente" 
+                        variant="standard" size="small"
+                        value={item.name}
+                        onChange={(e) => handleTestimonialChange(item.id, 'name', e.target.value)}
+                     />
+                   </Stack>
                 </Paper>
               ))}
-
-              <Button
-                startIcon={<AddCircleIcon />}
+              <Button 
+                startIcon={<AddCircleIcon />} 
                 onClick={handleAddTestimonial}
-                sx={{ alignSelf: 'flex-start', color: '#C5A669' }}
+                sx={{ color: BRAND.gold, fontWeight: 'bold', alignSelf: 'flex-start' }}
               >
-                Adicionar Novo Depoimento
+                Adicionar Depoimento
               </Button>
             </Stack>
           </AccordionDetails>
         </Accordion>
 
-        {/* --- 5. SEÇÃO CONTATO (RODAPÉ) --- */}
-        <Accordion elevation={0} sx={{ borderRadius: '8px !important' }}>
-          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-            <Typography variant="subtitle1" fontWeight="bold" color="primary">5. CHAMADA PARA CONTATO (FOOTER)</Typography>
+        {/* --- 5. RODAPÉ (CONTATO) --- */}
+        <Accordion {...accordionStyle}>
+          <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: BRAND.gold }} />}>
+            <Typography variant="subtitle1" fontWeight="bold" color={BRAND.teal}>5. RODAPÉ DE CONTATO</Typography>
           </AccordionSummary>
-          <AccordionDetails>
-            <Stack spacing={3}>
-              <TextField
-                label="TÍTULO"
-                fullWidth
-                defaultValue="Entre em contato"
-                onChange={handleChange}
-              />
-              <TextField
-                label="SUBTÍTULO"
-                fullWidth
-                defaultValue="Seu próximo passo começa aqui!"
-                onChange={handleChange}
-              />
-              <Divider />
-              <Typography variant="caption" color="text.secondary">Informações de Contato (Globais)</Typography>
-              <Stack direction="row" spacing={2}>
-                <TextField
-                  label="TELEFONE/WHATSAPP"
-                  fullWidth
-                  defaultValue="(41) 9 9999-9999"
-                  onChange={handleChange}
-                />
-                <TextField
-                  label="E-MAIL DE CONTATO"
-                  fullWidth
-                  defaultValue="contato@cheilalamour.com.br"
-                  onChange={handleChange}
-                />
-              </Stack>
-            </Stack>
+          <AccordionDetails sx={{ p: 3 }}>
+             <Stack spacing={3}>
+                <TextField label="Título Final" fullWidth size="small" defaultValue="Entre em contato" onChange={handleChange} />
+                <Stack direction="row" spacing={2}>
+                  <TextField label="Telefone/WhatsApp" fullWidth size="small" defaultValue="(41) 9 9999-9999" onChange={handleChange} />
+                  <TextField label="E-mail" fullWidth size="small" defaultValue="contato@cheilalamour.com.br" onChange={handleChange} />
+                </Stack>
+             </Stack>
           </AccordionDetails>
         </Accordion>
 

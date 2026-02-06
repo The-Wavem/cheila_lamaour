@@ -24,7 +24,7 @@ import YouTubeIcon from '@mui/icons-material/YouTube';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 
 // Hooks e Componentes
-import { useDirtyProtection } from '@/hooks/useDirtyProtection'; // Ajuste se necessário para ../../../
+import { useDirtyProtection } from '@/hooks/useDirtyProtection';
 import ToastNotification from '@/components/ui/ToastNotification';
 import UnsavedChangesModal from '@/components/ui/UnsavedChangesModal';
 

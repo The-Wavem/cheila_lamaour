@@ -1,214 +1,225 @@
 import { useState } from 'react';
 import {
     Box, TextField, Typography, Button, IconButton, Paper, Grid, Stack,
-    Accordion, AccordionSummary, AccordionDetails, Divider
+    Accordion, AccordionSummary, AccordionDetails, Divider, InputAdornment
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import SaveIcon from '@mui/icons-material/Save';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ImageIcon from '@mui/icons-material/Image';
+import LabelIcon from '@mui/icons-material/Label'; // Ícone para o "Rótulo"
 
-// Mock inicial
+// --- PALETA DA MARCA ---
+const BRAND = {
+    teal: '#009688',
+    gold: '#C5A669',
+    bg: '#F4F6F8',
+    lightGold: '#FDFCF5'
+};
+
 const initialCards = [
     {
         id: 1,
-        label: 'Pessoal', // ADICIONADO
+        label: 'Pessoal', // Nome curto da aba
         title: 'Desenvolvimento Pessoal',
-        image: 'https://exemplo.com/foto-pessoal.jpg',
+        image: 'https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&w=800&q=80',
         description: 'Estratégias para sair do ponto A ao ponto B, focando em inteligência emocional.',
         topics: ['Mapeamento de perfil', 'Mentalidade e atitude', 'Psicologia dos relacionamentos']
     },
     {
         id: 2,
-        label: 'Profissional', // ADICIONADO
+        label: 'Profissional',
         title: 'Desenvolvimento Profissional',
-        image: 'https://exemplo.com/foto-profissional.jpg',
+        image: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=800&q=80',
         description: 'Acelere sua carreira com ferramentas práticas de gestão e liderança.',
         topics: ['Carreira', 'Liderança', 'Transição de Carreira']
     }
 ];
 
-// Recebe props do SiteEditor
 export default function ServicesEditor({ setIsDirty, onSaveSuccess }) {
     const [cards, setCards] = useState(initialCards);
 
-    // Função genérica para marcar como "Sujo"
-    const handleChange = () => {
-        if (setIsDirty) setIsDirty(true);
-    };
+    const handleChange = () => setIsDirty && setIsDirty(true);
+    const handleSave = () => onSaveSuccess && onSaveSuccess();
 
-    const handleSave = () => {
-        console.log("Salvando dados (Serviços)...");
-        if (setIsDirty) setIsDirty(false);
-        if (onSaveSuccess) onSaveSuccess();
-    };
-
-    // --- FUNÇÕES DE MANIPULAÇÃO DA LISTA ---
+    // --- FUNÇÕES DE MANIPULAÇÃO ---
     const handleAddTopic = (cardId) => {
-        handleChange(); // <--- Marca sujo
         setCards(cards.map(c => c.id === cardId ? { ...c, topics: [...c.topics, ''] } : c));
+        handleChange();
     };
 
     const handleRemoveTopic = (cardId, idx) => {
-        handleChange(); // <--- Marca sujo
         setCards(cards.map(c => c.id === cardId ? { ...c, topics: c.topics.filter((_, i) => i !== idx) } : c));
+        handleChange();
     };
 
     const handleTopicChange = (cardId, idx, val) => {
-        handleChange(); // <--- Marca sujo
         setCards(cards.map(c => c.id === cardId ? { ...c, topics: c.topics.map((t, i) => i === idx ? val : t) } : c));
+        handleChange();
     };
 
     const handleCardChange = (cardId, field, val) => {
-        handleChange(); // <--- Marca sujo
         setCards(cards.map(c => c.id === cardId ? { ...c, [field]: val } : c));
+        handleChange();
+    };
+
+    // Estilo "Gold Accordion" para o Hero
+    const accordionStyle = {
+        elevation: 0,
+        sx: {
+            mb: 3, borderRadius: '8px !important', border: '1px solid #eee',
+            '&:before': { display: 'none' },
+            '&.Mui-expanded': { borderLeft: `4px solid ${BRAND.gold}`, bgcolor: 'white' }
+        }
     };
 
     return (
-        <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', bgcolor: BRAND.bg }}>
+
             {/* --- TOPO FIXO --- */}
-            <Box sx={{ p: 3, borderBottom: '1px solid #eee', display: 'flex', justifyContent: 'space-between', alignItems: 'center', bgcolor: 'white' }}>
+            <Box sx={{
+                p: 3, borderBottom: '1px solid #e0e0e0', display: 'flex', justifyContent: 'space-between', alignItems: 'center', bgcolor: 'white',
+                boxShadow: '0 2px 10px rgba(0,0,0,0.03)'
+            }}>
                 <Box>
-                    <Typography variant="h6" fontWeight="bold">Editando: Serviços e Treinamentos</Typography>
-                    <Typography variant="caption" color="text.secondary">Gerencie os textos do Hero e os cards de serviço.</Typography>
+                    <Typography variant="h6" sx={{ fontFamily: '"Playfair Display", serif', fontWeight: 'bold', color: '#333' }}>
+                        Editando: Serviços e Treinamentos
+                    </Typography>
                 </Box>
-                <Button 
-                    variant="contained" 
-                    startIcon={<SaveIcon />} 
-                    sx={{ bgcolor: '#009688' }}
-                    onClick={handleSave} // <--- Botão Salvar
+                <Button
+                    variant="contained" startIcon={<SaveIcon />} onClick={handleSave}
+                    sx={{ bgcolor: BRAND.teal, fontWeight: 'bold', '&:hover': { bgcolor: '#00796b' } }}
                 >
                     Salvar Tudo
                 </Button>
             </Box>
 
             {/* --- ÁREA DE SCROLL --- */}
-            <Box sx={{ p: 4, overflowY: 'auto', flexGrow: 1, bgcolor: '#f4f4f4' }}>
+            <Box sx={{ p: 4, overflowY: 'auto', flexGrow: 1 }}>
 
-                {/* 1. SEÇÃO HERO (CAPA DA PÁGINA) */}
-                <Accordion defaultExpanded elevation={0} sx={{ mb: 3, borderRadius: '8px !important' }}>
-                    <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                        <Typography variant="subtitle1" fontWeight="bold" color="primary">1. HERO (CAPA DA PÁGINA)</Typography>
+                {/* 1. HERO (CAPA DA PÁGINA) */}
+                <Accordion defaultExpanded {...accordionStyle}>
+                    <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: BRAND.gold }} />}>
+                        <Typography variant="subtitle1" fontWeight="bold" color={BRAND.teal}>1. HERO (CAPA DA PÁGINA)</Typography>
                     </AccordionSummary>
-                    <AccordionDetails>
+                    <AccordionDetails sx={{ p: 3 }}>
                         <Stack spacing={3}>
                             <TextField
-                                label="TÍTULO PRINCIPAL (H1)"
-                                fullWidth
-                                defaultValue="Treinamentos | Coaching | Palestras"
-                                onChange={handleChange} // <--- Monitorar
+                                label="TÍTULO PRINCIPAL (H1)" fullWidth variant="filled"
+                                InputProps={{ disableUnderline: true, style: { fontSize: '1.2rem', fontWeight: 'bold' } }}
+                                defaultValue="Treinamentos | Coaching | Palestras" onChange={handleChange}
+                                sx={{ bgcolor: BRAND.bg, borderRadius: 1 }}
                             />
                             <TextField
-                                label="SUBTÍTULO / DESCRIÇÃO"
-                                fullWidth
-                                multiline
-                                rows={2}
-                                defaultValue="Soluções completas para o seu desenvolvimento e da sua empresa."
-                                onChange={handleChange} // <--- Monitorar
+                                label="SUBTÍTULO / DESCRIÇÃO" fullWidth multiline rows={2} variant="outlined"
+                                defaultValue="Soluções completas para o seu desenvolvimento e da sua empresa." onChange={handleChange}
                             />
                             <TextField
-                                label="IMAGEM DE FUNDO (URL)"
-                                fullWidth
-                                placeholder="https://..."
-                                InputProps={{ startAdornment: <ImageIcon sx={{ color: 'action.active', mr: 1 }} /> }}
-                                onChange={handleChange} // <--- Monitorar
+                                label="IMAGEM DE FUNDO (URL)" fullWidth size="small" placeholder="https://..."
+                                InputProps={{ startAdornment: <InputAdornment position="start"><ImageIcon sx={{ color: '#ccc' }} /></InputAdornment> }}
+                                onChange={handleChange}
                             />
                         </Stack>
                     </AccordionDetails>
                 </Accordion>
 
-                {/* 2. CARDS DE SERVIÇOS */}
-                <Typography variant="overline" color="text.secondary" fontWeight="bold" sx={{ display: 'block', mb: 2 }}>
-                    2. CARDS DE SERVIÇOS ATIVOS
-                </Typography>
+                {/* 2. CONFIGURAÇÃO DAS ABAS (SERVIÇOS) */}
+                <Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 2, mt: 4 }}>
+                    <Box sx={{ width: 4, height: 24, bgcolor: BRAND.gold, borderRadius: 1 }} />
+                    <Typography variant="h6" color="#333" fontWeight="bold" sx={{ fontFamily: '"Playfair Display", serif' }}>
+                        2. Gerenciar Abas de Serviços
+                    </Typography>
+                </Stack>
 
                 <Grid container spacing={3}>
-                    {cards.map((card) => (
+                    {cards.map((card, index) => (
                         <Grid item xs={12} xl={6} key={card.id}>
-                            <Paper sx={{ p: 3, borderRadius: 2, borderTop: '4px solid #C5A669' }}>
+                            <Paper
+                                elevation={0}
+                                sx={{
+                                    p: 3, borderRadius: 2,
+                                    borderTop: `4px solid ${BRAND.gold}`,
+                                    boxShadow: '0 4px 20px rgba(0,0,0,0.05)',
+                                    bgcolor: 'white'
+                                }}
+                            >
 
-                                {/* SEÇÃO NOVA E AJUSTADA: CABEÇALHO DO CARD */}
-                                <Typography variant="caption" fontWeight="bold" color="text.secondary">CONFIGURAÇÃO DA ABA</Typography>
-                                
-                                <Stack direction="row" spacing={2} sx={{ mb: 3, mt: 1 }}>
-                                    {/* Novo Campo: Nome Curto da Aba */}
-                                    <TextField 
-                                        label="NOME DA ABA (CURTO)" 
-                                        size="medium"
-                                        value={card.label || ''} 
-                                        onChange={(e) => handleCardChange(card.id, 'label', e.target.value)}
-                                        helperText="Ex: Pessoal (Para o botão)"
-                                        sx={{ width: 220 }}
-                                    />
-                                    
-                                    <TextField 
-                                        label="TÍTULO COMPLETO (H1)" 
-                                        fullWidth 
-                                        value={card.title} 
-                                        onChange={(e) => handleCardChange(card.id, 'title', e.target.value)}
-                                        InputProps={{ style: { fontWeight: 'bold', color: '#009688' } }}
-                                        helperText="Título que aparece no topo do conteúdo."
-                                    />
-                                </Stack>
-
-                                {/* Resto dos campos (Imagem, Descrição, Tópicos) */}
-                                <Stack spacing={3} sx={{ mb: 3 }}>
-                                    <Stack direction="row" spacing={2}>
-                                        <Box
-                                            sx={{
-                                                width: 80, height: 80, bgcolor: '#eee', borderRadius: 1,
-                                                backgroundImage: `url(${card.image})`, backgroundSize: 'cover', backgroundPosition: 'center',
-                                                border: '1px dashed #ccc'
-                                            }}
-                                        />
-                                        <TextField
-                                            label="URL DA IMAGEM DE DESTAQUE"
-                                            fullWidth
-                                            size="small"
-                                            value={card.image}
-                                            onChange={(e) => handleCardChange(card.id, 'image', e.target.value)}
-                                            placeholder="https://..."
-                                            helperText="Cole o link da imagem hospedada"
-                                        />
+                                {/* Cabeçalho Visual da Aba */}
+                                <Box sx={{ mb: 3, bgcolor: BRAND.lightGold, p: 2, borderRadius: 2, border: '1px dashed #e0d0a0' }}>
+                                    <Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 2 }}>
+                                        <Box sx={{ bgcolor: BRAND.teal, color: 'white', width: 24, height: 24, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 'bold' }}>
+                                            {index + 1}
+                                        </Box>
+                                        <Typography variant="caption" fontWeight="bold" color={BRAND.gold}>
+                                            CONFIGURAÇÃO DA ABA
+                                        </Typography>
                                     </Stack>
 
-                                    <TextField
-                                        label="DESCRIÇÃO CURTA"
-                                        fullWidth
-                                        multiline
-                                        rows={2}
-                                        value={card.description}
-                                        onChange={(e) => handleCardChange(card.id, 'description', e.target.value)}
-                                        placeholder="Resumo do que se trata..."
-                                    />
+                                    <Stack direction="row" spacing={2}>
+                                        <TextField
+                                            label="Rótulo do Botão (Aba)" size="small"
+                                            value={card.label || ''} onChange={(e) => handleCardChange(card.id, 'label', e.target.value)}
+                                            InputProps={{ startAdornment: <InputAdornment position="start"><LabelIcon sx={{ fontSize: 16, color: BRAND.gold }} /></InputAdornment> }}
+                                            helperText="Ex: Pessoal (Curto)"
+                                            sx={{ bgcolor: 'white', width: '40%' }}
+                                        />
+                                        <TextField
+                                            label="Título Completo (H1)" fullWidth size="small"
+                                            value={card.title} onChange={(e) => handleCardChange(card.id, 'title', e.target.value)}
+                                            sx={{ bgcolor: 'white' }}
+                                        />
+                                    </Stack>
+                                </Box>
+
+                                {/* Imagem e Descrição */}
+                                <Stack spacing={3} sx={{ mb: 3 }}>
+                                    <Stack direction="row" spacing={2} alignItems="flex-start">
+                                        <Box
+                                            sx={{
+                                                width: 100, height: 80, bgcolor: '#f0f0f0', borderRadius: 2, flexShrink: 0,
+                                                backgroundImage: `url(${card.image})`, backgroundSize: 'cover', backgroundPosition: 'center',
+                                                border: '1px solid #ddd'
+                                            }}
+                                        />
+                                        <Stack spacing={2} sx={{ width: '100%' }}>
+                                            <TextField
+                                                label="URL da Imagem de Destaque" fullWidth size="small"
+                                                value={card.image} onChange={(e) => handleCardChange(card.id, 'image', e.target.value)}
+                                                placeholder="https://..."
+                                            />
+                                            <TextField
+                                                label="Descrição do Serviço" fullWidth multiline rows={2} size="small"
+                                                value={card.description} onChange={(e) => handleCardChange(card.id, 'description', e.target.value)}
+                                                placeholder="Resumo..."
+                                            />
+                                        </Stack>
+                                    </Stack>
                                 </Stack>
 
                                 <Divider sx={{ my: 2 }} />
 
                                 {/* Lista Dinâmica de Tópicos */}
-                                <Typography variant="caption" fontWeight="bold" color="text.secondary">LISTA DE TÓPICOS (CHECKLIST):</Typography>
-                                <Stack spacing={2} sx={{ mt: 1 }}>
+                                <Typography variant="caption" fontWeight="bold" color={BRAND.teal}>O QUE ESTÁ INCLUSO (LISTA):</Typography>
+                                <Stack spacing={1.5} sx={{ mt: 2 }}>
                                     {card.topics.map((topic, index) => (
-                                        <Stack direction="row" spacing={1} key={index}>
+                                        <Stack direction="row" spacing={1} key={index} alignItems="center">
+                                            <Box sx={{ width: 6, height: 6, borderRadius: '50%', bgcolor: BRAND.gold }} />
                                             <TextField
-                                                fullWidth
-                                                size="small"
-                                                placeholder="Item do serviço..."
-                                                value={topic}
-                                                onChange={(e) => handleTopicChange(card.id, index, e.target.value)}
+                                                fullWidth size="small" placeholder="Item do serviço..." variant="standard"
+                                                InputProps={{ disableUnderline: true, style: { fontSize: '0.95rem' } }}
+                                                sx={{ bgcolor: '#FAFAFA', px: 2, py: 0.5, borderRadius: 1 }}
+                                                value={topic} onChange={(e) => handleTopicChange(card.id, index, e.target.value)}
                                             />
-                                            <IconButton size="small" color="error" onClick={() => handleRemoveTopic(card.id, index)}>
+                                            <IconButton size="small" sx={{ color: '#ffcccb', '&:hover': { color: 'error.main' } }} onClick={() => handleRemoveTopic(card.id, index)}>
                                                 <DeleteIcon fontSize="small" />
                                             </IconButton>
                                         </Stack>
                                     ))}
 
                                     <Button
-                                        startIcon={<AddCircleIcon />}
-                                        size="small"
-                                        onClick={() => handleAddTopic(card.id)}
-                                        sx={{ alignSelf: 'flex-start', color: '#C5A669' }}
+                                        startIcon={<AddCircleIcon />} size="small" onClick={() => handleAddTopic(card.id)}
+                                        sx={{ alignSelf: 'flex-start', color: BRAND.gold, fontWeight: 'bold', mt: 1 }}
                                     >
                                         Adicionar Item
                                     </Button>
