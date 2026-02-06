@@ -19,8 +19,8 @@ export default function Router() {
         <Route path="/" element={<Home />} />
         <Route path="/agenda" element={<Agenda />} />
         {/* <Route path="/about" element={<About />} />
-        <Route path="/contact" element={<Contact />} />
-        <Route path="/training" element={<Training />} /> */}
+        <Route path="/contact" element={<Contact />} />*/}
+        <Route path="/training" element={<Training />} />
 
         {/* Rotas Admin */}
         {/* <Route path="/admin/dashboard" element={<Dashboard />} /> */}
