@@ -82,7 +82,7 @@ export default function BlogList() {
     ];
 
     return (
-        <Box sx={{ height: 500, width: '100%', bgcolor: 'white', p: 3, borderRadius: 2, boxShadow: 1 }}>
+        <Box sx={{ width: '100%', bgcolor: 'white', p: 3, borderRadius: 2, boxShadow: 1 }}>
             {/* Cabeçalho da Seção */}
             <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 3 }}>
                 <Typography variant="h5" fontWeight="bold" color="#333">
@@ -102,6 +102,7 @@ export default function BlogList() {
             <DataGrid
                 rows={rows}
                 columns={columns}
+                autoHeight // ADICIONADO: Faz a tabela ajustar a altura ao conteúdo
                 initialState={{
                     pagination: { paginationModel: { pageSize: 5 } },
                 }}
