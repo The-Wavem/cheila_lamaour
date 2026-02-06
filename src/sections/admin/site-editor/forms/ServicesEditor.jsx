@@ -13,6 +13,7 @@ import ImageIcon from '@mui/icons-material/Image';
 const initialCards = [
     {
         id: 1,
+        label: 'Pessoal', // ADICIONADO
         title: 'Desenvolvimento Pessoal',
         image: 'https://exemplo.com/foto-pessoal.jpg',
         description: 'Estratégias para sair do ponto A ao ponto B, focando em inteligência emocional.',
@@ -20,6 +21,7 @@ const initialCards = [
     },
     {
         id: 2,
+        label: 'Profissional', // ADICIONADO
         title: 'Desenvolvimento Profissional',
         image: 'https://exemplo.com/foto-profissional.jpg',
         description: 'Acelere sua carreira com ferramentas práticas de gestão e liderança.',
@@ -126,16 +128,32 @@ export default function ServicesEditor({ setIsDirty, onSaveSuccess }) {
                         <Grid item xs={12} xl={6} key={card.id}>
                             <Paper sx={{ p: 3, borderRadius: 2, borderTop: '4px solid #C5A669' }}>
 
-                                {/* Cabeçalho do Card (Imagem + Título) */}
-                                <Stack spacing={3} sx={{ mb: 3 }}>
-                                    <TextField
-                                        label="TÍTULO DO SERVIÇO"
-                                        fullWidth
-                                        value={card.title}
+                                {/* SEÇÃO NOVA E AJUSTADA: CABEÇALHO DO CARD */}
+                                <Typography variant="caption" fontWeight="bold" color="text.secondary">CONFIGURAÇÃO DA ABA</Typography>
+                                
+                                <Stack direction="row" spacing={2} sx={{ mb: 3, mt: 1 }}>
+                                    {/* Novo Campo: Nome Curto da Aba */}
+                                    <TextField 
+                                        label="NOME DA ABA (CURTO)" 
+                                        size="medium"
+                                        value={card.label || ''} 
+                                        onChange={(e) => handleCardChange(card.id, 'label', e.target.value)}
+                                        helperText="Ex: Pessoal (Para o botão)"
+                                        sx={{ width: 220 }}
+                                    />
+                                    
+                                    <TextField 
+                                        label="TÍTULO COMPLETO (H1)" 
+                                        fullWidth 
+                                        value={card.title} 
                                         onChange={(e) => handleCardChange(card.id, 'title', e.target.value)}
                                         InputProps={{ style: { fontWeight: 'bold', color: '#009688' } }}
+                                        helperText="Título que aparece no topo do conteúdo."
                                     />
+                                </Stack>
 
+                                {/* Resto dos campos (Imagem, Descrição, Tópicos) */}
+                                <Stack spacing={3} sx={{ mb: 3 }}>
                                     <Stack direction="row" spacing={2}>
                                         <Box
                                             sx={{
