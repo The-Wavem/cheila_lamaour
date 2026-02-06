@@ -1,18 +1,22 @@
 import React from 'react';
+import Hero from '@sections/home/Hero';
+import Hero2 from '@/sections/home/Hero2';
+import Servicos from '@/sections/home/Servicos'
 
 
 /**
  * @description 
- * Página Home pública do sistema, o momento não renderiza nada além de um texto simples.
+ * Página Home pública do sistema, renderiza a seção Hero.
  * Lembre das regras passadas nos arquivos de explicação.
  * @returns {JSX.Element} Componente Home
  */
 const Home = () => {
     return (
-        <div>
-            <h1>Home Page</h1>
-            <p>Se o texto está aparecendo significa que a rota e o componente estão funcionando corretamente. Mãos a obra!</p>
-        </div>
+        <>
+            <Hero />
+            <Hero2 />
+            <Servicos/>
+        </>
     );
 };
 

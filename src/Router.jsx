@@ -6,6 +6,7 @@ const Home = lazy(() => import("@pages/public/Home"));
 const About = lazy(() => import("@pages/public/About"));
 const Contact = lazy(() => import("@pages/public/Contact"));
 const Training = lazy(() => import("@pages/public/Training"));
+const Agenda = lazy(() => import("@sections/contact/agenda"));
 const Dashboard = lazy(() => import("@pages/admin/dashboard"));
 
 export default function Router() {
@@ -16,8 +17,9 @@ export default function Router() {
       <Routes>
         {/* Rotas Públicas */}
         <Route path="/" element={<Home />} />
-        {/* <Route path="/about" element={<About />} /> */}
-        {/* <Route path="/contact" element={<Contact />} /> */}
+        <Route path="/agenda" element={<Agenda />} />
+        {/* <Route path="/about" element={<About />} />
+        <Route path="/contact" element={<Contact />} />*/}
         <Route path="/training" element={<Training />} />
 
         {/* Rotas Admin */}
