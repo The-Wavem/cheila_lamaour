@@ -1,11 +1,12 @@
-import { useState } from 'react';
+import { useState, useEffect, useMemo } from 'react'; 
 import { useNavigate } from 'react-router-dom';
-import { Box, Button, Typography, IconButton, Chip, Stack } from '@mui/material';
+import { Box, Button, Typography, IconButton, Chip, Stack, TextField, InputAdornment } from '@mui/material'; // Adicionado TextField e InputAdornment
 import { DataGrid } from '@mui/x-data-grid';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import SearchIcon from '@mui/icons-material/Search';
 
 // Dados MOCK (Fictícios) para visualizar enquanto o Back-end não conecta
 const mockRows = [
@@ -18,13 +19,35 @@ const mockRows = [
 export default function BlogList() {
     const navigate = useNavigate();
     const [rows, setRows] = useState(mockRows);
+    
+    // Estado para o Input (Visual - Atualiza instantaneamente)
+    const [searchTerm, setSearchTerm] = useState('');
+    
+    // Estado para o Filtro (Lógica - Atualiza com atraso)
+    const [debouncedSearch, setDebouncedSearch] = useState('');
 
-    // componentizar
+    // EFEITO DEBOUNCE
+    useEffect(() => {
+        const handler = setTimeout(() => {
+            setDebouncedSearch(searchTerm);
+        }, 500);
+
+        return () => {
+            clearTimeout(handler);
+        };
+    }, [searchTerm]);
+
     const handleDelete = (id) => {
         if (window.confirm('Tem certeza que deseja excluir este artigo?')) {
             setRows(rows.filter((row) => row.id !== id));
         }
     };
+
+    const filteredRows = useMemo(() => {
+        return rows.filter((row) => 
+            row.title.toLowerCase().includes(debouncedSearch.toLowerCase())
+        );
+    }, [rows, debouncedSearch]); // Só recalcula quando a lista original ou o termo 'final' (após delay) mudar
 
     const columns = [
         { field: 'id', headerName: 'ID', width: 70 },
@@ -98,11 +121,29 @@ export default function BlogList() {
                 </Button>
             </Stack>
 
+            {/* Barra de Pesquisa */}
+            <TextField 
+                label="Buscar artigo por título..." 
+                variant="outlined" 
+                size="small" 
+                fullWidth
+                sx={{ mb: 2, bgcolor: 'white' }}
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                InputProps={{
+                    startAdornment: (
+                        <InputAdornment position="start">
+                            <SearchIcon color="action" />
+                        </InputAdornment>
+                    ),
+                }}
+            />
+
             {/* Tabela (DataGrid) */}
             <DataGrid
-                rows={rows}
+                rows={filteredRows}
                 columns={columns}
-                autoHeight // ADICIONADO: Faz a tabela ajustar a altura ao conteúdo
+                autoHeight 
                 initialState={{
                     pagination: { paginationModel: { pageSize: 5 } },
                 }}
