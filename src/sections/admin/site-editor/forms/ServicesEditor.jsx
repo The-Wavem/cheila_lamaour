@@ -134,7 +134,7 @@ export default function ServicesEditor({ setIsDirty, onSaveSuccess }) {
 
                 <Grid container spacing={3}>
                     {cards.map((card, index) => (
-                        <Grid item xs={12} xl={6} key={card.id}>
+                        <Grid size={{ xs: 12, xl: 6 }} key={card.id}>
                             <Paper
                                 elevation={0}
                                 sx={{
