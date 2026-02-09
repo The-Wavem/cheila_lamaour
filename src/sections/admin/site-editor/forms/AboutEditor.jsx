@@ -58,7 +58,14 @@ export default function AboutEditor({ setIsDirty, onSaveSuccess }) {
             
             {/* --- TOPO FIXO --- */}
             <Box sx={{ 
-                p: 3, borderBottom: '1px solid #e0e0e0', display: 'flex', justifyContent: 'space-between', alignItems: 'center', bgcolor: 'white',
+                p: { xs: 2, sm: 3 },
+                borderBottom: '1px solid #e0e0e0', 
+                display: 'flex', 
+                flexDirection: { xs: 'column', sm: 'row' },
+                justifyContent: 'space-between', 
+                alignItems: { xs: 'stretch', sm: 'center' },
+                gap: { xs: 2, sm: 0 },
+                bgcolor: 'white',
                 boxShadow: '0 2px 10px rgba(0,0,0,0.03)'
             }}>
                 <Box>
@@ -75,7 +82,7 @@ export default function AboutEditor({ setIsDirty, onSaveSuccess }) {
             </Box>
 
             {/* --- ÁREA DE CONTEÚDO --- */}
-            <Box sx={{ p: 4, overflowY: 'auto', flexGrow: 1 }}>
+            <Box sx={{ p: { xs: 2, md: 4 }, overflowY: 'auto', flexGrow: 1 }}>
 
                 {/* 1. BIOGRAFIA PRINCIPAL */}
                 <Accordion defaultExpanded {...accordionStyle}>

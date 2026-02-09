@@ -63,7 +63,14 @@ export default function HomeEditor({ setIsDirty, onSaveSuccess }) {
       
       {/* TOPO FIXO */}
       <Box sx={{ 
-        p: 3, borderBottom: '1px solid #e0e0e0', display: 'flex', justifyContent: 'space-between', alignItems: 'center', bgcolor: 'white',
+        p: { xs: 2, sm: 3 }, // Padding menor no mobile
+        borderBottom: '1px solid #e0e0e0', 
+        display: 'flex', 
+        flexDirection: { xs: 'column', sm: 'row' }, // Empilha no mobile
+        justifyContent: 'space-between', 
+        alignItems: { xs: 'stretch', sm: 'center' }, // Botão esticado no mobile
+        gap: { xs: 2, sm: 0 },
+        bgcolor: 'white',
         boxShadow: '0 2px 10px rgba(0,0,0,0.03)'
       }}>
         <Box>
@@ -75,13 +82,14 @@ export default function HomeEditor({ setIsDirty, onSaveSuccess }) {
         <Button 
           variant="contained" startIcon={<SaveIcon />} onClick={handleSave}
           sx={{ bgcolor: BRAND.teal, fontWeight: 'bold', '&:hover': { bgcolor: '#00796b' } }}
+          fullWidth={false} // Apenas para resetar prop se necessário
         >
           Salvar Alterações
         </Button>
       </Box>
 
       {/* ÁREA DE CONTEÚDO SCROLLÁVEL */}
-      <Box sx={{ p: 4, overflowY: 'auto', flexGrow: 1 }}>
+      <Box sx={{ p: { xs: 2, md: 4 }, overflowY: 'auto', flexGrow: 1 }}>
 
         {/* --- 1. SEÇÃO HERO --- */}
         <Accordion defaultExpanded {...accordionStyle}>
@@ -106,7 +114,7 @@ export default function HomeEditor({ setIsDirty, onSaveSuccess }) {
                 InputProps={{ disableUnderline: true }} sx={{ bgcolor: 'white', borderRadius: 1 }} onChange={handleChange} 
               />
               
-              <Stack direction="row" spacing={2}>
+              <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
                 <TextField label="Texto do Botão" fullWidth size="small" defaultValue="Entre em contato" sx={{ bgcolor: 'white' }} onChange={handleChange} />
                 <TextField label="Link do Botão" fullWidth size="small" defaultValue="/contato" sx={{ bgcolor: 'white' }} onChange={handleChange} />
               </Stack>
@@ -210,7 +218,7 @@ export default function HomeEditor({ setIsDirty, onSaveSuccess }) {
           <AccordionDetails sx={{ p: 3 }}>
              <Stack spacing={3}>
                 <TextField label="Título Final" fullWidth size="small" defaultValue="Entre em contato" onChange={handleChange} />
-                <Stack direction="row" spacing={2}>
+                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
                   <TextField label="Telefone/WhatsApp" fullWidth size="small" defaultValue="(41) 9 9999-9999" onChange={handleChange} />
                   <TextField label="E-mail" fullWidth size="small" defaultValue="contato@cheilalamour.com.br" onChange={handleChange} />
                 </Stack>

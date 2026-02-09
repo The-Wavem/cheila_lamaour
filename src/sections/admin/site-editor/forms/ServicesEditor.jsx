@@ -79,12 +79,19 @@ export default function ServicesEditor({ setIsDirty, onSaveSuccess }) {
 
             {/* --- TOPO FIXO --- */}
             <Box sx={{
-                p: 3, borderBottom: '1px solid #e0e0e0', display: 'flex', justifyContent: 'space-between', alignItems: 'center', bgcolor: 'white',
+                p: { xs: 2, sm: 3 },
+                borderBottom: '1px solid #e0e0e0', 
+                display: 'flex', 
+                flexDirection: { xs: 'column', sm: 'row' },
+                justifyContent: 'space-between', 
+                alignItems: { xs: 'stretch', sm: 'center' },
+                gap: { xs: 2, sm: 0 },
+                bgcolor: 'white',
                 boxShadow: '0 2px 10px rgba(0,0,0,0.03)'
             }}>
                 <Box>
                     <Typography variant="h6" sx={{ fontFamily: '"Playfair Display", serif', fontWeight: 'bold', color: '#333' }}>
-                        Editando: Serviços e Treinamentos
+                        Serviços e Treinamentos
                     </Typography>
                 </Box>
                 <Button
@@ -96,7 +103,7 @@ export default function ServicesEditor({ setIsDirty, onSaveSuccess }) {
             </Box>
 
             {/* --- ÁREA DE SCROLL --- */}
-            <Box sx={{ p: 4, overflowY: 'auto', flexGrow: 1 }}>
+            <Box sx={{ p: { xs: 2, md: 4 }, overflowY: 'auto', flexGrow: 1 }}>
 
                 {/* 1. HERO (CAPA DA PÁGINA) */}
                 <Accordion defaultExpanded {...accordionStyle}>
@@ -156,13 +163,13 @@ export default function ServicesEditor({ setIsDirty, onSaveSuccess }) {
                                         </Typography>
                                     </Stack>
 
-                                    <Stack direction="row" spacing={2}>
+                                    <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
                                         <TextField
                                             label="Rótulo do Botão (Aba)" size="small"
                                             value={card.label || ''} onChange={(e) => handleCardChange(card.id, 'label', e.target.value)}
                                             InputProps={{ startAdornment: <InputAdornment position="start"><LabelIcon sx={{ fontSize: 16, color: BRAND.gold }} /></InputAdornment> }}
                                             helperText="Ex: Pessoal (Curto)"
-                                            sx={{ bgcolor: 'white', width: '40%' }}
+                                            sx={{ bgcolor: 'white', width: { xs: '100%', sm: '40%' } }}
                                         />
                                         <TextField
                                             label="Título Completo (H1)" fullWidth size="small"
@@ -174,10 +181,11 @@ export default function ServicesEditor({ setIsDirty, onSaveSuccess }) {
 
                                 {/* Imagem e Descrição */}
                                 <Stack spacing={3} sx={{ mb: 3 }}>
-                                    <Stack direction="row" spacing={2} alignItems="flex-start">
+                                    <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} alignItems="flex-start">
                                         <Box
                                             sx={{
-                                                width: 100, height: 80, bgcolor: '#f0f0f0', borderRadius: 2, flexShrink: 0,
+                                                width: { xs: '100%', sm: 100 }, height: { xs: 120, sm: 80 }, 
+                                                bgcolor: '#f0f0f0', borderRadius: 2, flexShrink: 0,
                                                 backgroundImage: `url(${card.image})`, backgroundSize: 'cover', backgroundPosition: 'center',
                                                 border: '1px solid #ddd'
                                             }}

@@ -38,14 +38,21 @@ export default function ContactEditor({ setIsDirty, onSaveSuccess }) {
 
             {/* --- TOPO FIXO --- */}
             <Box sx={{
-                p: 3, borderBottom: '1px solid #e0e0e0', display: 'flex', justifyContent: 'space-between', alignItems: 'center', bgcolor: 'white',
+                p: { xs: 2, sm: 3 },
+                borderBottom: '1px solid #e0e0e0', 
+                display: 'flex', 
+                flexDirection: { xs: 'column', sm: 'row' },
+                justifyContent: 'space-between', 
+                alignItems: { xs: 'stretch', sm: 'center' },
+                gap: { xs: 2, sm: 0 },
+                bgcolor: 'white',
                 boxShadow: '0 2px 10px rgba(0,0,0,0.03)'
             }}>
                 <Box>
                     <Typography variant="h6" sx={{ fontFamily: '"Playfair Display", serif', fontWeight: 'bold', color: '#333' }}>
-                        Editando: Página de Contato
+                        Editando: Contato
                     </Typography>
-                    <Typography variant="caption" color="text.secondary">Gerencie os textos e canais de atendimento.</Typography>
+                    <Typography variant="caption" color="text.secondary">Gerencie os textos e canais.</Typography>
                 </Box>
                 <Button
                     variant="contained" startIcon={<SaveIcon />} onClick={handleSave}
@@ -56,7 +63,7 @@ export default function ContactEditor({ setIsDirty, onSaveSuccess }) {
             </Box>
 
             {/* --- ÁREA DE CONTEÚDO --- */}
-            <Box sx={{ p: 4, overflowY: 'auto', flexGrow: 1 }}>
+            <Box sx={{ p: { xs: 2, md: 4 }, overflowY: 'auto', flexGrow: 1 }}>
 
                 {/* 1. HERO / BOAS VINDAS */}
                 <Accordion defaultExpanded {...accordionStyle}>
