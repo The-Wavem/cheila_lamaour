@@ -29,8 +29,9 @@ export default function SiteEditor() {
 
   // --- LÓGICA DE NAVEGAÇÃO ---
   const handleTabRequest = (newTabId) => {
+    setSidebarOpen(false); // <--- Fecha o menu mobile IMEDIATAMENTE ao clicar
+
     if (activeTab === newTabId) {
-        setSidebarOpen(false); // Fecha o menu se clicar no mesmo
         return;
     }
 
@@ -39,7 +40,6 @@ export default function SiteEditor() {
       setShowUnsavedModal(true);
     } else {
       setActiveTab(newTabId);
-      setSidebarOpen(false); // Fecha o menu mobile após escolher
     }
   };
 
@@ -49,7 +49,6 @@ export default function SiteEditor() {
     if (pendingTab) {
       setActiveTab(pendingTab);
       setPendingTab(null);
-      setSidebarOpen(false);
     }
   };
 

@@ -7,18 +7,18 @@ import {
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import ArticleIcon from '@mui/icons-material/Article';
 import PeopleIcon from '@mui/icons-material/People';
-import WebIcon from '@mui/icons-material/Web'; // Ícone para Editor
+import WebIcon from '@mui/icons-material/Web'; 
 import LogoutIcon from '@mui/icons-material/Logout';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 
-const drawerWidth = 260;
+const drawerWidth = 260; // Largura quando aberto
 const collapsedWidth = 70; // Largura quando fechado
 
 export default function AdminLayout() {
     const navigate = useNavigate();
     const location = useLocation();
-    const [mobileOpen, setMobileOpen] = useState(false);
+    const [mobileOpen, setMobileOpen] = useState(false); // Estado para o menu mobile
     const [isSidebarOpen, setIsSidebarOpen] = useState(true); // Estado Desktop
 
     const menuItems = [
@@ -34,6 +34,11 @@ export default function AdminLayout() {
 
     const handleSidebarCollapse = () => {
         setIsSidebarOpen(!isSidebarOpen);
+    };
+
+    const handleNavigation = (path) => {
+        setMobileOpen(false); // Fecha o menu mobile IMEDIATAMENTE
+        navigate(path);
     };
 
     const drawerContent = (
@@ -65,7 +70,7 @@ export default function AdminLayout() {
                         <Tooltip title={isSidebarOpen ? "" : item.text} placement="right"> 
                             {/* Dica: Tooltip vazia se menu aberto, texto se fechado (só desktop precisa disso) */}
                             <ListItemButton
-                                onClick={() => navigate(item.path)}
+                                onClick={() => handleNavigation(item.path)} // <--- ALTERADO: Usa a nova função
                                 sx={{
                                     minHeight: 48,
                                     // CORREÇÃO 2: Alinhamento sempre inicial no Mobile
@@ -105,7 +110,10 @@ export default function AdminLayout() {
                 <ListItem disablePadding sx={{ display: 'block' }}>
                     <Tooltip title={!isSidebarOpen ? "Sair" : ""} placement="right">
                         <ListItemButton 
-                            onClick={() => alert("Logout")} 
+                            onClick={() => {
+                                alert("Logout");
+                                setMobileOpen(false); // Fecha menu ao sair também
+                            }} 
                             sx={{ 
                                 minHeight: 48, 
                                 justifyContent: { xs: 'initial', sm: isSidebarOpen ? 'initial' : 'center' }, 

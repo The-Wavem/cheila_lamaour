@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
-  Box, Button, Typography, IconButton, Chip, Stack, TextField, InputAdornment, Paper 
+  Box, Button, Typography, IconButton, Chip, Stack, TextField, InputAdornment, Paper, 
+  useTheme, useMediaQuery, Card, CardContent, CardActions 
 } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import EditIcon from '@mui/icons-material/Edit';
@@ -15,7 +16,7 @@ const BRAND = {
   teal: '#009688',
   gold: '#C5A669',
   bg: '#F4F6F8',
-  headerFont: '"Playfair Display", serif', // Exemplo de fonte editorial
+  headerFont: '"Playfair Display", serif',
 };
 
 const mockRows = [
@@ -26,6 +27,10 @@ const mockRows = [
 
 export default function BlogList() {
   const navigate = useNavigate();
+  const theme = useTheme();
+  // Detecta se é mobile (abaixo de 'sm' = 600px)
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
   const [searchTerm, setSearchTerm] = useState('');
   const [rows, setRows] = useState(mockRows);
 
@@ -35,11 +40,12 @@ export default function BlogList() {
     }
   };
 
-  // Filtragem (Busca)
+  // Filtragem
   const filteredRows = rows.filter((row) => 
     row.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  // Colunas para Desktop
   const columns = [
     { field: 'id', headerName: 'ID', width: 70 },
     { 
@@ -53,9 +59,7 @@ export default function BlogList() {
       renderCell: (params) => (
         <Chip 
           label={params.value} size="small" 
-          sx={{ 
-            bgcolor: '#FFF8E1', color: '#8c7636', border: '1px solid #FFE082', fontWeight: 'bold' 
-          }} 
+          sx={{ bgcolor: '#FFF8E1', color: '#8c7636', border: '1px solid #FFE082', fontWeight: 'bold' }} 
         />
       )
     },
@@ -91,23 +95,89 @@ export default function BlogList() {
     },
   ];
 
+  // Renderização da Lista para Mobile (Cards)
+  const renderMobileList = () => (
+    <Stack spacing={2}>
+      {filteredRows.map((row) => (
+        <Card key={row.id} variant="outlined" sx={{ borderRadius: 2, borderColor: '#eee' }}>
+          <CardContent sx={{ pb: 1 }}>
+            <Typography variant="subtitle2" color="text.secondary" sx={{ fontSize: '0.75rem', mb: 0.5 }}>
+               ID: {row.id} • {row.date}
+            </Typography>
+            <Typography variant="h6" sx={{ fontSize: '1rem', fontWeight: 'bold', lineHeight: 1.3, mb: 1.5 }}>
+              {row.title}
+            </Typography>
+            
+            <Stack direction="row" spacing={1}>
+              <Chip 
+                label={row.category} size="small" 
+                sx={{ bgcolor: '#FFF8E1', color: '#8c7636', fontSize: '0.7rem', height: 24 }} 
+              />
+              <Chip 
+                label={row.status} size="small" 
+                sx={{ 
+                  bgcolor: row.status === 'Publicado' ? '#E0F2F1' : '#f5f5f5',
+                  color: row.status === 'Publicado' ? BRAND.teal : '#666',
+                  fontSize: '0.7rem', height: 24, fontWeight: 'bold'
+                }}
+              />
+            </Stack>
+          </CardContent>
+          <CardActions sx={{ borderTop: '1px solid #f9f9f9', justifyContent: 'flex-end' }}>
+             <IconButton size="small" sx={{ color: BRAND.teal }} onClick={() => window.open(`/blog/${row.id}`, '_blank')}>
+                <VisibilityIcon />
+              </IconButton>
+              <IconButton size="small" sx={{ color: BRAND.gold }} onClick={() => navigate(`/admin/blog/editar/${row.id}`)}>
+                <EditIcon />
+              </IconButton>
+              <IconButton size="small" color="error" onClick={() => handleDelete(row.id)}>
+                <DeleteIcon />
+              </IconButton>
+          </CardActions>
+        </Card>
+      ))}
+      {filteredRows.length === 0 && (
+         <Typography variant="body2" align="center" color="text.secondary" sx={{ py: 4 }}>
+            Nenhum artigo encontrado.
+         </Typography>
+      )}
+    </Stack>
+  );
+
   return (
-    <Paper elevation={0} sx={{ height: 600, width: '100%', bgcolor: 'white', p: 4, borderRadius: 3, boxShadow: '0 4px 20px rgba(0,0,0,0.05)' }}>
+    <Paper 
+      elevation={0} 
+      sx={{ 
+        minHeight: 600, 
+        width: '100%', 
+        bgcolor: 'white', 
+        p: { xs: 2, sm: 4 }, // Padding reduzido no mobile
+        borderRadius: 3, 
+        boxShadow: '0 4px 20px rgba(0,0,0,0.05)' 
+      }}
+    >
       
       {/* CABEÇALHO */}
-      <Stack direction={{ xs: 'column', sm: 'row' }} justifyContent="space-between" alignItems="center" sx={{ mb: 4 }}>
+      <Stack 
+        direction={{ xs: 'column', sm: 'row' }} 
+        justifyContent="space-between" 
+        alignItems={{ xs: 'stretch', sm: 'center' }} 
+        spacing={{ xs: 2, sm: 0 }}
+        sx={{ mb: 4 }}
+      >
         <Box>
           <Typography variant="h5" sx={{ fontFamily: BRAND.headerFont, fontWeight: 'bold', color: '#333' }}>
             Gerenciar Artigos
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            Visualize e organize todo o conteúdo do blog.
+            Visualize e organize todo o conteúdo.
           </Typography>
         </Box>
         <Button 
           variant="contained" 
           startIcon={<AddIcon />} 
           onClick={() => navigate('/admin/blog/novo')} 
+          fullWidth={isMobile} // Botão largura total no mobile
           sx={{ 
             bgcolor: BRAND.gold, fontWeight: 'bold', borderRadius: 2, px: 3,
             '&:hover': { bgcolor: '#A68B5B' } 
@@ -117,7 +187,7 @@ export default function BlogList() {
         </Button>
       </Stack>
 
-      {/* BARRA DE BUSCA ESTILIZADA */}
+      {/* BARRA DE BUSCA */}
       <TextField 
         fullWidth
         placeholder="Buscar por título..." 
@@ -130,25 +200,27 @@ export default function BlogList() {
         }}
       />
 
-      {/* TABELA CUSTOMIZADA */}
-      <DataGrid
-        rows={filteredRows}
-        columns={columns}
-        initialState={{ pagination: { paginationModel: { pageSize: 6 } } }}
-        pageSizeOptions={[6, 12]}
-        disableRowSelectionOnClick
-        sx={{
-          border: 'none',
-          '& .MuiDataGrid-columnHeaders': {
-            bgcolor: '#FAFAFA', 
-            color: BRAND.teal, 
-            fontWeight: 'bold',
-            borderBottom: `2px solid ${BRAND.gold}`
-          },
-          '& .MuiDataGrid-cell': { borderBottom: '1px solid #f0f0f0' },
-          '& .MuiDataGrid-row:hover': { bgcolor: '#FDFCF5' } // Hover Creme
-        }}
-      />
+      {/* CONTEÚDO PRINCIPAL (TABELA ou LISTA MOBILE) */}
+      {isMobile ? renderMobileList() : (
+        <DataGrid
+          rows={filteredRows}
+          columns={columns}
+          initialState={{ pagination: { paginationModel: { pageSize: 6 } } }}
+          pageSizeOptions={[6, 12]}
+          disableRowSelectionOnClick
+          sx={{
+            border: 'none',
+            '& .MuiDataGrid-columnHeaders': {
+              bgcolor: '#FAFAFA', 
+              color: BRAND.teal, 
+              fontWeight: 'bold',
+              borderBottom: `2px solid ${BRAND.gold}`
+            },
+            '& .MuiDataGrid-cell': { borderBottom: '1px solid #f0f0f0' },
+            '& .MuiDataGrid-row:hover': { bgcolor: '#FDFCF5' }
+          }}
+        />
+      )}
     </Paper>
   );
 }
