@@ -6,7 +6,7 @@ import 'react-quill-new/dist/quill.snow.css';
 import {
     Box, Container, TextField, Button, Select, MenuItem,
     FormControl, InputLabel, Stack, IconButton, Typography, Paper, Divider,
-    Menu, ListItemIcon, ListItemText, Tooltip
+    Menu, ListItemIcon, ListItemText, Tooltip, Dialog, DialogTitle, DialogContent, DialogActions
 } from '@mui/material';
 
 // Ícones
@@ -22,21 +22,11 @@ import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 import FormatQuoteIcon from '@mui/icons-material/FormatQuote';
 import YouTubeIcon from '@mui/icons-material/YouTube';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
-
-// Hooks e Componentes
+import AddIcon from '@mui/icons-material/Add';
 import { useDirtyProtection } from '@/hooks/useDirtyProtection';
 import ToastNotification from '@/components/ui/ToastNotification';
 import UnsavedChangesModal from '@/components/ui/UnsavedChangesModal';
-
-// --- PALETA DA MARCA (CONSTANTES) ---
-const BRAND = {
-  teal: '#009688',
-  tealDark: '#00796b',
-  gold: '#C5A669',
-  goldLight: '#FDFCF5', // Fundo creme bem suave
-  bg: '#F4F6F8',
-  text: '#2D3748'
-};
+import { BRAND } from '@/theme/branding';
 
 export default function PostEditor() {
   const navigate = useNavigate();
@@ -44,8 +34,13 @@ export default function PostEditor() {
   // --- ESTADOS DE METADADOS ---
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [category, setCategory] = useState('');
   const [coverImage, setCoverImage] = useState('');
+
+  // --- LÓGICA DE CATEGORIAS DINÂMICAS ---
+  const [category, setCategory] = useState('');
+  const [availableCategories, setAvailableCategories] = useState(['Carreira', 'Liderança', 'Mindset', 'Relacionamentos']);
+  const [isCategoryModalOpen, setCategoryModalOpen] = useState(false);
+  const [newCategoryName, setNewCategoryName] = useState('');
 
   // --- ESTADOS DE CONTROLE ---
   const [isDirty, setIsDirty] = useState(false);
@@ -78,6 +73,29 @@ export default function PostEditor() {
     }
   };
 
+  // --- FUNÇÕES DE CATEGORIA ---
+  const handleCategoryChange = (event) => {
+    const value = event.target.value;
+    if (value === 'NEW_CATEGORY_ACTION') {
+      setCategoryModalOpen(true);
+    } else {
+      setCategory(value);
+      markAsDirty();
+    }
+  };
+
+  const handleCreateCategory = () => {
+    if (newCategoryName.trim()) {
+      setAvailableCategories([...availableCategories, newCategoryName]);
+      setCategory(newCategoryName);
+      markAsDirty();
+      setNewCategoryName('');
+      setCategoryModalOpen(false);
+      setToast({ open: true, message: 'Nova categoria adicionada!', type: 'success' });
+    }
+  };
+
+  // --- FUNÇÕES DE NAVEGAÇÃO/SALVAMENTO ---
   const handleConfirmDiscard = () => {
     setIsDirty(false); 
     setShowUnsavedModal(false);
@@ -85,7 +103,6 @@ export default function PostEditor() {
   };
 
   const handleSaveDraft = () => {
-    console.log("Salvando Rascunho...", { title, description, category, blocks });
     setTimeout(() => {
       setIsDirty(false); 
       setToast({ open: true, message: 'Rascunho salvo com sucesso!', type: 'success' });
@@ -94,10 +111,9 @@ export default function PostEditor() {
 
   const handlePublish = () => {
     if (!title || !blocks[0].content) {
-      setToast({ open: true, message: 'Preencha o título e pelo menos um bloco de conteúdo.', type: 'error' });
+      setToast({ open: true, message: 'Preencha o título e o conteúdo.', type: 'error' });
       return;
     }
-    console.log("Publicando Artigo...", { title, description, category, blocks });
     setIsDirty(false);
     setToast({ open: true, message: 'Artigo publicado!', type: 'success' });
     setTimeout(() => navigate('/admin/blog'), 1000);
@@ -138,19 +154,19 @@ export default function PostEditor() {
   };
 
   return (
-    <Box sx={{ minHeight: '100vh', bgcolor: BRAND.bg, pb: 20 }}>
+    <Box sx={{ minHeight: '100vh', bgcolor: BRAND.background, pb: 20 }}>
       {/* COMPONENTES DE FEEDBACK VISUAL */}
       <ToastNotification open={toast.open} message={toast.message} type={toast.type} onClose={() => setToast({ ...toast, open: false })} />
       <UnsavedChangesModal open={showUnsavedModal} onContinueEditing={() => setShowUnsavedModal(false)} onDiscardChanges={handleConfirmDiscard} />
       
       {/* --- BARRA DE TOPO (HEADER) --- */}
       <Box sx={{ 
-        bgcolor: 'white', borderBottom: '1px solid #E0E0E0', py: 2, px: 3, 
+        bgcolor: 'white', borderBottom: `1px solid ${BRAND.border}`, py: 2, px: 3, 
         position: 'sticky', top: 0, zIndex: 100,
-        boxShadow: '0 4px 12px rgba(0,0,0,0.03)'
+        boxShadow: BRAND.shadowSoft
       }}>
         <Stack direction="row" justifyContent="space-between" alignItems="center">
-          <IconButton onClick={handleGoBack} sx={{ color: BRAND.text }}>
+          <IconButton onClick={handleGoBack} sx={{ color: BRAND.textPrimary }}>
             <ArrowBackIcon />
           </IconButton>
           
@@ -160,8 +176,8 @@ export default function PostEditor() {
               startIcon={<SaveIcon />} 
               onClick={handleSaveDraft}
               sx={{ 
-                borderColor: BRAND.gold, color: BRAND.gold, fontWeight: 'bold',
-                '&:hover': { borderColor: '#A68B5B', bgcolor: BRAND.goldLight }
+                borderColor: BRAND.secondary, color: BRAND.secondary, fontWeight: 'bold',
+                '&:hover': { borderColor: '#A68B5B', bgcolor: BRAND.secondaryLight }
               }}
             >
               Salvar Rascunho
@@ -171,8 +187,8 @@ export default function PostEditor() {
               startIcon={<SendIcon />} 
               onClick={handlePublish}
               sx={{ 
-                bgcolor: BRAND.teal, fontWeight: 'bold', boxShadow: 'none',
-                '&:hover': { bgcolor: BRAND.tealDark, boxShadow: '0 4px 10px rgba(0,150,136,0.3)' } 
+                bgcolor: BRAND.primary, fontWeight: 'bold', boxShadow: 'none',
+                '&:hover': { bgcolor: BRAND.primaryDark, boxShadow: BRAND.shadowHover } 
               }}
             >
               Publicar
@@ -183,11 +199,11 @@ export default function PostEditor() {
 
       <Container maxWidth="md" sx={{ mt: 5 }}>
         {/* PAPEL PRINCIPAL (Estilo Carta) */}
-        <Paper elevation={0} sx={{ p: { xs: 3, md: 8 }, borderRadius: 3, boxShadow: '0 4px 20px rgba(0,0,0,0.05)' }}>
+        <Paper elevation={0} sx={{ p: { xs: 3, md: 8 }, borderRadius: 3, boxShadow: BRAND.shadowSoft }}>
           
           {/* --- CABEÇALHO (METADADOS) --- */}
           <Box sx={{ mb: 6 }}>
-            <Typography variant="overline" color={BRAND.gold} fontWeight="bold" sx={{ letterSpacing: 1.5 }}>
+            <Typography variant="overline" color={BRAND.secondary} fontWeight="bold" sx={{ letterSpacing: 1.5 }}>
               CRIANDO NOVO ARTIGO
             </Typography>
             
@@ -196,7 +212,7 @@ export default function PostEditor() {
               value={title} onChange={(e) => { setTitle(e.target.value); markAsDirty(); }}
               InputProps={{ 
                 disableUnderline: true, 
-                style: { fontSize: '2.5rem', fontWeight: 800, color: '#1A202C', lineHeight: 1.2, fontFamily: 'serif' } // Fonte Serifada para Título
+                style: { fontSize: '2.5rem', fontWeight: 800, color: BRAND.textPrimary, lineHeight: 1.2, fontFamily: BRAND.fontFamilyHeader }
               }}
               sx={{ mb: 3, mt: 1 }}
             />
@@ -204,33 +220,37 @@ export default function PostEditor() {
             <TextField
               fullWidth placeholder="Escreva um resumo curto e instigante..." multiline rows={2} variant="filled"
               value={description} onChange={(e) => { setDescription(e.target.value); markAsDirty(); }}
-              InputProps={{ disableUnderline: true, style: { fontSize: '1.1rem', color: '#4A5568', fontStyle: 'italic' } }}
+              InputProps={{ disableUnderline: true, style: { fontSize: '1.1rem', color: BRAND.textSecondary, fontStyle: 'italic' } }}
               sx={{ mb: 4, bgcolor: '#F7FAFC', borderRadius: 2 }}
             />
 
             <Stack direction={{ xs: 'column', sm: 'row' }} spacing={3}>
-              <FormControl sx={{ minWidth: 220 }}>
-                <InputLabel sx={{ color: BRAND.teal }}>Categoria Principal</InputLabel>
+              {/* SELECT DE CATEGORIA COM "CRIAR NOVA" */}
+              <FormControl sx={{ minWidth: 240 }}>
+                <InputLabel sx={{ color: BRAND.primary }}>Categoria</InputLabel>
                 <Select 
-                  value={category} label="Categoria Principal" 
-                  onChange={(e) => { setCategory(e.target.value); markAsDirty(); }}
+                  value={category} label="Categoria" 
+                  onChange={handleCategoryChange}
                   sx={{ 
                     borderRadius: 2, 
-                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: BRAND.teal },
-                    color: BRAND.teal, fontWeight: 'medium'
+                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: BRAND.primary },
+                    color: BRAND.primary, fontWeight: 'medium'
                   }}
                 >
-                  <MenuItem value="Carreira">Carreira</MenuItem>
-                  <MenuItem value="Liderança">Liderança</MenuItem>
-                  <MenuItem value="Mindset">Mindset</MenuItem>
-                  <MenuItem value="Relacionamentos">Relacionamentos</MenuItem>
+                  {availableCategories.map(cat => (
+                    <MenuItem key={cat} value={cat}>{cat}</MenuItem>
+                  ))}
+                  <Divider sx={{ my: 1 }} />
+                  <MenuItem value="NEW_CATEGORY_ACTION" sx={{ color: BRAND.secondary, fontWeight: 'bold' }}>
+                    <AddIcon fontSize="small" sx={{ mr: 1 }} /> Criar Nova Categoria
+                  </MenuItem>
                 </Select>
               </FormControl>
               
               <TextField 
                 fullWidth label="Link da Imagem de Capa" 
                 value={coverImage} onChange={(e) => { setCoverImage(e.target.value); markAsDirty(); }}
-                sx={{ '& .MuiOutlinedInput-root.Mui-focused fieldset': { borderColor: BRAND.teal } }}
+                sx={{ '& .MuiOutlinedInput-root.Mui-focused fieldset': { borderColor: BRAND.primary } }}
               />
             </Stack>
           </Box>
@@ -241,9 +261,8 @@ export default function PostEditor() {
             </Box>
           </Divider>
 
-          {/* --- CONSTRUTOR DE BLOCOS (A Mágica Visual) --- */}
+          {/* --- CONSTRUTOR DE BLOCOS (Renderização Completa) --- */}
           <Stack spacing={0} sx={{ position: 'relative' }}>
-            {/* Linha vertical conectora (sutil) */}
             <Box sx={{ 
               position: 'absolute', left: -22, top: 20, bottom: 20, width: 2, 
               bgcolor: '#f0f0f0', display: { xs: 'none', md: 'block' } 
@@ -254,20 +273,19 @@ export default function PostEditor() {
                 key={block.id} 
                 sx={{ 
                   position: 'relative', mb: 3, transition: 'all 0.3s',
-                  '&:hover': { transform: 'translateX(5px)' }, // Leve movimento ao passar o mouse
+                  '&:hover': { transform: 'translateX(5px)' }, 
                   '&:hover .block-actions': { opacity: 1, visibility: 'visible' },
-                  '&:hover .block-indicator': { bgcolor: BRAND.gold } // A bolinha fica dourada no hover
+                  '&:hover .block-indicator': { bgcolor: BRAND.secondary }
                 }}
               >
-                
-                {/* Indicador Visual do Bloco (A Bolinha na linha) */}
+                {/* Indicador Visual */}
                 <Box className="block-indicator" sx={{ 
                   position: 'absolute', left: -27, top: 24, width: 12, height: 12, borderRadius: '50%', 
                   bgcolor: '#e0e0e0', border: `2px solid white`, zIndex: 2, transition: '0.3s',
                   display: { xs: 'none', md: 'block' }
                 }} />
 
-                {/* Ações Laterais Flutuantes */}
+                {/* Ações Laterais */}
                 <Box className="block-actions" sx={{ 
                   position: 'absolute', left: -75, top: 15, 
                   display: 'flex', flexDirection: 'column', gap: 0.5,
@@ -278,18 +296,17 @@ export default function PostEditor() {
                   <Tooltip title="Mover Baixo" placement="left"><IconButton size="small" onClick={() => moveBlock(index, 'down')} disabled={index === blocks.length - 1}><KeyboardArrowDownIcon fontSize="small" /></IconButton></Tooltip>
                 </Box>
 
-                {/* --- CONTEÚDO DO BLOCO (Com design melhorado) --- */}
+                {/* CONTEÚDO */}
                 <Box sx={{ 
                     position: 'relative',
                     borderLeft: `4px solid transparent`,
-                    '&:hover': { borderLeftColor: BRAND.goldLight }, // Borda sutil no hover
+                    '&:hover': { borderLeftColor: BRAND.secondaryLight },
                     pl: 2
                 }}>
-
-                  {/* 1. TEXTO (Editor Limpo) */}
+                  {/* 1. TEXTO */}
                   {block.type === 'text' && (
                     <Box sx={{ 
-                      '.ql-container': { fontSize: '1.15rem', fontFamily: 'Roboto, sans-serif', color: '#333', lineHeight: 1.8 },
+                      '.ql-container': { fontSize: '1.15rem', fontFamily: BRAND.fontFamilyBody, color: BRAND.textPrimary, lineHeight: 1.8 },
                       '.ql-editor': { padding: '10px 0' },
                       '.ql-toolbar': { border: 'none', borderBottom: '1px dashed #eee', mb: 1 }
                     }}>
@@ -297,7 +314,7 @@ export default function PostEditor() {
                     </Box>
                   )}
 
-                  {/* 2. IMAGEM (Card Elegante) */}
+                  {/* 2. IMAGEM */}
                   {block.type === 'image' && (
                     <Paper elevation={0} sx={{ p: 2, bgcolor: '#FAFAFA', border: '1px solid #eee', borderRadius: 2 }}>
                        {block.url ? (
@@ -306,28 +323,24 @@ export default function PostEditor() {
                         </Box>
                       ) : (
                         <Box sx={{ py: 6, textAlign: 'center', color: '#999', border: '2px dashed #ddd', borderRadius: 2 }}>
-                          <AddPhotoAlternateIcon sx={{ fontSize: 40, mb: 1, color: BRAND.gold }} />
+                          <AddPhotoAlternateIcon sx={{ fontSize: 40, mb: 1, color: BRAND.secondary }} />
                           <Typography variant="body2">Visualização da Imagem</Typography>
                         </Box>
                       )}
                       <Stack direction="row" spacing={2} sx={{ mt: 2 }}>
-                        <TextField fullWidth size="small" placeholder="Cole o link da imagem (https://...)" value={block.url} onChange={(e) => updateBlock(block.id, 'url', e.target.value)} 
-                          sx={{ bgcolor: 'white' }} 
-                        />
-                        <TextField fullWidth size="small" placeholder="Legenda da foto" value={block.caption} onChange={(e) => updateBlock(block.id, 'caption', e.target.value)} 
-                          sx={{ bgcolor: 'white' }} 
-                        />
+                        <TextField fullWidth size="small" placeholder="URL da imagem..." value={block.url} onChange={(e) => updateBlock(block.id, 'url', e.target.value)} sx={{ bgcolor: 'white' }} />
+                        <TextField fullWidth size="small" placeholder="Legenda..." value={block.caption} onChange={(e) => updateBlock(block.id, 'caption', e.target.value)} sx={{ bgcolor: 'white' }} />
                       </Stack>
                     </Paper>
                   )}
 
-                  {/* 3. CITAÇÃO (Estilo Revista) */}
+                  {/* 3. CITAÇÃO */}
                   {block.type === 'quote' && (
-                    <Paper elevation={0} sx={{ p: 4, bgcolor: BRAND.goldLight, borderLeft: `4px solid ${BRAND.gold}`, borderRadius: '0 8px 8px 0' }}>
-                      <FormatQuoteIcon sx={{ fontSize: 40, color: BRAND.gold, opacity: 0.3, mb: -2 }} />
+                    <Paper elevation={0} sx={{ p: 4, bgcolor: BRAND.secondaryLight, borderLeft: `4px solid ${BRAND.secondary}`, borderRadius: '0 8px 8px 0' }}>
+                      <FormatQuoteIcon sx={{ fontSize: 40, color: BRAND.secondary, opacity: 0.3, mb: -2 }} />
                       <TextField
-                        fullWidth multiline rows={2} placeholder="Digite a frase de impacto..." variant="standard"
-                        InputProps={{ disableUnderline: true, style: { fontSize: '1.6rem', fontStyle: 'italic', color: '#5D4037', fontFamily: 'serif' } }}
+                        fullWidth multiline rows={2} placeholder="Frase de impacto..." variant="standard"
+                        InputProps={{ disableUnderline: true, style: { fontSize: '1.6rem', fontStyle: 'italic', color: '#5D4037', fontFamily: BRAND.fontFamilyHeader } }}
                         value={block.content} onChange={(e) => updateBlock(block.id, 'content', e.target.value)}
                       />
                     </Paper>
@@ -337,9 +350,9 @@ export default function PostEditor() {
                   {block.type === 'video' && (
                     <Paper elevation={0} sx={{ p: 2, bgcolor: '#FFF5F5', border: '1px solid #FED7D7', borderRadius: 2 }}>
                       <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 2, color: '#C53030' }}>
-                        <YouTubeIcon /> <Typography fontWeight="bold">Incorporar Vídeo</Typography>
+                        <YouTubeIcon /> <Typography fontWeight="bold">Vídeo do YouTube</Typography>
                       </Stack>
-                      <TextField fullWidth size="small" placeholder="Cole a URL do YouTube" value={block.url} onChange={(e) => updateBlock(block.id, 'url', e.target.value)} sx={{ bgcolor: 'white' }} />
+                      <TextField fullWidth size="small" placeholder="Cole a URL do vídeo..." value={block.url} onChange={(e) => updateBlock(block.id, 'url', e.target.value)} sx={{ bgcolor: 'white' }} />
                     </Paper>
                   )}
                 </Box>
@@ -347,43 +360,77 @@ export default function PostEditor() {
             ))}
           </Stack>
 
-          {/* --- BOTÃO DE ADICIONAR (Visual Dourado) --- */}
+          {/* --- BOTÃO ADICIONAR --- */}
           <Box sx={{ mt: 6, display: 'flex', justifyContent: 'center' }}>
             <Button
               onClick={handleOpenMenu}
               startIcon={<AddCircleIcon />}
               sx={{ 
                 borderRadius: 50, px: 5, py: 1.5,
-                border: `1px solid ${BRAND.gold}`,
-                color: BRAND.gold,
-                bgcolor: 'white',
-                fontWeight: 'bold',
-                boxShadow: '0 4px 15px rgba(197, 166, 105, 0.15)',
+                border: `1px solid ${BRAND.secondary}`, color: BRAND.secondary,
+                bgcolor: 'white', fontWeight: 'bold',
+                boxShadow: BRAND.shadowSoft,
                 transition: '0.3s',
-                '&:hover': { bgcolor: BRAND.gold, color: 'white', transform: 'scale(1.05)', boxShadow: '0 6px 20px rgba(197, 166, 105, 0.4)' }
+                '&:hover': { bgcolor: BRAND.secondary, color: 'white', transform: 'scale(1.05)' }
               }}
             >
               Adicionar Conteúdo
             </Button>
           </Box>
 
-          {/* MENU SUSPENSO (Estilizado) */}
           <Menu
             anchorEl={anchorEl} open={openMenu} onClose={handleCloseMenu}
-            PaperProps={{ sx: { mt: 1.5, minWidth: 220, borderRadius: 3, boxShadow: '0 8px 30px rgba(0,0,0,0.12)' } }}
+            PaperProps={{ sx: { mt: 1.5, minWidth: 220, borderRadius: 3, boxShadow: BRAND.shadowHover } }}
             transformOrigin={{ vertical: 'top', horizontal: 'center' }}
             anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
           >
             <Typography variant="overline" sx={{ px: 2, py: 1, color: '#999', fontWeight: 'bold' }}>ESCOLHA UM BLOCO</Typography>
-            <MenuItem onClick={() => addBlock('text')} sx={{ py: 1.5 }}><ListItemIcon><TextFieldsIcon sx={{ color: BRAND.teal }} /></ListItemIcon><ListItemText primary="Parágrafo" /></MenuItem>
-            <MenuItem onClick={() => addBlock('image')} sx={{ py: 1.5 }}><ListItemIcon><AddPhotoAlternateIcon sx={{ color: BRAND.gold }} /></ListItemIcon><ListItemText primary="Imagem" /></MenuItem>
-            <MenuItem onClick={() => addBlock('quote')} sx={{ py: 1.5 }}><ListItemIcon><FormatQuoteIcon sx={{ color: '#5D4037' }} /></ListItemIcon><ListItemText primary="Citação de Destaque" /></MenuItem>
+            <MenuItem onClick={() => addBlock('text')} sx={{ py: 1.5 }}><ListItemIcon><TextFieldsIcon sx={{ color: BRAND.primary }} /></ListItemIcon><ListItemText primary="Parágrafo" /></MenuItem>
+            <MenuItem onClick={() => addBlock('image')} sx={{ py: 1.5 }}><ListItemIcon><AddPhotoAlternateIcon sx={{ color: BRAND.secondary }} /></ListItemIcon><ListItemText primary="Imagem" /></MenuItem>
+            <MenuItem onClick={() => addBlock('quote')} sx={{ py: 1.5 }}><ListItemIcon><FormatQuoteIcon sx={{ color: '#5D4037' }} /></ListItemIcon><ListItemText primary="Citação" /></MenuItem>
             <Divider />
-            <MenuItem onClick={() => addBlock('video')} sx={{ py: 1.5 }}><ListItemIcon><YouTubeIcon color="error" /></ListItemIcon><ListItemText primary="Vídeo do YouTube" /></MenuItem>
+            <MenuItem onClick={() => addBlock('video')} sx={{ py: 1.5 }}><ListItemIcon><YouTubeIcon color="error" /></ListItemIcon><ListItemText primary="Vídeo" /></MenuItem>
           </Menu>
 
         </Paper>
       </Container>
+
+      {/* --- MODAL DE CRIAR CATEGORIA --- */}
+      <Dialog 
+        open={isCategoryModalOpen} 
+        onClose={() => setCategoryModalOpen(false)} 
+        PaperProps={{ sx: { borderRadius: 3, p: 1, minWidth: 320 } }}
+      >
+        <DialogTitle sx={{ fontFamily: BRAND.fontFamilyHeader, fontWeight: 'bold', color: BRAND.textPrimary }}>
+          Nova Categoria
+        </DialogTitle>
+        <DialogContent>
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+            Digite o nome da nova categoria para adicionar à lista.
+          </Typography>
+          <TextField
+            autoFocus
+            fullWidth
+            variant="outlined"
+            label="Nome da Categoria"
+            placeholder="Ex: Finanças, Podcast..."
+            value={newCategoryName}
+            onChange={(e) => setNewCategoryName(e.target.value)}
+            onKeyPress={(e) => e.key === 'Enter' && handleCreateCategory()}
+            InputProps={{ sx: { borderRadius: 2 } }}
+          />
+        </DialogContent>
+        <DialogActions sx={{ px: 3, pb: 2 }}>
+          <Button onClick={() => setCategoryModalOpen(false)} sx={{ color: BRAND.textSecondary, fontWeight: 'bold' }}>Cancelar</Button>
+          <Button 
+            variant="contained" onClick={handleCreateCategory} disabled={!newCategoryName.trim()}
+            sx={{ bgcolor: BRAND.secondary, fontWeight: 'bold', '&:hover': { bgcolor: '#A68B5B' } }}
+          >
+            Adicionar
+          </Button>
+        </DialogActions>
+      </Dialog>
+
     </Box>
   );
 }
