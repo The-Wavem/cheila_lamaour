@@ -1,12 +1,33 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { AppBar, Toolbar, Box, Button, Divider, Typography } from '@mui/material';
 import Imagem from '@/assets/pose1.png';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import EmailIcon from '@mui/icons-material/Email';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
 import { Link } from 'react-router-dom';
+import { getHeroData, initializeHeroData } from '../../services/homeAPI';
+import { doc, setDoc } from "firebase/firestore";
 
 const Hero = () => {
+    const [experienceText, setExperienceText] = useState("+25 anos de experiência");
+
+    useEffect(() => {
+        const textLoad = async () => {
+            try {
+                const data = await getHeroData();
+                if (data && data.experienceText) {
+                    setExperienceText(data.experienceText);
+                }
+            } catch (error) {
+                console.error("Erro ao carregar dados do Hero:", error);
+            }
+        };
+        textLoad();
+        initializeHeroData();
+    }, []);
+
+
+
     return (
         <>
             <style>
@@ -424,7 +445,7 @@ const Hero = () => {
                                 fontSize: '14px',
                                 fontWeight: 500
                             }}>
-                                +25 anos de experiência
+                                {experienceText}
                             </Typography>
                         </Box>
                     </Box>
