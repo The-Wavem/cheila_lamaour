@@ -7,7 +7,7 @@ export default function CardBlog({ filter, image, date, title, description}) {
         sx={{
           bgcolor: "#00a6a6", width: "500px", 
           height: "auto", maxHeight: "430px", 
-          borderRadius: "15px", display: "flex", flexDirection: "column"
+          borderRadius: "15px", display: "flex", flexDirection: "column", boxShadow: "0px 0px 5px 1px #00000090", transition: "scale 0.5s", "&:hover": {scale: "1.01"}
         }}>
         <Box sx={{padding: "20px", display: "flex", zIndex: "1"}}>
           <Typography
@@ -30,18 +30,17 @@ export default function CardBlog({ filter, image, date, title, description}) {
             sx={{color: "#dbdbdb", fontWeight: "lighter", fontSize: "15px"}}>
             { date }
           </Typography>
-          <Typography variant="h1" sx={{color: "white", mt: "10px", marginBottom: "5px", fontSize:"30px", fontWeight: "100"}}>
+          <Typography variant="h1" sx={{color: "white", mt: "10px", marginBottom: "5px", fontSize:"30px", fontWeight: "500"}}>
             { title }
           </Typography>
           <Typography sx={{color: "white", marginBlock: "10px"}}>{ description } </Typography>
           <Button 
             sx={{
-              color: "white", fontSize: 15, 
-              padding: 0, mt: "5px", 
-              fontWeight: "bold", background: "linear-gradient(to right, #fae56c 50%, white 50%)", 
+              fontSize: 15, padding: 0, mt: "5px", 
+              fontWeight: "bold", background: "linear-gradient(to right, #e9ca1d 50%, white 50%)", 
               backgroundSize: "200% 100%", backgroundPosition: "100%", color: "transparent", 
-              '-webkit-background-clip': "text", backgroundClip: "text",
-              transition: "background-position 0.5s ease, color 0.5s ease", '&:hover': {backgroundPosition: "0%"}
+              '-webkit-background-clip': "text", transition: "background-position 0.5s ease, color 0.5s ease", 
+              '&:hover': {backgroundPosition: "0%"}
             }}>
               Ler artigo →
             </Button>
