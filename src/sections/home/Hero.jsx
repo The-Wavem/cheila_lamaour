@@ -5,28 +5,31 @@ import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import EmailIcon from '@mui/icons-material/Email';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
 import { Link } from 'react-router-dom';
-import { getHeroData, initializeHeroData } from '../../services/homeAPI';
-import { doc, setDoc } from "firebase/firestore";
+import { getHeroData } from '@/services/homeAPI';
 
 const Hero = () => {
-    const [experienceText, setExperienceText] = useState("+25 anos de experiência");
+    const [heroData, setHeroData] = useState({
+        headline: "",
+        subheadline: "",
+        experienceText: "",
+        cta_text: "",
+        cta_link: ""
+    });
 
     useEffect(() => {
-        const textLoad = async () => {
+        const loadSchema = async () => {
             try {
+                // Apenas busca os dados.
                 const data = await getHeroData();
-                if (data && data.experienceText) {
-                    setExperienceText(data.experienceText);
+                if (data) {
+                    setHeroData(data);
                 }
             } catch (error) {
                 console.error("Erro ao carregar dados do Hero:", error);
             }
         };
-        textLoad();
-        initializeHeroData();
+        loadSchema();
     }, []);
-
-
 
     return (
         <>
@@ -324,6 +327,7 @@ const Hero = () => {
                             filter: 'drop-shadow(0 4px 8px rgba(251, 174, 54, 0.3))'
                         }} />
 
+                        {/* HEADLINE DINAMICO */}
                         <Typography
                             variant="h1"
                             sx={{
@@ -335,7 +339,7 @@ const Hero = () => {
                                 mb: 1
                             }}
                         >
-                            Cheila Lamour
+                            {heroData.headline}
                         </Typography>
 
                         {/* retangulo blur */}
@@ -350,6 +354,7 @@ const Hero = () => {
                         }}>
                         </Box>
 
+                        {/* SUBHEADLINE DINAMICO */}
                         <Typography
                             variant="h6"
                             sx={{
@@ -363,14 +368,28 @@ const Hero = () => {
                                 textShadow: '0 2px 10px rgba(0, 0, 0, 0.2)'
                             }}
                         >
-                            Mentorias <span style={{ color: '#FBAE36', fontSize: '1.5rem', margin: '0 8px' }}>•</span> Escritora <span style={{ color: '#FBAE36', fontSize: '1.5rem', margin: '0 8px' }}>•</span> Treinamentos
+                            {/* Renderiza o texto com os separadores estilizados se for o padrão, ou texto puro se vier do banco diferente */}
+                            {heroData.subheadline.includes("•") || heroData.subheadline.includes("-") ? (
+                                heroData.subheadline.split(/[-•]/).map((item, index, arr) => (
+                                    <React.Fragment key={index}>
+                                        {item.trim()}
+                                        {index < arr.length - 1 && (
+                                            <span style={{ color: '#FBAE36', fontSize: '1.5rem', margin: '0 8px' }}>•</span>
+                                        )}
+                                    </React.Fragment>
+                                ))
+                            ) : (
+                                heroData.subheadline
+                            )}
                         </Typography>
 
                         {/* botoes */}
                         <Box sx={{ display: 'flex', gap: 3, mt: 5, ml: 2 }}>
+                            {/* CTA BUTTON DINAMICO */}
                             <Button
                                 variant="contained"
                                 startIcon={<EmailIcon />}
+                                href={heroData.cta_link || "#contact"}
                                 sx={{
                                     fontFamily: "'Poppins', sans-serif",
                                     bgcolor: '#FBAE36',
@@ -390,11 +409,14 @@ const Hero = () => {
                                     }
                                 }}
                             >
-                                Entre em contato
+                                {heroData.cta_text}
                             </Button>
+
+                            {/* Botão Secundário (geralmente fixo, mas poderia ser dinâmico também) */}
                             <Button
                                 variant="outlined"
                                 startIcon={<MenuBookIcon />}
+                                href="#sobre"
                                 sx={{
                                     fontFamily: "'Poppins', sans-serif",
                                     borderColor: 'white',
@@ -423,7 +445,7 @@ const Hero = () => {
                             </Button>
                         </Box>
 
-                        {/* Badge decorativo */}
+                        {/* Badge decorativo - EXPERIENCE TEXT DINAMICO */}
                         <Box sx={{
                             mt: 6,
                             ml: 2,
@@ -445,7 +467,7 @@ const Hero = () => {
                                 fontSize: '14px',
                                 fontWeight: 500
                             }}>
-                                {experienceText}
+                                {heroData.experienceText}
                             </Typography>
                         </Box>
                     </Box>
