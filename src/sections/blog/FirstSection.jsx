@@ -7,9 +7,9 @@ const FirstSection = () => {
 
   return (
     <Container 
-      sx={{background: "#e6e4e4", width: "100%", height: "40vh", margin: 0, minWidth: "100%"}}>
+      sx={{background: "#e6e4e4", width: "100%", paddingBottom: "50px", minWidth: "100%"}}>
       <Box 
-        sx={{marginInline: 15, paddingTop: 10}}>
+        sx={{marginInline: "80px", paddingTop: "80px"}}>
         <Typography variant="h1" 
           sx={{fontSize: "40px", fontWeight: "bold", "color": "#a09f9f", marginBottom: "15px"}}>Blog</Typography>
         <Box 
@@ -21,7 +21,7 @@ const FirstSection = () => {
             <FilterAltRoundedIcon sx={{ fontSize: 36 }}/>
           </IconButton>
           <Box
-            sx={{display: "flex", minWidth: "500px", backgroundColor: "white", color: "black", position: "absolute", top: "238px", right: "230px", opacity: filterMenu == 0 ? "0" : "1", justifyContent: "space-between", padding: "5px", borderRadius: "15px", boxShadow: "0px 0px 5px 1px #00000040", transition: "opacity 0.5s ease-in-out"}}
+            sx={{display: "flex", minWidth: "500px", backgroundColor: "white", color: "black", position: "absolute", top: "215px", right: "200px", opacity: filterMenu == 0 ? "0" : "1", justifyContent: "space-between", padding: "5px", borderRadius: "15px", boxShadow: "0px 0px 5px 1px #00000040", transition: "opacity 0.2s ease-in-out"}}
           >
             <Box sx={{display: "flex"}}>
               <MenuItem sx={{fontSize: "15px"}}>Classificação</MenuItem>

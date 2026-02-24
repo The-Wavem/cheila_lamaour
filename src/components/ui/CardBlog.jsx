@@ -6,7 +6,7 @@ export default function CardBlog({ filter, image, date, title, description}) {
       <Card 
         sx={{
           bgcolor: "#00a6a6", width: "500px", 
-          height: "auto", maxHeight: "430px", 
+          height: "auto", maxHeight: "470px", 
           borderRadius: "15px", display: "flex", flexDirection: "column", boxShadow: "0px 0px 5px 1px #00000090", transition: "scale 0.5s", "&:hover": {scale: "1.01"}
         }}>
         <Box sx={{padding: "20px", display: "flex", zIndex: "1"}}>
@@ -33,14 +33,13 @@ export default function CardBlog({ filter, image, date, title, description}) {
           <Typography variant="h1" sx={{color: "white", mt: "10px", marginBottom: "5px", fontSize:"30px", fontWeight: "500"}}>
             { title }
           </Typography>
-          <Typography sx={{color: "white", marginBlock: "10px"}}>{ description } </Typography>
+          <Typography sx={{color: "white", marginBlock: "10px", overflowY: "scroll", maxHeight: "70px", scrollbarColor: "#ffffff #ffffff00"}}>{ description } </Typography>
           <Button 
             sx={{
               fontSize: 15, padding: 0, mt: "5px", 
               fontWeight: "bold", background: "linear-gradient(to right, #e9ca1d 50%, white 50%)", 
               backgroundSize: "200% 100%", backgroundPosition: "100%", color: "transparent", 
-              '-webkit-background-clip': "text", transition: "background-position 0.5s ease, color 0.5s ease", 
-              '&:hover': {backgroundPosition: "0%"}
+              '-webkit-background-clip': "text", transition: "background-position 0.5s ease, color 0.5s ease", '&:hover': {backgroundPosition: "0%"}
             }}>
               Ler artigo →
             </Button>
