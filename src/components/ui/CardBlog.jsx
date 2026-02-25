@@ -1,4 +1,4 @@
-import { Box, Button, Card, Typography } from "@mui/material";
+import { Box, Button, Card, Divider, Typography } from "@mui/material";
 
 export default function CardBlog({ filter, image, date, title, description}) {
   return (
@@ -6,7 +6,7 @@ export default function CardBlog({ filter, image, date, title, description}) {
       <Card 
         sx={{
           bgcolor: "#00a6a6", width: "500px", 
-          height: "auto", maxHeight: "470px", 
+          height: "auto", maxHeight: "480px", 
           borderRadius: "15px", display: "flex", flexDirection: "column", boxShadow: "0px 0px 5px 1px #00000090", transition: "scale 0.5s", "&:hover": {scale: "1.01"}
         }}>
         <Box sx={{padding: "20px", display: "flex", zIndex: "1"}}>
@@ -33,6 +33,7 @@ export default function CardBlog({ filter, image, date, title, description}) {
           <Typography variant="h1" sx={{color: "white", mt: "10px", marginBottom: "5px", fontSize:"30px", fontWeight: "500"}}>
             { title }
           </Typography>
+          <Divider sx={{backgroundColor: "#ffffffd3", marginBlock: "15px"}}/>
           <Typography sx={{color: "white", marginBlock: "10px", overflowY: "scroll", maxHeight: "70px", scrollbarColor: "#ffffff #ffffff00"}}>{ description } </Typography>
           <Button 
             sx={{
