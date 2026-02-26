@@ -34,7 +34,13 @@ export default function CardBlog({ filter, image, date, title, description}) {
             { title }
           </Typography>
           <Divider sx={{backgroundColor: "#ffffffd3", marginBlock: "15px"}}/>
-          <Typography sx={{color: "white", marginBlock: "10px", overflowY: "scroll", maxHeight: "70px", scrollbarColor: "#ffffff #ffffff00"}}>{ description } </Typography>
+          <Typography sx={{
+            color: "white", marginBlock: "10px", 
+            maxHeight: "70px", scrollbarColor: "#ffffff #ffffff00", 
+            width: "90%", paddingInline: "20px",  overflowY: "scroll",
+            }}>
+              { description } 
+          </Typography>
           <Button 
             sx={{
               fontSize: 15, padding: 0, mt: "5px", 
