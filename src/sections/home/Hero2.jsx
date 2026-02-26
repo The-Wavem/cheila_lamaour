@@ -1,9 +1,35 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Typography, Button } from '@mui/material';
 import Imagem from '@/assets/pose1.png';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
+import { getAboutData } from '@/services/homeAPI';
+
+const ABOUT_DEFAULTS = {
+    quote: 'É um prazer poder apresentar meu trabalho a você!',
+    description:
+        'Sou Cheila Lamour, Mentora, Palestrante, Especialista em Liderança Feminina.\n\nMãe, esposa, Engenheira Civil com 25 anos de experiência organizacional e mais de 150 liderados. MBA em Liderança Humanizada. Analista Comportamental, certificação em Life, Leader, Executive & Business Coach.\n\nAliando o conhecimento técnico às habilidades para lidar com gente, descobri meu propósito: ajudar outras pessoas a destravarem seu potencial.',
+    button_text: 'Minha história',
+    featured_text: 'Você é o seu maior investimento'
+};
 
 const Hero2 = () => {
+    const [aboutData, setAboutData] = useState(ABOUT_DEFAULTS);
+
+    useEffect(() => {
+        const loadAboutData = async () => {
+            try {
+                const data = await getAboutData();
+                if (data) {
+                    setAboutData((prev) => ({ ...prev, ...data }));
+                }
+            } catch (error) {
+                console.error('Erro ao carregar dados da seção Sobre:', error);
+            }
+        };
+
+        loadAboutData();
+    }, []);
+
     return (
         <Box sx={{
             minHeight: '100vh',
@@ -96,7 +122,7 @@ const Hero2 = () => {
                             }
                         }}
                     >
-                        É um prazer poder apresentar <br />meu trabalho a você!
+                        {aboutData.quote}
                     </Typography>
 
                     <Typography
@@ -109,16 +135,11 @@ const Hero2 = () => {
                             mb: 5,
                             mt: 4,
                             textAlign: 'justify',
-                            position: 'relative'
+                            position: 'relative',
+                            whiteSpace: 'pre-line'
                         }}
                     >
-                        Sou <strong style={{ color: '#007070', fontSize: '19px' }}>Cheila Lamour</strong>, Mentora, Palestrante, Especialista em Liderança Feminina.
-                        <br /><br />
-                        Mãe, esposa, Engenheira Civil com 25 anos de experiência organizacional e mais de 150 liderados.
-                        MBA em Liderança Humanizada. Analista Comportamental, certificação em Life, Leader, Executive & Business Coach.
-                        <br /><br />
-                        Aliando o conhecimento técnico às habilidades para lidar com gente, descobri meu propósito:
-                        <strong style={{ color: '#007070' }}> ajudar outras pessoas a destravarem seu potencial.</strong>
+                        {aboutData.description}
                     </Typography>
 
                     {/* botao minha historia*/}
@@ -146,7 +167,7 @@ const Hero2 = () => {
                                 }
                             }}
                         >
-                            Minha história
+                            {aboutData.button_text}
                         </Button>
                     </Box>
 
@@ -281,7 +302,7 @@ const Hero2 = () => {
                             letterSpacing: '0.5px'
                         }}
                     >
-                        Você é o seu maior investimento
+                        {aboutData.featured_text}
                     </Typography>
                 </Box>
             </Box>

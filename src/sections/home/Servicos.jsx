@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Typography, Card, CardContent, TextField, Button } from '@mui/material';
 import SchoolIcon from '@mui/icons-material/School';
 import PsychologyIcon from '@mui/icons-material/Psychology';
@@ -8,25 +8,98 @@ import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import SendIcon from '@mui/icons-material/Send';
 import FormatQuoteIcon from '@mui/icons-material/FormatQuote';
+import { getServicesData, getTestimonialsData, getContactData } from '@/services/homeAPI';
+
+const DEFAULT_SERVICES_DATA = {
+    title: 'Serviços Prestados',
+    subtitle: 'Soluções completas de mentoria',
+    view_all_text: 'Ver todos os serviços e treinamentos',
+    cards: [
+        {
+            title: 'Desenvolvimento Profissional',
+            description: "Estratégias para sair do ponto A ao ponto B. Evite perder tempo 'batendo cabeça' e acelere sua..."
+        },
+        {
+            title: 'Desenvolvimento Pessoas',
+            description: "Estratégias para sair do ponto A ao ponto B. Evite perder tempo 'batendo cabeça' e acelere sua..."
+        },
+        {
+            title: 'Treinamentos',
+            description: "Estratégias para sair do ponto A ao ponto B. Evite perder tempo 'batendo cabeça' e acelere sua..."
+        }
+    ]
+};
+
+const DEFAULT_TESTIMONIAL = {
+    client_name: 'Nome Cliente',
+    text: 'A mentoria com a Cheila foi um divisor de águas na minha carreira. A clareza que obtive sobre meus objetivos e a confiança para liderar mudaram minha trajetória.'
+};
+
+const DEFAULT_CONTACT_DATA = {
+    title: 'Entre em contato',
+    subtitle: 'Seu próximo passo começa aqui!',
+    submit_button_text: 'Enviar Mensagem'
+};
 
 const ServicesSection = () => {
-    const services = [
+    const serviceIcons = [
         {
             icon: <SchoolIcon sx={{ fontSize: 40 }} />,
-            title: 'Desenvolvimento Profissional',
-            description: 'Estratégias para sair do ponto A ao ponto B. Evite perder tempo \'batendo cabeça\' e acelere sua...',
         },
         {
             icon: <PsychologyIcon sx={{ fontSize: 40 }} />,
-            title: 'Desenvolvimento Pessoas',
-            description: 'Estratégias para sair do ponto A ao ponto B. Evite perder tempo \'batendo cabeça\' e acelere sua...',
         },
         {
             icon: <GroupsIcon sx={{ fontSize: 40 }} />,
-            title: 'Treinamentos',
-            description: 'Estratégias para sair do ponto A ao ponto B. Evite perder tempo \'batendo cabeça\' e acelere sua...',
         }
     ];
+
+    const [servicesData, setServicesData] = useState(DEFAULT_SERVICES_DATA);
+    const [testimonial, setTestimonial] = useState(DEFAULT_TESTIMONIAL);
+    const [contactData, setContactData] = useState(DEFAULT_CONTACT_DATA);
+
+    useEffect(() => {
+        const loadData = async () => {
+            try {
+                const [servicesDoc, testimonialsDoc, contactDoc] = await Promise.all([
+                    getServicesData(),
+                    getTestimonialsData(),
+                    getContactData()
+                ]);
+
+                if (servicesDoc) {
+                    setServicesData((prev) => ({
+                        ...prev,
+                        ...servicesDoc,
+                        cards: Array.isArray(servicesDoc.cards) && servicesDoc.cards.length
+                            ? servicesDoc.cards
+                            : prev.cards
+                    }));
+                }
+
+                if (Array.isArray(testimonialsDoc?.testimonials) && testimonialsDoc.testimonials.length) {
+                    const firstTestimonial = testimonialsDoc.testimonials[0];
+                    setTestimonial({
+                        client_name: firstTestimonial.client_name || firstTestimonial.name || DEFAULT_TESTIMONIAL.client_name,
+                        text: firstTestimonial.text || DEFAULT_TESTIMONIAL.text
+                    });
+                }
+
+                if (contactDoc) {
+                    setContactData((prev) => ({ ...prev, ...contactDoc }));
+                }
+            } catch (error) {
+                console.error('Erro ao carregar dados de serviços/contato:', error);
+            }
+        };
+
+        loadData();
+    }, []);
+
+    const mergedServices = (servicesData.cards || DEFAULT_SERVICES_DATA.cards).map((service, index) => ({
+        ...service,
+        icon: serviceIcons[index]?.icon || <SchoolIcon sx={{ fontSize: 40 }} />
+    }));
 
     return (
         <Box sx={{
@@ -79,7 +152,7 @@ const ServicesSection = () => {
                     textTransform: 'uppercase'
                 }}
             >
-                Serviços Prestados
+                {servicesData.title}
             </Typography>
 
             {/* titulo 2*/}
@@ -94,7 +167,7 @@ const ServicesSection = () => {
                     letterSpacing: '-0.5px'
                 }}
             >
-                Soluções completas de mentoria
+                {servicesData.subtitle}
             </Typography>
 
             {/* risco  */}
@@ -118,7 +191,7 @@ const ServicesSection = () => {
                 position: 'relative',
                 zIndex: 1
             }}>
-                {services.map((service, index) => (
+                {mergedServices.map((service, index) => (
                     <Card
                         key={index}
                         sx={{
@@ -269,7 +342,7 @@ const ServicesSection = () => {
                         }
                     }}
                 >
-                    Ver todos os serviços e treinamentos
+                    {servicesData.view_all_text}
                 </Typography>
                 
                 {/*risco linha blur */}
@@ -379,7 +452,7 @@ const ServicesSection = () => {
                             textShadow: '0 2px 10px rgba(0, 0, 0, 0.1)'
                         }}
                     >
-                        "A mentoria com a Cheila foi um divisor de águas na minha carreira. A clareza que obtive sobre meus objetivos e a confiança para liderar mudaram minha trajetória."
+                        "{testimonial.text}"
                     </Typography>
 
                     {/* nome cliente - melhorado */}
@@ -391,7 +464,7 @@ const ServicesSection = () => {
                             letterSpacing: '0.5px'
                         }}
                     >
-                        - Nome Cliente
+                        - {testimonial.client_name}
                     </Typography>
                 </Box>
             </Box>
@@ -451,7 +524,7 @@ const ServicesSection = () => {
                         }
                     }}
                 >
-                    Entre em contato
+                    {contactData.title}
                 </Typography>
 
                 <Typography
@@ -464,7 +537,7 @@ const ServicesSection = () => {
                         mt: 3
                     }}
                 >
-                    Seu próximo passo começa aqui!
+                    {contactData.subtitle}
                 </Typography>
 
                 {/* Formulário */}
@@ -605,7 +678,7 @@ const ServicesSection = () => {
                                 }
                             }}
                         >
-                            Enviar Mensagem
+                            {contactData.submit_button_text}
                         </Button>
                     </Box>
                 </Box>

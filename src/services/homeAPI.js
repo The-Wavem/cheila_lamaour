@@ -70,7 +70,9 @@ export const initializeHeroData = async () => {
         subheadline: "Mentorias - Escritora - Treinamentos",
         experienceText: "+25 anos de experiência",
         cta_text: "Entre em contato",
-        cta_link: "/contato"
+        cta_link: "/contato",
+        secondary_cta_text: "Minha história",
+        secondary_cta_link: "#sobre"
     });
 };
 
@@ -107,11 +109,11 @@ export const updateHomeData = async (data = {}) => {
     try {
         const tasks = [];
 
-        if (data.hero) tasks.push(updateDocumentData("home_hero", data.hero));
-        if (data.about) tasks.push(updateDocumentData("home_about", data.about));
-        if (data.services) tasks.push(updateDocumentData("home_services", data.services));
-        if (data.testimonials) tasks.push(updateDocumentData("home_testimonials", { testimonials: data.testimonials }));
-        if (data.contact) tasks.push(updateDocumentData("home_contact", data.contact));
+        if (data.hero !== undefined) tasks.push(updateDocumentData("home_hero", data.hero));
+        if (data.about !== undefined) tasks.push(updateDocumentData("home_about", data.about));
+        if (data.services !== undefined) tasks.push(updateDocumentData("home_services", data.services));
+        if (data.testimonials !== undefined) tasks.push(updateDocumentData("home_testimonials", { testimonials: data.testimonials }));
+        if (data.contact !== undefined) tasks.push(updateDocumentData("home_contact", data.contact));
 
         await Promise.all(tasks);
         return { success: true };

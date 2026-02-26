@@ -7,14 +7,18 @@ import MenuBookIcon from '@mui/icons-material/MenuBook';
 import { Link } from 'react-router-dom';
 import { getHeroData } from '@/services/homeAPI';
 
+const HERO_DEFAULTS = {
+    headline: 'Cheila Lamour',
+    subheadline: 'Mentorias - Escritora - Treinamentos',
+    experienceText: '+25 anos de experiência',
+    cta_text: 'Entre em contato',
+    cta_link: '/contato',
+    secondary_cta_text: 'Minha história',
+    secondary_cta_link: '#sobre'
+};
+
 const Hero = () => {
-    const [heroData, setHeroData] = useState({
-        headline: "",
-        subheadline: "",
-        experienceText: "",
-        cta_text: "",
-        cta_link: ""
-    });
+    const [heroData, setHeroData] = useState(HERO_DEFAULTS);
 
     useEffect(() => {
         const loadSchema = async () => {
@@ -22,7 +26,7 @@ const Hero = () => {
                 // Apenas busca os dados.
                 const data = await getHeroData();
                 if (data) {
-                    setHeroData(data);
+                    setHeroData((prev) => ({ ...prev, ...data }));
                 }
             } catch (error) {
                 console.error("Erro ao carregar dados do Hero:", error);
@@ -416,7 +420,7 @@ const Hero = () => {
                             <Button
                                 variant="outlined"
                                 startIcon={<MenuBookIcon />}
-                                href="#sobre"
+                                href={heroData.secondary_cta_link || '#sobre'}
                                 sx={{
                                     fontFamily: "'Poppins', sans-serif",
                                     borderColor: 'white',
@@ -441,7 +445,7 @@ const Hero = () => {
                                     }
                                 }}
                             >
-                                Minha história
+                                {heroData.secondary_cta_text || 'Minha história'}
                             </Button>
                         </Box>
 
