@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Typography, Card, CardContent, TextField, Button } from '@mui/material';
+import { Box, Typography, Card, CardContent, TextField, Button, Snackbar, Alert } from '@mui/material';
 import SchoolIcon from '@mui/icons-material/School';
 import PsychologyIcon from '@mui/icons-material/Psychology';
 import GroupsIcon from '@mui/icons-material/Groups';
@@ -8,8 +8,7 @@ import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import SendIcon from '@mui/icons-material/Send';
 import FormatQuoteIcon from '@mui/icons-material/FormatQuote';
-import { getServicesData, getTestimonialsData, getContactData } from '@/services/homeAPI';
-
+import { getServicesData, getTestimonialsData, getContactData, saveContactMessage } from '@/services/homeAPI';
 const DEFAULT_SERVICES_DATA = {
     title: 'Serviços Prestados',
     subtitle: 'Soluções completas de mentoria',
@@ -57,6 +56,45 @@ const ServicesSection = () => {
     const [servicesData, setServicesData] = useState(DEFAULT_SERVICES_DATA);
     const [testimonial, setTestimonial] = useState(DEFAULT_TESTIMONIAL);
     const [contactData, setContactData] = useState(DEFAULT_CONTACT_DATA);
+    const [formData, setFormData] = useState({
+        nome: '',
+        email: '',
+        mensagem: '',
+        telefone: ''
+
+    });
+    // Para controlar os avisos de sucesso ou erro
+    const [feedback, setFeedback] = useState({ open: false, message: '', severity: 'success' });
+
+    // Para desativar o botão enquanto a mensagem é enviada
+    const [isSending, setIsSending] = useState(false);
+
+    // Função para atualizar o estado conforme o utilizador digita
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({ ...prev, [name]: value }));
+    };
+
+    // Função que liga para a tua API e guarda no Firebase
+    const handleSubmit = async () => {
+        // Validação básica
+        if (!formData.nome || !formData.email || !formData.mensagem) {
+            setFeedback({ open: true, message: 'Por favor, preencha os campos obrigatórios.', severity: 'error' });
+            return;
+        }
+
+        setIsSending(true);
+        try {
+            // Chama a função da tua homeAPI.js
+            await saveContactMessage(formData);
+            setFeedback({ open: true, message: 'Mensagem enviada com sucesso!', severity: 'success' });
+            setFormData({ nome: '', email: '', mensagem: '', telefone: '' }); // Limpa os campos
+        } catch (error) {
+            setFeedback({ open: true, message: 'Erro ao enviar. Tente novamente.', severity: 'error' });
+        } finally {
+            setIsSending(false);
+        }
+    };
 
     useEffect(() => {
         const loadData = async () => {
@@ -137,7 +175,7 @@ const ServicesSection = () => {
                 zIndex: 0
             }} />
 
-            
+
 
             {/* titulo 1 */}
             <Typography
@@ -234,7 +272,7 @@ const ServicesSection = () => {
                     >
                         <CardContent sx={{ p: 5 }}>
                             {/* bola com icone*/}
-                            <Box 
+                            <Box
                                 className="icon-circle"
                                 sx={{
                                     width: '80px',
@@ -293,7 +331,7 @@ const ServicesSection = () => {
                             </Typography>
 
                             {/* saiba mais */}
-                            <Box 
+                            <Box
                                 className="saiba-mais"
                                 sx={{
                                     display: 'flex',
@@ -344,7 +382,7 @@ const ServicesSection = () => {
                 >
                     {servicesData.view_all_text}
                 </Typography>
-                
+
                 {/*risco linha blur */}
                 <Box sx={{
                     width: '300px',
@@ -424,9 +462,9 @@ const ServicesSection = () => {
                     {/* estrelas  */}
                     <Box sx={{ display: 'flex', gap: 1.5, mb: 4 }}>
                         {[1, 2, 3, 4, 5].map((star) => (
-                            <StarIcon 
+                            <StarIcon
                                 key={star}
-                                sx={{ 
+                                sx={{
                                     fontSize: 45,
                                     color: '#FBAE36',
                                     filter: 'drop-shadow(0 4px 8px rgba(251, 174, 54, 0.3))',
@@ -434,7 +472,7 @@ const ServicesSection = () => {
                                     '&:hover': {
                                         transform: 'scale(1.2) rotate(15deg)'
                                     }
-                                }} 
+                                }}
                             />
                         ))}
                     </Box>
@@ -540,148 +578,82 @@ const ServicesSection = () => {
                     {contactData.subtitle}
                 </Typography>
 
-                {/* Formulário */}
-                <Box sx={{
-                    display: 'grid',
-                    gridTemplateColumns: '1fr 1fr',
-                    gap: 3
-                }}>
-                    {/* Nome  */}
+                {/* Seção de Contato */}
+                <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 3 }}>
+                    {/* Campo Nome */}
                     <TextField
                         fullWidth
                         label="Nome"
+                        name="nome" // O nome deve ser igual ao que está no formData
+                        value={formData.nome}
+                        onChange={handleChange}
                         variant="outlined"
-                        sx={{
-                            '& .MuiOutlinedInput-root': {
-                                borderRadius: '12px',
-                                transition: 'all 0.3s ease',
-                                '&:hover fieldset': {
-                                    borderColor: '#00A6A6',
-                                    borderWidth: '2px'
-                                },
-                                '&.Mui-focused fieldset': {
-                                    borderColor: '#00A6A6',
-                                    borderWidth: '2px'
-                                }
-                            },
-                            '& .MuiInputLabel-root.Mui-focused': {
-                                color: '#00A6A6',
-                                fontWeight: 600
-                            }
-                        }}
+                        sx={{ /* Seus estilos aqui... */ }}
                     />
 
-                    {/* Email */}
+                    {/* Campo Email */}
                     <TextField
                         fullWidth
                         label="Email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleChange}
                         variant="outlined"
                         type="email"
-                        sx={{
-                            '& .MuiOutlinedInput-root': {
-                                borderRadius: '12px',
-                                transition: 'all 0.3s ease',
-                                '&:hover fieldset': {
-                                    borderColor: '#00A6A6',
-                                    borderWidth: '2px'
-                                },
-                                '&.Mui-focused fieldset': {
-                                    borderColor: '#00A6A6',
-                                    borderWidth: '2px'
-                                }
-                            },
-                            '& .MuiInputLabel-root.Mui-focused': {
-                                color: '#00A6A6',
-                                fontWeight: 600
-                            }
-                        }}
                     />
 
-                    {/* Mensagem  */}
+                    {/* Campo Mensagem */}
                     <TextField
                         fullWidth
                         label="Mensagem"
+                        name="mensagem"
+                        value={formData.mensagem}
+                        onChange={handleChange}
                         variant="outlined"
                         multiline
                         rows={6}
-                        sx={{
-                            gridRow: 'span 2',
-                            '& .MuiOutlinedInput-root': {
-                                borderRadius: '12px',
-                                transition: 'all 0.3s ease',
-                                '&:hover fieldset': {
-                                    borderColor: '#00A6A6',
-                                    borderWidth: '2px'
-                                },
-                                '&.Mui-focused fieldset': {
-                                    borderColor: '#00A6A6',
-                                    borderWidth: '2px'
-                                }
-                            },
-                            '& .MuiInputLabel-root.Mui-focused': {
-                                color: '#00A6A6',
-                                fontWeight: 600
-                            }
-                        }}
+                        sx={{ gridRow: 'span 2' }}
                     />
 
-                    {/* Coluna da direita */}
-                    <Box sx={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: 3
-                    }}>
-                        {/* Telefone */}
-                        <TextField
-                            fullWidth
-                            label="Telefone"
-                            variant="outlined"
-                            type="tel"
-                            sx={{
-                                '& .MuiOutlinedInput-root': {
-                                    borderRadius: '12px',
-                                    transition: 'all 0.3s ease',
-                                    '&:hover fieldset': {
-                                        borderColor: '#00A6A6',
-                                        borderWidth: '2px'
-                                    },
-                                    '&.Mui-focused fieldset': {
-                                        borderColor: '#00A6A6',
-                                        borderWidth: '2px'
-                                    }
-                                },
-                                '& .MuiInputLabel-root.Mui-focused': {
-                                    color: '#00A6A6',
-                                    fontWeight: 600
-                                }
-                            }}
-                        />
-
-                        {/* botao enviar */}
+                    {/* Coluna Direita: Botão Primeiro, Telefone Depois */}
+                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
                         <Button
                             variant="contained"
-                            endIcon={<SendIcon />}
+                            disabled={isSending} // Desabilita enquanto envia
+                            onClick={handleSubmit} // Chama a função de envio
+                            endIcon={!isSending && <SendIcon />}
                             sx={{
                                 background: 'linear-gradient(135deg, #00A6A6 0%, #007070 100%)',
-                                color: 'white',
                                 padding: '18px',
-                                fontSize: '18px',
-                                fontWeight: '600',
-                                textTransform: 'none',
-                                borderRadius: '12px',
-                                boxShadow: '0 8px 25px rgba(0, 166, 166, 0.3)',
-                                transition: 'all 0.3s ease',
-                                '&:hover': {
-                                    background: 'linear-gradient(135deg, #007070 0%, #005050 100%)',
-                                    transform: 'translateY(-3px)',
-                                    boxShadow: '0 12px 35px rgba(0, 166, 166, 0.4)'
-                                }
+                                // Outros estilos do seu botão...
                             }}
                         >
-                            {contactData.submit_button_text}
+                            {isSending ? 'Enviando...' : contactData.submit_button_text}
                         </Button>
+
+                        <TextField
+                            fullWidth
+                            label="Telefone (Opcional)"
+                            name="telefone"
+                            value={formData.telefone}
+                            onChange={handleChange}
+                            variant="outlined"
+                            type="tel"
+                        />
                     </Box>
                 </Box>
+
+                {/* Feedback para o usuário (Coloque logo antes do fechamento do último </Box>) */}
+                <Snackbar
+                    open={feedback.open}
+                    autoHideDuration={6000}
+                    onClose={() => setFeedback({ ...feedback, open: false })}
+                >
+                    <Alert severity={feedback.severity} sx={{ width: '100%' }}>
+                        {feedback.message}
+                    </Alert>
+                </Snackbar>
+
             </Box>
         </Box>
     );

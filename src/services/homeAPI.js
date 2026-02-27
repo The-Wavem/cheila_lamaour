@@ -1,4 +1,4 @@
-import { doc, getDoc, setDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc, collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "./firebaseConfig";
 
 // ============================================================================
@@ -59,6 +59,27 @@ export const updateTestimonials = (testimonialsArray) =>
 // --- SEÇÃO 5: CONTATO / RODAPÉ ---
 export const getContactData = () => getDocumentData("home_contact");
 export const updateContactData = (contactData) => updateDocumentData("home_contact", contactData);
+/**
+ * Salva uma nova mensagem de contato enviada pelo formulário
+ */
+export const saveContactMessage = async (messageData) => {
+    try {
+        // Criamos uma referência para uma nova coleção chamada "messages"
+        const messagesRef = collection(db, "messages");
+        
+        // Adicionamos o documento com um timestamp para saber quando foi enviado
+        await addDoc(messagesRef, {
+            ...messageData,
+            createdAt: serverTimestamp(), // Adiciona data/hora do servidor
+            status: "new" // Útil para você filtrar mensagens lidas/não lidas depois
+        });
+
+        return { success: true };
+    } catch (error) {
+        console.error("Erro ao salvar mensagem de contato:", error);
+        throw error;
+    }
+};
 
 /**
  * Função de Inicialização (Seed)
