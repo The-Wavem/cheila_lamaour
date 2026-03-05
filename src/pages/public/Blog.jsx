@@ -7,7 +7,7 @@ export default function Blog() {
   return (
     <>
       <Header></Header>
-
+      
       {/* Chamando as seções aqui */}
       <FirstSection></FirstSection>
       <CardSection></CardSection>

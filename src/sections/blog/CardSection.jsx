@@ -1,4 +1,5 @@
 import CardBlog from "@/components/ui/CardBlog";
+import FilterMenu from "@/components/ui/FilterMenu";
 import { Key } from "@mui/icons-material";
 import { Container} from "@mui/material";
 
@@ -33,7 +34,7 @@ const CardSection = () => {
   return (
     <> 
       <Container 
-        sx={{bgcolor: "#e6e4e4", margin: 0, minWidth: "100%", display: "flex", justifyContent: "space-evenly", gap: 9, flexWrap: "wrap", paddingBottom: "100px"}}
+        sx={{bgcolor: "#e6e4e4", margin: 0, minWidth: "100%", display: "flex", justifyContent: "space-around", gap: "70px", flexWrap: "wrap", paddingBottom: "100px"}}
       >
         {posts.map((post, index) => (
           <CardBlog key={index} filter={post.tema} date={post.data} title={post.titulo} description={post.descricao}/>

@@ -1,14 +1,13 @@
-import { Box, Container, IconButton, Typography, MenuItem, Divider} from "@mui/material";
+import { Box, Container, IconButton, Typography, MenuItem, Divider, GlobalStyles} from "@mui/material";
 import FilterAltRoundedIcon from '@mui/icons-material/FilterAltRounded';
 import { useState } from "react";
 import { ArrowCircleDown, ArrowDropDown } from "@mui/icons-material";
+import FilterMenu from "@/components/ui/FilterMenu";
 
 const FirstSection = () => {
   const [openFilter, setFilter] = useState(0);
   const [filterMenu, setMenu] = useState(0);
- 
-  console.log(filterMenu)
-
+  
   return (
     <Container 
       sx={{background: "#e6e4e4", width: "100%", paddingBottom: "100px", minWidth: "100%"}}>
@@ -36,48 +35,35 @@ const FirstSection = () => {
             {/* Botão do Filtro */}
             <FilterAltRoundedIcon sx={{ fontSize: 36 }}/>
           </IconButton>
-          <Box
-            // Menu de filtro
-            sx={{
-              display: "flex", minWidth: "500px", 
-              backgroundColor: "white", color: "black", 
-              position: "absolute", top: "200px", right: "200px", 
-              opacity: openFilter == 0 ? "0" : "1", justifyContent: "space-between", 
-              padding: "5px", borderRadius: "15px", 
-              boxShadow: "0px 0px 5px 1px #00000040",
-              animation: openFilter == 1 ? "left 0.5s" : "right 0.5s",
-              '@keyframes left': {
-                '0%': { right: "-200px", opacity: "0" },
-                '50%': { opacity: "0" },
-                '100%': { opacity: "1" }
-              },
-              '@keyframes right': {
-                '0%': { opacity: "1" }
-              }
-            }}>
+          <FilterMenu show={openFilter}>
             <Box sx={{display: "flex", alignItems: "center"}}>
               {/* Lado esquerdo do menu de filtro */}
               <Box>
                 <MenuItem 
                   onClick={filterMenu == 0 || filterMenu == 2 ? () => setMenu(1) : () => setMenu(0)} 
-                  sx={{fontSize: "15px", borderRadius: "5px"}} disableRipple>
+                  sx={{fontSize: "15px", borderBottom: filterMenu == 1 ? "1px solid #000000" : "none", borderRadius: "15px", paddingInline: "25px", paddingBlock: "10px", transition: "border 0.5s ease"}} disableRipple>
                     {/* Filtro Classificação */}
                     Classificação <ArrowDropDown/> 
                 </MenuItem>
-                <Box sx={{position: "absolute", width: "auto", height: "auto", backgroundColor: "white", padding: "10px", marginLeft: "14px", boxShadow: "0px 0px 5px 1px #00000040", opacity: filterMenu == 1 ? "1" : "0", borderRadius: "10px", zIndex: "1"}}>
+                <Box sx={{position: "absolute", width: "auto", height: "auto", backgroundColor: "white", padding: "10px", marginLeft: "14px",  opacity: filterMenu == 1 ? "1" : "0", borderRadius: "10px", transition: "opacity ease 0.5s", left: "-14px", marginTop: "31px", boxShadow: "0px 5px 5px 1px #00000040"}}>
                   <MenuItem 
-                    sx={{fontSize: "10px", padding: "10px"}} disableGutters>
-                      Classificação 1
+                    sx={{fontSize: "13px", padding: "10px", display: "flex", alignItems: "center"}} disableGutters>
+                      Crescente
                   </MenuItem>
                   <Divider sx={{backgroundColor: "black"}}/>
                   <MenuItem 
-                    sx={{fontSize: "10px", padding: "10px"}} disableGutters>
-                      Classificação 2
+                    sx={{fontSize: "13px", padding: "10px"}} disableGutters>
+                      Decrescente
                   </MenuItem>
                   <Divider sx={{backgroundColor: "black"}}/>
                   <MenuItem 
-                    sx={{fontSize: "10px", padding: "10px"}} disableGutters>
-                      Classificação 3
+                    sx={{fontSize: "13px", padding: "10px"}} disableGutters>
+                      Postagens mais novas
+                  </MenuItem>
+                  <Divider sx={{backgroundColor: "black"}}/>
+                  <MenuItem 
+                    sx={{fontSize: "13px", padding: "10px"}} disableGutters>
+                      Postagens mais antigas
                   </MenuItem>
                 </Box>
               </Box>
@@ -90,7 +76,7 @@ const FirstSection = () => {
             </Box>
             <Divider orientation="vertical" sx={{backgroundColor: "black", margin: "25px 35px"}} flexItem/>
             {/* Lado direito do menu de filtro */}
-            <Box sx={{fontSize: "15px", marginBlock: "10px", marginRight: "15px"}}>
+            <Box sx={{fontSize: "15px", marginBlock: "10px", marginRight: "15px", padding: "10px"}}>
               <Typography 
                 sx={{
                   fontSize: "15px", textAlign: "center", 
@@ -106,8 +92,8 @@ const FirstSection = () => {
                   '&:hover': {backgroundColor: "#c9c9c9"}}}>
                     Limpar Filtro(s)
               </MenuItem>
-            </Box>  
-          </Box>
+            </Box>
+          </FilterMenu>
         </Box>
       </Box>
     </Container>
