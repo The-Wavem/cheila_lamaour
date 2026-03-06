@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { 
   Box, Grid, Paper, Typography, Stack 
 } from '@mui/material';
@@ -6,8 +7,9 @@ import {
   BarChart, Bar, PieChart, Pie, Cell, LabelList
 } from 'recharts';
 import { BRAND } from '@/theme/branding';
+import { getLeadsStats } from '@/services/homeAPI';
 
-// --- MOCK DATA ---
+// --- MOCK DATA ORIGINAIS ---
 const leadsData = [
   { name: 'Seg', leads: 4 },
   { name: 'Ter', leads: 7 },
@@ -23,13 +25,6 @@ const topArticlesData = [
   { name: 'Síndrome Impostor', acessos: 98 },
   { name: 'Gestão de Tempo', acessos: 86 },
   { name: 'Carreira 2026', acessos: 65 },
-];
-
-const originData = [
-  { name: 'Instagram', value: 45 },
-  { name: 'LinkedIn', value: 30 },
-  { name: 'Google', value: 15 },
-  { name: 'Indicação', value: 10 },
 ];
 
 const PIE_COLORS = [BRAND.primary, BRAND.secondary, '#2D3748', '#A0AEC0'];
@@ -71,6 +66,36 @@ const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, per
 };
 
 export default function AnalyticsCharts() {
+  const [originData, setOriginData] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const leads = await getLeadsStats();
+        const counts = leads.reduce((acc, lead) => {
+          const source = lead.utm_source || 'Direto';
+          acc[source] = (acc[source] || 0) + 1;
+          return acc;
+        }, {});
+
+        const formattedData = Object.keys(counts).map(key => ({
+          name: key,
+          value: counts[key]
+        }));
+
+        setOriginData(formattedData);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
+
+  if (loading) return <Typography sx={{ p: 3 }}>Carregando dados...</Typography>;
+
   return (
     <Grid container spacing={3}>
       
@@ -117,7 +142,6 @@ export default function AnalyticsCharts() {
                 fillOpacity={1} 
                 fill="url(#colorLeads)" 
               >
-                {/* LABELS NO TOPO DA LINHA */}
                 <LabelList 
                   dataKey="leads" 
                   position="top" 
@@ -160,36 +184,29 @@ export default function AnalyticsCharts() {
                   <Tooltip />
                 </PieChart>
               </ResponsiveContainer>
-              {/* Total no Centro */}
               <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', textAlign: 'center' }}>
                 <Typography variant="h5" fontWeight="bold" color={BRAND.primary}>100%</Typography>
               </Box>
             </Box>
             
-            {/* Legenda */}
             <Stack direction="row" flexWrap="wrap" justifyContent="center" gap={2} sx={{ mt: 1 }}>
                {originData.map((entry, index) => (
                  <Stack key={index} direction="row" alignItems="center" spacing={0.5}>
-                    <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: PIE_COLORS[index] }} />
+                    <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: PIE_COLORS[index % PIE_COLORS.length] }} />
                     <Typography variant="caption" color="text.secondary">{entry.name}</Typography>
                  </Stack>
                ))}
             </Stack>
           </Paper>
 
-          {/* B. TOP ARTIGOS (BAR CHART HORIZONTAL) */}
+          {/* B. TOP ARTIGOS */}
           <Paper 
             elevation={0}
             sx={{ p: 3, borderRadius: 3, boxShadow: BRAND.shadowSoft, flex: 1, minHeight: 280 }}
           >
             <Typography variant="subtitle1" fontWeight="bold" sx={{ mb: 1 }}>Top Artigos Lidos</Typography>
             <ResponsiveContainer width="100%" height="85%">
-              <BarChart 
-                data={topArticlesData} 
-                layout="vertical" 
-                barSize={20}
-                margin={{ right: 30 }} 
-              >
+              <BarChart data={topArticlesData} layout="vertical" barSize={20} margin={{ right: 30 }} >
                 <XAxis type="number" hide />
                 <YAxis 
                   dataKey="name" 
@@ -201,7 +218,6 @@ export default function AnalyticsCharts() {
                 />
                 <Tooltip cursor={{fill: 'transparent'}} contentStyle={{ borderRadius: 8 }} />
                 <Bar dataKey="acessos" fill={BRAND.secondary} radius={[0, 4, 4, 0]}>
-                  {/* LABELS NA PONTA DA BARRA */}
                   <LabelList 
                     dataKey="acessos" 
                     position="right" 

@@ -1,4 +1,4 @@
-import { doc, getDoc, setDoc, collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { doc, getDoc, setDoc, collection, addDoc, serverTimestamp, } from "firebase/firestore";
 import { db } from "./firebaseConfig";
 
 // ============================================================================
@@ -64,12 +64,21 @@ export const updateContactData = (contactData) => updateDocumentData("home_conta
  */
 export const saveContactMessage = async (messageData) => {
     try {
+
+        const utms = {
+            utm_source: sessionStorage.getItem('utm_source') || 'Direto',
+            utm_medium: sessionStorage.getItem('utm_medium') || 'Nenhum',
+            utm_campaign: sessionStorage.getItem('utm_campaign') || 'Nenhuma'
+        };
+
+
         // Criamos uma referência para uma nova coleção chamada "messages"
         const messagesRef = collection(db, "messages");
         
         // Adicionamos o documento com um timestamp para saber quando foi enviado
         await addDoc(messagesRef, {
             ...messageData,
+            ...utms,
             createdAt: serverTimestamp(), // Adiciona data/hora do servidor
             status: "new" // Útil para você filtrar mensagens lidas/não lidas depois
         });
@@ -140,6 +149,24 @@ export const updateHomeData = async (data = {}) => {
         return { success: true };
     } catch (error) {
         console.error("Erro ao atualizar dados da Home:", error);
+        throw error;
+    }
+
+    
+};
+
+import { query, getDocs, orderBy } from "firebase/firestore";
+
+/**
+ * Busca todos os leads para processar estatísticas no Dashboard
+ */
+export const getLeadsStats = async () => {
+    try {
+        const q = query(collection(db, "messages"), orderBy("createdAt", "desc"));
+        const querySnapshot = await getDocs(q);
+        return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    } catch (error) {
+        console.error("Erro ao buscar estatísticas:", error);
         throw error;
     }
 };

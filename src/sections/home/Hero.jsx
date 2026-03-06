@@ -6,6 +6,8 @@ import EmailIcon from '@mui/icons-material/Email';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
 import { Link } from 'react-router-dom';
 import { getHeroData } from '@/services/homeAPI';
+import { useUtm } from '@/hooks/capturaURL'; 
+
 
 const HERO_DEFAULTS = {
     headline: 'Cheila Lamour',
@@ -18,6 +20,9 @@ const HERO_DEFAULTS = {
 };
 
 const Hero = () => {
+    
+    useUtm(); 
+
     const [heroData, setHeroData] = useState(HERO_DEFAULTS);
 
     useEffect(() => {
