@@ -2,18 +2,37 @@ import React from 'react';
 import { AppBar, Toolbar, Box, Button, Divider } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
 
-const Header = () => {
+const Header = ({position, bgColor, fontColor, dividerColor}) => {
   const navigate = useNavigate();
+
+  const btnStyle = {
+    fontFamily: "'Poppins', sans-serif",
+    fontWeight: 500,
+    fontSize: '15px',
+    color: fontColor || '#333',
+    textTransform: 'none',
+    px: 2,
+    transition: 'all 0.3s ease',
+    '&:hover': {
+      color: '#00A6A6',
+      bgcolor: dividerColor || "rgba(0, 166, 166, 0.1)"
+    },
+  };
+
+  const dividerStyle = {
+    mx: 2,
+    bgcolor: 'rgba(255, 255, 255, 0.1)',
+  };
 
   return (
     <AppBar
-      position="static"
+      position={position}
       color="transparent"
       elevation={0}
       sx={{
         width: '100%',
         backdropFilter: 'blur(10px)',
-        background: 'rgba(255, 255, 255, 0.95)',
+        background: bgColor,
         boxShadow: '0 2px 20px rgba(0, 0, 0, 0.05)',
       }}
     >
@@ -86,25 +105,6 @@ const Header = () => {
       </Toolbar>
     </AppBar>
   );
-};
-
-const btnStyle = {
-  fontFamily: "'Poppins', sans-serif",
-  fontWeight: 500,
-  fontSize: '15px',
-  color: '#333',
-  textTransform: 'none',
-  px: 2,
-  transition: 'all 0.3s ease',
-  '&:hover': {
-    color: '#00A6A6',
-    bgcolor: 'rgba(0, 166, 166, 0.05)',
-  },
-};
-
-const dividerStyle = {
-  mx: 2,
-  bgcolor: 'rgba(0, 0, 0, 0.1)',
 };
 
 export default Header;

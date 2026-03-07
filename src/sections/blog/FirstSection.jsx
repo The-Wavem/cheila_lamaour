@@ -1,7 +1,7 @@
 import { Box, Container, IconButton, Typography, MenuItem, Divider, GlobalStyles} from "@mui/material";
 import FilterAltRoundedIcon from '@mui/icons-material/FilterAltRounded';
 import { useState } from "react";
-import { ArrowCircleDown, ArrowDropDown } from "@mui/icons-material";
+import { ArrowCircleDown, ArrowDropDown, ArrowDropUp } from "@mui/icons-material";
 import FilterMenu from "@/components/ui/FilterMenu";
 
 const FirstSection = () => {
@@ -41,9 +41,9 @@ const FirstSection = () => {
               <Box>
                 <MenuItem 
                   onClick={filterMenu == 0 || filterMenu == 2 ? () => setMenu(1) : () => setMenu(0)} 
-                  sx={{fontSize: "15px", borderBottom: filterMenu == 1 ? "1px solid #000000" : "none", borderRadius: "15px", paddingInline: "25px", paddingBlock: "10px", transition: "border 0.5s ease"}} disableRipple>
+                  sx={{fontSize: "15px", borderRadius: "15px", paddingInline: "25px", paddingBlock: "10px"}} disableRipple>
                     {/* Filtro Classificação */}
-                    Classificação <ArrowDropDown/> 
+                    Classificação <ArrowDropUp sx={{transform: filterMenu == 1 ? "rotate(180deg)" : "none", transition: "transform 0.3s ease"}}/>
                 </MenuItem>
                 <Box sx={{position: "absolute", width: "auto", height: "auto", backgroundColor: "white", padding: "10px", marginLeft: "14px",  opacity: filterMenu == 1 ? "1" : "0", borderRadius: "10px", transition: "opacity ease 0.5s", left: "-14px", marginTop: "31px", boxShadow: "0px 5px 5px 1px #00000040"}}>
                   <MenuItem 

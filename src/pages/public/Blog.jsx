@@ -6,8 +6,7 @@ import Header from "@/components/layout/Header";
 export default function Blog() {
   return (
     <>
-      <Header></Header>
-      
+      <Header position={"relative"} bgColor={"white"}></Header>
       {/* Chamando as seções aqui */}
       <FirstSection></FirstSection>
       <CardSection></CardSection>

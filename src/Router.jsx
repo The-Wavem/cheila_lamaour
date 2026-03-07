@@ -4,6 +4,7 @@ import { Routes, Route } from "react-router-dom";
 // Importações Lazy
 const Home = lazy(() => import("@pages/public/Home"));
 const Blog = lazy(() => import("@pages/public/Blog"));
+const Article = lazy(() => import("@pages/public/Article"))
 const About = lazy(() => import("@pages/public/About"));
 const Contact = lazy(() => import("@pages/public/Contact"));
 const Training = lazy(() => import("@pages/public/Training"));
@@ -19,6 +20,7 @@ export default function Router() {
         {/* Rotas Públicas */}
         <Route path="/" element={<Home />} />
         <Route path="/blog" element={<Blog />} />
+        <Route path="/article" element={<Article />} />
         {/* <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />*/}
         <Route path="/training" element={<Training />} />
