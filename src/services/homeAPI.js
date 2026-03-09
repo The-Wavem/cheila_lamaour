@@ -1,5 +1,6 @@
-import { doc, getDoc, setDoc, collection, addDoc, serverTimestamp, } from "firebase/firestore";
+import { doc, getDoc, setDoc, collection, addDoc, serverTimestamp, query, getDocs, orderBy } from "firebase/firestore";
 import { db } from "./firebaseConfig";
+import { filterTimestampedRecords } from './analyticsDateRange';
 
 // ============================================================================
 // Home Page API Services
@@ -154,17 +155,15 @@ export const updateHomeData = async (data = {}) => {
 
     
 };
-
-import { query, getDocs, orderBy } from "firebase/firestore";
-
 /**
  * Busca todos os leads para processar estatísticas no Dashboard
  */
-export const getLeadsStats = async () => {
+export const getLeadsStats = async (options = {}) => {
     try {
         const q = query(collection(db, "messages"), orderBy("createdAt", "desc"));
         const querySnapshot = await getDocs(q);
-        return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        const leads = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        return filterTimestampedRecords(leads, options);
     } catch (error) {
         console.error("Erro ao buscar estatísticas:", error);
         throw error;
