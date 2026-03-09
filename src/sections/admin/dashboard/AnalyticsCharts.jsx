@@ -221,7 +221,7 @@ const getVariation = (currentValue, previousValue) => {
 function ComparisonSummary({ currentLabel, previousLabel, currentValue, previousValue, accentColor = BRAND.primary }) {
   return (
     <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.25} sx={{ mb: 2 }}>
-      <Box sx={{ px: 1.5, py: 1, borderRadius: 2, bgcolor: `${accentColor}12`, color: accentColor }}>
+      <Box sx={{ px: 1.5, py: 1, borderRadius: 2, bgcolor: `${accentColor}0D`, color: accentColor, border: `1px solid ${accentColor}18` }}>
         <Typography variant="caption" sx={{ display: 'block', fontWeight: 700 }}>
           Atual
         </Typography>
@@ -229,7 +229,7 @@ function ComparisonSummary({ currentLabel, previousLabel, currentValue, previous
           {currentLabel}: {currentValue}
         </Typography>
       </Box>
-      <Box sx={{ px: 1.5, py: 1, borderRadius: 2, bgcolor: '#F8FAFC', color: BRAND.textPrimary, border: '1px solid #EDF2F7' }}>
+      <Box sx={{ px: 1.5, py: 1, borderRadius: 2, bgcolor: '#FBFCFD', color: BRAND.textPrimary, border: '1px solid #EEF2F6' }}>
         <Typography variant="caption" sx={{ display: 'block', fontWeight: 700, color: BRAND.textSecondary }}>
           Período anterior
         </Typography>
@@ -237,7 +237,7 @@ function ComparisonSummary({ currentLabel, previousLabel, currentValue, previous
           {previousLabel}: {previousValue}
         </Typography>
       </Box>
-      <Box sx={{ px: 1.5, py: 1, borderRadius: 2, bgcolor: '#FFF8E1', color: BRAND.secondary }}>
+      <Box sx={{ px: 1.5, py: 1, borderRadius: 2, bgcolor: '#FFFBF2', color: BRAND.secondary, border: '1px solid #F8E8B5' }}>
         <Typography variant="caption" sx={{ display: 'block', fontWeight: 700 }}>
           Variação
         </Typography>
@@ -386,8 +386,8 @@ export default function AnalyticsCharts({ filterOptions = { periodDays: 7 }, vis
             boxShadow: BRAND.shadowSoft, bgcolor: 'white'
           }}
         >
-          <Stack direction={{ xs: 'column', sm: 'row' }} justifyContent="space-between" alignItems={{ xs: 'flex-start', sm: 'center' }} spacing={1.5} sx={{ mb: 3 }}>
-            <Box>
+          <Stack direction={{ xs: 'column', sm: 'row' }} justifyContent="space-between" alignItems={{ xs: 'flex-start', sm: 'flex-start' }} spacing={1.5} sx={{ mb: 3, minHeight: { sm: 76 } }}>
+            <Box sx={{ minHeight: { sm: 76 }, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
               <Typography variant="h6" fontWeight="bold" fontFamily={BRAND.fontFamilyHeader}>
                 Performance de Captação
               </Typography>
@@ -395,8 +395,10 @@ export default function AnalyticsCharts({ filterOptions = { periodDays: 7 }, vis
                 Novos leads cadastrados no intervalo selecionado.
               </Typography>
             </Box>
-            <Box sx={{ bgcolor: '#E0F2F1', color: BRAND.primary, px: 1.5, py: 0.5, borderRadius: 1, fontWeight: 'bold', fontSize: '0.875rem' }}>
+            <Box sx={{ minHeight: { sm: 76 }, display: 'flex', alignItems: { xs: 'flex-start', sm: 'center' } }}>
+            <Box sx={{ bgcolor: '#F1FBF9', color: BRAND.primary, px: 1.5, py: 0.75, borderRadius: 1.5, fontWeight: 'bold', fontSize: '0.875rem', border: '1px solid #D7F0EA' }}>
               {leadsData.reduce((total, item) => total + item.leads, 0)} leads no período
+            </Box>
             </Box>
           </Stack>
 
@@ -458,15 +460,17 @@ export default function AnalyticsCharts({ filterOptions = { periodDays: 7 }, vis
           elevation={0}
           sx={{ p: { xs: 2, md: 3 }, borderRadius: 3, boxShadow: BRAND.shadowSoft, minHeight: { xs: 280, md: 420 }, minWidth: 0, height: '100%' }}
         >
-          <Stack direction={{ xs: 'column', sm: 'row' }} justifyContent="space-between" alignItems={{ xs: 'flex-start', sm: 'flex-start' }} spacing={1.5} sx={{ mb: 2 }}>
-            <Box>
+          <Stack direction={{ xs: 'column', sm: 'row' }} justifyContent="space-between" alignItems={{ xs: 'flex-start', sm: 'flex-start' }} spacing={1.5} sx={{ mb: 2, minHeight: { sm: 76 } }}>
+            <Box sx={{ minHeight: { sm: 76 }, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
               <Typography variant="subtitle1" fontWeight="bold">Acessos da Home</Typography>
               <Typography variant="body2" color="text.secondary">
                 Comparativo entre visitas totais e visitantes únicos com consentimento.
               </Typography>
             </Box>
-            <Box sx={{ bgcolor: '#FFF8E1', color: BRAND.secondary, px: 1.5, py: 0.5, borderRadius: 1, fontWeight: 'bold', fontSize: '0.875rem' }}>
+            <Box sx={{ minHeight: { sm: 76 }, display: 'flex', alignItems: { xs: 'flex-start', sm: 'center' } }}>
+            <Box sx={{ bgcolor: '#FFFBF2', color: BRAND.secondary, px: 1.5, py: 0.75, borderRadius: 1.5, fontWeight: 'bold', fontSize: '0.875rem', border: '1px solid #F8E8B5' }}>
               {acceptanceRate}% aceite
+            </Box>
             </Box>
           </Stack>
 
