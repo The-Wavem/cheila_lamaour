@@ -79,8 +79,8 @@ const Header = () => {
 
           <Divider orientation="vertical" flexItem sx={dividerStyle} />
 
-          <Button href="#treinamento" color="inherit" sx={btnStyle}>
-            Treinamento
+          <Button component={Link} to="/servicos" color="inherit" sx={btnStyle}>
+            Serviços
           </Button>
         </Box>
       </Toolbar>

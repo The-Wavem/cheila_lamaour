@@ -1,5 +1,5 @@
 import React, { Suspense, lazy } from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 
 import LoadingScreen from "./components/ui/LoadingScreen";
 import ProtectedRoute from "./components/ui/ProtectedRoute";
@@ -8,10 +8,7 @@ import PublicOnlyRoute from "./components/ui/PublicOnlyRoute";
 // Importações Lazy
 const Home = lazy(() => import("@pages/public/Home"));
 const Blog = lazy(() => import("@pages/public/Blog"));
-const About = lazy(() => import("@pages/public/About"));
-const Contact = lazy(() => import("@pages/public/Contact"));
-const Training = lazy(() => import("@pages/public/Training"));
-const Agenda = lazy(() => import("@sections/contact/agenda"));
+const Servicos = lazy(() => import("@pages/public/Servicos"));
 const Dashboard = lazy(() => import("@pages/admin/dashboard"));
 const BlogManager = lazy(() => import("@pages/admin/BlogManager"));
 const AdminLayout = lazy(() => import("@components/layout/AdminLayout"));
@@ -29,9 +26,8 @@ export default function Router() {
         {/* Rotas Públicas */}
         <Route path="/" element={<Home />} />
         <Route path="/blog" element={<Blog />} />
-        {/* <Route path="/about" element={<About />} />
-        <Route path="/contact" element={<Contact />} />*/}
-        <Route path="/training" element={<Training />} />
+        <Route path="/servicos" element={<Servicos />} />
+        <Route path="/training" element={<Navigate to="/servicos" replace />} />
 
         <Route
           path="/admin/login"

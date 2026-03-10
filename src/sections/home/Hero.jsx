@@ -180,8 +180,9 @@ const Hero = () => {
                             </Button>
                             <Divider orientation="vertical" flexItem sx={{ mx: 2, bgcolor: 'rgba(0, 0, 0, 0.1)' }} />
                             <Button
+                                component={Link}
+                                to="/servicos"
                                 color="inherit"
-                                href="#treinamento"
                                 sx={{
                                     fontFamily: "'Poppins', sans-serif",
                                     fontWeight: 500,
@@ -196,7 +197,7 @@ const Hero = () => {
                                     }
                                 }}
                             >
-                                Treinamento
+                                Serviços
                             </Button>
                         </Box>
                         <Box sx={{ width: 50 }} />

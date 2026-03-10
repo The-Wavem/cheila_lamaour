@@ -8,11 +8,12 @@ import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import SendIcon from '@mui/icons-material/Send';
 import FormatQuoteIcon from '@mui/icons-material/FormatQuote';
+import { Link } from 'react-router-dom';
 import { getServicesData, getTestimonialsData, getContactData, saveContactMessage } from '@/services/homeAPI';
 const DEFAULT_SERVICES_DATA = {
     title: 'Serviços Prestados',
     subtitle: 'Soluções completas de mentoria',
-    view_all_text: 'Ver todos os serviços e treinamentos',
+    view_all_text: 'Ver página completa de serviços',
     cards: [
         {
             title: 'Desenvolvimento Profissional',
@@ -366,10 +367,16 @@ const ServicesSection = () => {
                 position: 'relative'
             }}>
                 <Typography
+                    component={Link}
+                    to="/servicos"
                     sx={{
+                        textDecoration: 'none',
                         color: '#007070',
                         fontSize: '18px',
                         fontWeight: '600',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: 1,
                         cursor: 'pointer',
                         mb: 2,
                         transition: 'all 0.3s ease',
@@ -381,6 +388,7 @@ const ServicesSection = () => {
                     }}
                 >
                     {servicesData.view_all_text}
+                    <ArrowForwardIcon sx={{ fontSize: 18 }} />
                 </Typography>
 
                 {/*risco linha blur */}
