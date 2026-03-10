@@ -11,6 +11,8 @@ import WebIcon from '@mui/icons-material/Web';
 import LogoutIcon from '@mui/icons-material/Logout';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import { signOutAdmin } from '@services/auth';
+import { useAuth } from '@hooks/useAuth';
 
 const drawerWidth = 260; // Largura quando aberto
 const collapsedWidth = 70; // Largura quando fechado
@@ -18,6 +20,7 @@ const collapsedWidth = 70; // Largura quando fechado
 export default function AdminLayout() {
     const navigate = useNavigate();
     const location = useLocation();
+    const { user } = useAuth();
     const [mobileOpen, setMobileOpen] = useState(false); // Estado para o menu mobile
     const [isSidebarOpen, setIsSidebarOpen] = useState(true); // Estado Desktop
 
@@ -41,6 +44,12 @@ export default function AdminLayout() {
         navigate(path);
     };
 
+    const handleLogout = async () => {
+        await signOutAdmin();
+        setMobileOpen(false);
+        navigate('/admin/login', { replace: true });
+    };
+
     const drawerContent = (
         <Box sx={{ height: '100%', bgcolor: '#009688', color: 'white', overflowX: 'hidden', display: 'flex', flexDirection: 'column' }}>
             {/* Header do Menu */}
@@ -61,6 +70,23 @@ export default function AdminLayout() {
                     {isSidebarOpen ? <ChevronLeftIcon /> : <MenuIcon />}
                 </IconButton>
             </Toolbar>
+
+            <Divider sx={{ bgcolor: 'rgba(255,255,255,0.2)' }} />
+
+            <Box sx={{ px: 2.5, py: 2, display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                <Avatar sx={{ bgcolor: 'rgba(255,255,255,0.18)', color: 'white' }}>
+                    {(user?.email || 'A').charAt(0).toUpperCase()}
+                </Avatar>
+
+                <Box sx={{ display: { xs: 'block', sm: isSidebarOpen ? 'block' : 'none' }, minWidth: 0 }}>
+                    <Typography variant="body2" fontWeight="bold" noWrap>
+                        Acesso autorizado
+                    </Typography>
+                    <Typography variant="caption" sx={{ opacity: 0.85 }} noWrap>
+                        {user?.email || 'Administrador'}
+                    </Typography>
+                </Box>
+            </Box>
 
             <Divider sx={{ bgcolor: 'rgba(255,255,255,0.2)' }} />
 
@@ -110,10 +136,7 @@ export default function AdminLayout() {
                 <ListItem disablePadding sx={{ display: 'block' }}>
                     <Tooltip title={!isSidebarOpen ? "Sair" : ""} placement="right">
                         <ListItemButton 
-                            onClick={() => {
-                                alert("Logout");
-                                setMobileOpen(false); // Fecha menu ao sair também
-                            }} 
+                            onClick={handleLogout}
                             sx={{ 
                                 minHeight: 48, 
                                 justifyContent: { xs: 'initial', sm: isSidebarOpen ? 'initial' : 'center' }, 

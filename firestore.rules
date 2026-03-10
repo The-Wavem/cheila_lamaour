@@ -1,0 +1,125 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function publicSiteContentDocIds() {
+      return [
+        'home_hero',
+        'home_about',
+        'home_services',
+        'home_testimonials',
+        'home_contact'
+      ];
+    }
+
+    function isPublicSiteContentDoc(docId) {
+      return docId in publicSiteContentDocIds();
+    }
+
+    function hasOnlyKeys(data, keys) {
+      return data.keys().hasOnly(keys);
+    }
+
+    function hasRequiredKeys(data, keys) {
+      return data.keys().hasAll(keys);
+    }
+
+    function isNonEmptyString(value, maxLength) {
+      return value is string && value.size() > 0 && value.size() <= maxLength;
+    }
+
+    function isOptionalString(value, maxLength) {
+      return value is string && value.size() <= maxLength;
+    }
+
+    function isValidPublicMessageCreate() {
+      return hasOnlyKeys(request.resource.data, [
+          'nome',
+          'email',
+          'mensagem',
+          'telefone',
+          'utm_source',
+          'utm_medium',
+          'utm_campaign',
+          'createdAt',
+          'status'
+        ])
+        && hasRequiredKeys(request.resource.data, [
+          'nome',
+          'email',
+          'mensagem',
+          'telefone',
+          'utm_source',
+          'utm_medium',
+          'utm_campaign',
+          'createdAt',
+          'status'
+        ])
+        && isNonEmptyString(request.resource.data.nome, 120)
+        && isNonEmptyString(request.resource.data.email, 160)
+        && request.resource.data.email.matches('^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$')
+        && isNonEmptyString(request.resource.data.mensagem, 3000)
+        && isOptionalString(request.resource.data.telefone, 40)
+        && isOptionalString(request.resource.data.utm_source, 120)
+        && isOptionalString(request.resource.data.utm_medium, 120)
+        && isOptionalString(request.resource.data.utm_campaign, 120)
+        && request.resource.data.status == 'new'
+        && request.resource.data.createdAt == request.time;
+    }
+
+    function isValidPublicPageAccessCreate() {
+      return hasOnlyKeys(request.resource.data, [
+          'page',
+          'accessType',
+          'clientId',
+          'consentStatus',
+          'utm_source',
+          'utm_medium',
+          'utm_campaign',
+          'createdAt'
+        ])
+        && hasRequiredKeys(request.resource.data, [
+          'page',
+          'accessType',
+          'clientId',
+          'consentStatus',
+          'utm_source',
+          'utm_medium',
+          'utm_campaign',
+          'createdAt'
+        ])
+        && request.resource.data.page == 'home'
+        && request.resource.data.accessType in ['general', 'unique']
+        && request.resource.data.consentStatus in ['pending', 'accepted', 'rejected']
+        && isNonEmptyString(request.resource.data.clientId, 128)
+        && isOptionalString(request.resource.data.utm_source, 120)
+        && isOptionalString(request.resource.data.utm_medium, 120)
+        && isOptionalString(request.resource.data.utm_campaign, 120)
+        && request.resource.data.createdAt == request.time;
+    }
+
+    match /site_content/{docId} {
+      allow get: if isSignedIn() || isPublicSiteContentDoc(docId);
+      allow list: if isSignedIn();
+      allow create, update, delete: if isSignedIn();
+    }
+
+    match /messages/{messageId} {
+      allow create: if isSignedIn() || isValidPublicMessageCreate();
+      allow read, update, delete: if isSignedIn();
+    }
+
+    match /page_access_logs/{logId} {
+      allow create: if isSignedIn() || isValidPublicPageAccessCreate();
+      allow read, update, delete: if isSignedIn();
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

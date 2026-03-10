@@ -2,6 +2,8 @@ import React, { Suspense, lazy } from "react";
 import { Routes, Route } from "react-router-dom";
 
 import LoadingScreen from "./components/ui/LoadingScreen";
+import ProtectedRoute from "./components/ui/ProtectedRoute";
+import PublicOnlyRoute from "./components/ui/PublicOnlyRoute";
 
 // Importações Lazy
 const Home = lazy(() => import("@pages/public/Home"));
@@ -16,6 +18,7 @@ const AdminLayout = lazy(() => import("@components/layout/AdminLayout"));
 const BlogEditorPage = lazy(() => import("@pages/admin/BlogEditorPage"));
 const LeadsManager = lazy(() => import("@pages/admin/LeadsManager"));
 const SiteEditor = lazy(() => import("@pages/admin/SiteEditor"));
+const LoginPage = lazy(() => import("@pages/admin/LoginPage"));
 
 export default function Router() {
   return (
@@ -30,66 +33,79 @@ export default function Router() {
         <Route path="/contact" element={<Contact />} />*/}
         <Route path="/training" element={<Training />} />
 
+        <Route
+          path="/admin/login"
+          element={
+            <PublicOnlyRoute>
+              <Suspense fallback={<LoadingScreen />}>
+                <LoginPage />
+              </Suspense>
+            </PublicOnlyRoute>
+          }
+        />
+
         {/* Rotas Admin */}
-        <Route path="/admin" element={<AdminLayout />}>
-          {/* O "index" significa que é a rota padrão /admin */}
+        <Route element={<ProtectedRoute />}>
+          <Route path="/admin" element={<AdminLayout />}>
+            {/* O "index" significa que é a rota padrão /admin */}
+            <Route
+              index
+              element={
+                <Suspense fallback={<LoadingScreen />}>
+                  <Dashboard />
+                </Suspense>
+              }
+            />
+
+            {/* Admin - Blog (Visão Geral) */}
+            <Route
+              path="blog"
+              element={
+                <Suspense fallback={<LoadingScreen />}>
+                  <BlogManager />
+                </Suspense>
+              }
+            />
+
+            {/* Admin - Leads */}
+            <Route
+              path="leads"
+              element={
+                <Suspense fallback={<LoadingScreen />}>
+                  <LeadsManager />
+                </Suspense>
+              }
+            />
+
+            {/* admin - Site Editor */}
+            <Route
+              path="editor"
+              element={
+                <Suspense fallback={<LoadingScreen />}>
+                  <SiteEditor />
+                </Suspense>
+              }
+            />
+          </Route>
+
+          {/* Admin - Blog (Editor) */}
           <Route
-            index
+            path="/admin/blog/novo"
             element={
               <Suspense fallback={<LoadingScreen />}>
-                <Dashboard />
+                <BlogEditorPage />
               </Suspense>
             }
           />
-
-          {/* Admin - Blog (Visão Geral) */}
           <Route
-            path="blog"
+            path="/admin/blog/editar/:id"
             element={
               <Suspense fallback={<LoadingScreen />}>
-                <BlogManager />
-              </Suspense>
-            }
-          />
-
-          {/* Admin - Leads */}
-          <Route
-            path="leads"
-            element={
-              <Suspense fallback={<LoadingScreen />}>
-                <LeadsManager />
-              </Suspense>
-            }
-          />
-
-          {/* admin - Site Editor */}
-          <Route
-            path="editor"
-            element={
-              <Suspense fallback={<LoadingScreen />}>
-                <SiteEditor />
+                <BlogEditorPage />
               </Suspense>
             }
           />
         </Route>
-
-        {/* Admin - Blog (Editor) */}
-        <Route
-          path="/admin/blog/novo"
-          element={
-            <Suspense fallback={<LoadingScreen />}>
-              <BlogEditorPage />
-            </Suspense>
-          }
-        />
-        <Route
-          path="/admin/blog/editar/:id"
-          element={
-            <Suspense fallback={<LoadingScreen />}>
-              <BlogEditorPage />
-            </Suspense>
-          }
-        />
       </Routes>
     </Suspense>
   );
