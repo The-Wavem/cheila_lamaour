@@ -1,13 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { AppBar, Toolbar, Box, Button, Divider, Typography } from '@mui/material';
-import Imagem from '@/assets/pose1.png';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import EmailIcon from '@mui/icons-material/Email';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
 import { Link } from 'react-router-dom';
+import Imagem from '@/assets/pose1.png';
 import { getHeroData } from '@/services/homeAPI';
-import { useUtm } from '@/hooks/capturaURL'; 
-
+import { useUtm } from '@/hooks/capturaURL';
 
 const HERO_DEFAULTS = {
     headline: 'Cheila Lamour',
@@ -19,24 +18,23 @@ const HERO_DEFAULTS = {
     secondary_cta_link: '#sobre'
 };
 
-const Hero = () => {
-    
-    useUtm(); 
+const HomeHero = () => {
+    useUtm();
 
     const [heroData, setHeroData] = useState(HERO_DEFAULTS);
 
     useEffect(() => {
         const loadSchema = async () => {
             try {
-                // Apenas busca os dados.
                 const data = await getHeroData();
                 if (data) {
                     setHeroData((prev) => ({ ...prev, ...data }));
                 }
             } catch (error) {
-                console.error("Erro ao carregar dados do Hero:", error);
+                console.error('Erro ao carregar dados do Hero:', error);
             }
         };
+
         loadSchema();
     }, []);
 
@@ -70,8 +68,6 @@ const Hero = () => {
                     }}
                 >
                     <Toolbar sx={{ justifyContent: 'space-between', py: 2.5, px: 6 }}>
-
-                        {/* logo esquerda-*/}
                         <Box
                             sx={{
                                 width: 50,
@@ -96,7 +92,6 @@ const Hero = () => {
                             CL
                         </Box>
 
-                        {/* navegação */}
                         <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center', gap: 0 }}>
                             <Button
                                 color="inherit"
@@ -214,7 +209,6 @@ const Hero = () => {
                     position: 'relative',
                     overflow: 'hidden'
                 }}>
-                    {/* elementos decorativos de fundo animados */}
                     <Box sx={{
                         position: 'absolute',
                         top: '-10%',
@@ -227,7 +221,6 @@ const Hero = () => {
                         zIndex: 0
                     }} />
 
-                    {/* primeira bola*/}
                     <Box sx={{
                         position: 'absolute',
                         left: '22%',
@@ -251,7 +244,6 @@ const Hero = () => {
                         }
                     }} />
 
-                    {/* segunda bola*/}
                     <Box sx={{
                         position: 'absolute',
                         left: '40%',
@@ -275,7 +267,6 @@ const Hero = () => {
                         }
                     }} />
 
-                    {/*estrelas decorativas */}
                     <AutoAwesomeIcon sx={{
                         position: 'absolute',
                         top: '15%',
@@ -301,7 +292,6 @@ const Hero = () => {
                         zIndex: 1
                     }} />
 
-                    {/* Imagem */}
                     <Box
                         component="img"
                         src={Imagem}
@@ -329,7 +319,6 @@ const Hero = () => {
                         marginLeft: '45%',
                         zIndex: 3
                     }}>
-                        {/* icone decorativo */}
                         <AutoAwesomeIcon sx={{
                             fontSize: 45,
                             color: '#FBAE36',
@@ -337,7 +326,6 @@ const Hero = () => {
                             filter: 'drop-shadow(0 4px 8px rgba(251, 174, 54, 0.3))'
                         }} />
 
-                        {/* HEADLINE DINAMICO */}
                         <Typography
                             variant="h1"
                             sx={{
@@ -352,7 +340,6 @@ const Hero = () => {
                             {heroData.headline}
                         </Typography>
 
-                        {/* retangulo blur */}
                         <Box sx={{
                             width: '220px',
                             height: '6px',
@@ -364,7 +351,6 @@ const Hero = () => {
                         }}>
                         </Box>
 
-                        {/* SUBHEADLINE DINAMICO */}
                         <Typography
                             variant="h6"
                             sx={{
@@ -378,8 +364,7 @@ const Hero = () => {
                                 textShadow: '0 2px 10px rgba(0, 0, 0, 0.2)'
                             }}
                         >
-                            {/* Renderiza o texto com os separadores estilizados se for o padrão, ou texto puro se vier do banco diferente */}
-                            {heroData.subheadline.includes("•") || heroData.subheadline.includes("-") ? (
+                            {heroData.subheadline.includes('•') || heroData.subheadline.includes('-') ? (
                                 heroData.subheadline.split(/[-•]/).map((item, index, arr) => (
                                     <React.Fragment key={index}>
                                         {item.trim()}
@@ -393,13 +378,11 @@ const Hero = () => {
                             )}
                         </Typography>
 
-                        {/* botoes */}
                         <Box sx={{ display: 'flex', gap: 3, mt: 5, ml: 2 }}>
-                            {/* CTA BUTTON DINAMICO */}
                             <Button
                                 variant="contained"
                                 startIcon={<EmailIcon />}
-                                href={heroData.cta_link || "#contact"}
+                                href={heroData.cta_link || '#contact'}
                                 sx={{
                                     fontFamily: "'Poppins', sans-serif",
                                     bgcolor: '#FBAE36',
@@ -422,7 +405,6 @@ const Hero = () => {
                                 {heroData.cta_text}
                             </Button>
 
-                            {/* Botão Secundário (geralmente fixo, mas poderia ser dinâmico também) */}
                             <Button
                                 variant="outlined"
                                 startIcon={<MenuBookIcon />}
@@ -455,7 +437,6 @@ const Hero = () => {
                             </Button>
                         </Box>
 
-                        {/* Badge decorativo - EXPERIENCE TEXT DINAMICO */}
                         <Box sx={{
                             mt: 6,
                             ml: 2,
@@ -487,4 +468,4 @@ const Hero = () => {
     );
 };
 
-export default Hero;
+export default HomeHero;

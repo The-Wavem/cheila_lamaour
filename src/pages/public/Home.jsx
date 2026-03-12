@@ -1,7 +1,9 @@
 import React from 'react';
-import Hero from '@sections/home/Hero';
-import Hero2 from '@/sections/home/Hero2';
-import Servicos from '@/sections/home/Servicos';
+import HomeHero from '@/sections/home/HomeHero';
+import HomeAbout from '@/sections/home/HomeAbout';
+import HomeServices from '@/sections/home/HomeServices';
+import HomeTestimonials from '@/sections/home/HomeTestimonials';
+import HomeContact from '@/sections/home/HomeContact';
 import DataConsentBanner from '@/components/ui/DataConsentBanner';
 import { useHomeAccessTracking } from '@/hooks/useHomeAccessTracking';
 
@@ -21,9 +23,11 @@ const Home = () => {
 
     return (
         <>
-            <Hero />
-            <Hero2 />
-            <Servicos />
+            <HomeHero />
+            <HomeAbout />
+            <HomeServices />
+            <HomeTestimonials />
+            <HomeContact />
             <DataConsentBanner
                 open={showConsentBanner}
                 onAccept={acceptConsent}

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Typography, Button } from '@mui/material';
-import Imagem from '@/assets/pose1.png';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
+import Imagem from '@/assets/pose1.png';
 import { getAboutData } from '@/services/homeAPI';
 
 const ABOUT_DEFAULTS = {
@@ -12,7 +12,7 @@ const ABOUT_DEFAULTS = {
     featured_text: 'Você é o seu maior investimento'
 };
 
-const Hero2 = () => {
+const HomeAbout = () => {
     const [aboutData, setAboutData] = useState(ABOUT_DEFAULTS);
 
     useEffect(() => {
@@ -43,7 +43,6 @@ const Hero2 = () => {
             position: 'relative',
             overflow: 'hidden'
         }}>
-            {/* elementos decorativos de fundo */}
             <Box sx={{
                 position: 'absolute',
                 top: '10%',
@@ -55,7 +54,7 @@ const Hero2 = () => {
                 filter: 'blur(40px)',
                 zIndex: 0
             }} />
-            
+
             <Box sx={{
                 position: 'absolute',
                 bottom: '15%',
@@ -75,7 +74,6 @@ const Hero2 = () => {
                 position: 'relative',
                 zIndex: 1
             }}>
-                {/* quadrado amarelo */}
                 <Box sx={{
                     width: '100%',
                     bgcolor: '#FDF2CA',
@@ -97,8 +95,6 @@ const Hero2 = () => {
                         pointerEvents: 'none'
                     }
                 }}>
-                   
-
                     <Typography
                         variant="h3"
                         sx={{
@@ -142,7 +138,6 @@ const Hero2 = () => {
                         {aboutData.description}
                     </Typography>
 
-                    {/* botao minha historia*/}
                     <Box sx={{ display: 'flex', justifyContent: 'flex-start', maxWidth: '52%', mt: 2 }}>
                         <Button
                             variant="outlined"
@@ -171,7 +166,6 @@ const Hero2 = () => {
                         </Button>
                     </Box>
 
-                    {/* Pequenos elementos decorativos */}
                     <Box sx={{
                         position: 'absolute',
                         top: '40%',
@@ -194,7 +188,6 @@ const Hero2 = () => {
                     }} />
                 </Box>
 
-                {/* quadrado azul com gradiente */}
                 <Box sx={{
                     position: 'absolute',
                     right: 100,
@@ -211,7 +204,6 @@ const Hero2 = () => {
                     boxShadow: '0 20px 60px rgba(0, 169, 169, 0.3)'
                 }} />
 
-                {/* imagem cheila*/}
                 <Box sx={{
                     position: 'absolute',
                     right: 100,
@@ -244,7 +236,6 @@ const Hero2 = () => {
                     />
                 </Box>
 
-                {/* retangulo com texto  */}
                 <Box sx={{
                     position: 'absolute',
                     right: 350,
@@ -310,4 +301,4 @@ const Hero2 = () => {
     );
 };
 
-export default Hero2;
+export default HomeAbout;
