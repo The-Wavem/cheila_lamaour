@@ -16,7 +16,16 @@ const HomeHeroActions = ({
 }) => {
     return (
         <>
-            <Box sx={{ display: 'flex', gap: 3, mt: 5, ml: 2 }}>
+            <Box sx={{
+                display: 'flex',
+                flexDirection: { xs: 'column', sm: 'row' },
+                width: '100%',
+                gap: 2,
+                mt: { xs: 4, md: 5 },
+                ml: 0,
+                justifyContent: { xs: 'center', md: 'flex-start' },
+                alignItems: { xs: 'stretch', sm: 'center' }
+            }}>
                 <PublicButton
                     variant="publicAccent"
                     startIcon={<EmailIcon />}
@@ -24,6 +33,8 @@ const HomeHeroActions = ({
                     sx={{
                         px: 4,
                         py: 1.8,
+                        minWidth: { sm: 190 },
+                        width: { xs: '100%', sm: 'auto' },
                     }}
                 >
                     {ctaText}
@@ -36,6 +47,8 @@ const HomeHeroActions = ({
                     sx={{
                         px: 4,
                         py: 1.8,
+                        minWidth: { sm: 190 },
+                        width: { xs: '100%', sm: 'auto' },
                     }}
                 >
                     {secondaryCtaText || 'Minha história'}
@@ -46,8 +59,10 @@ const HomeHeroActions = ({
                 variant="glass"
                 icon={<AutoAwesomeIcon sx={{ fontSize: 20, color: PUBLIC_BRAND.colors.accent }} />}
                 sx={{
-                    mt: 6,
-                    ml: 2,
+                    mt: { xs: 4, md: 5 },
+                    ml: 0,
+                    alignSelf: { xs: 'center', md: 'flex-start' },
+                    px: { xs: 2.5, md: 3 },
                 }}>
                 {experienceText}
             </PublicBadge>

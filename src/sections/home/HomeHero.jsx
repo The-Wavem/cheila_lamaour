@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Box } from "@mui/material";
+import { Box, Container, Grid } from "@mui/material";
 import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 import Imagem from "@/assets/pose1.png";
 import BackgroundGlow from "@/components/ui/public/home/BackgroundGlow";
@@ -65,6 +65,7 @@ const HomeHero = () => {
             justifyContent: "center",
             position: "relative",
             overflow: "hidden",
+            pt: { xs: 2, md: 0 },
           }}
         >
           <BackgroundGlow
@@ -77,27 +78,27 @@ const HomeHero = () => {
           />
 
           <DecorativeOrb
-            left="22%"
-            top="200px"
-            width="250px"
-            height="250px"
+            left="8%"
+            top={{ xs: "14%", md: "22%" }}
+            width={{ xs: "110px", sm: "160px", md: "230px" }}
+            height={{ xs: "110px", sm: "160px", md: "230px" }}
             zIndex={1}
           />
 
           <DecorativeOrb
-            left="40%"
-            top="540px"
-            width="250px"
-            height="250px"
+            left={{ xs: "62%", md: "24%" }}
+            top={{ xs: "50%", md: "70%" }}
+            width={{ xs: "90px", sm: "130px", md: "190px" }}
+            height={{ xs: "90px", sm: "130px", md: "190px" }}
             zIndex={1}
           />
 
           <AutoAwesomeIcon
             sx={{
               position: "absolute",
-              top: "15%",
-              left: "10%",
-              fontSize: 30,
+              top: { xs: "11%", md: "16%" },
+              left: { xs: "5%", md: "8%" },
+              fontSize: { xs: 22, md: 30 },
               color: 'rgba(251, 174, 54, 0.6)',
               zIndex: 1,
             }}
@@ -105,66 +106,115 @@ const HomeHero = () => {
           <AutoAwesomeIcon
             sx={{
               position: "absolute",
-              bottom: "20%",
-              right: "15%",
-              fontSize: 25,
+              bottom: { xs: "14%", md: "18%" },
+              right: { xs: "8%", md: "14%" },
+              fontSize: { xs: 20, md: 25 },
               color: "rgba(255, 255, 255, 0.4)",
               zIndex: 1,
+              display: { xs: 'none', md: 'block' },
             }}
           />
           <AutoAwesomeIcon
             sx={{
               position: "absolute",
-              top: "45%",
-              left: "8%",
-              fontSize: 20,
+              top: { xs: "46%", md: "48%" },
+              left: { xs: "8%", md: "6%" },
+              fontSize: { xs: 16, md: 20 },
               color: 'rgba(251, 174, 54, 0.5)',
               zIndex: 1,
+              display: { xs: 'none', sm: 'block' },
             }}
           />
 
-          <Box
-            component="img"
-            src={Imagem}
-            alt="Cheila Lamour"
+          <Container
+            maxWidth="xl"
             sx={{
-              position: "absolute",
-              left: "15%",
-              top: "150px",
-              width: "700px",
-              height: "700px",
-              objectFit: "cover",
-              zIndex: 2,
-              filter: "drop-shadow(0 30px 60px rgba(0, 0, 0, 0.3))",
-              transition: "transform 0.3s ease",
-              "&:hover": {
-                transform: "scale(1.02)",
-              },
-            }}
-          />
-
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "flex-start",
-              marginLeft: "45%",
+              position: "relative",
               zIndex: 3,
+              py: { xs: 6, md: 4 },
             }}
           >
-            <HomeHeroContent
-              headline={heroData.headline}
-              subheadline={heroData.subheadline}
-            />
+            <Grid
+              container
+              spacing={4}
+              alignItems="center"
+              sx={{
+                minHeight: { xs: 'auto', md: 'calc(100vh - 80px)' },
+              }}
+            >
+              <Grid
+                size={{ xs: 12, md: 6 }}
+                sx={{
+                  order: { xs: 1, md: 1 },
+                  display: 'flex',
+                  justifyContent: { xs: 'center', md: 'flex-start' },
+                }}
+              >
+                <Box
+                  sx={{
+                    width: '100%',
+                    maxWidth: { xs: 360, sm: 430, md: 560, lg: 620 },
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    position: 'relative',
+                  }}
+                >
+                  <Box
+                    component="img"
+                    src={Imagem}
+                    alt="Cheila Lamour"
+                    sx={{
+                      width: '100%',
+                      maxWidth: '100%',
+                      height: 'auto',
+                      objectFit: 'contain',
+                      display: 'block',
+                      filter: 'drop-shadow(0 30px 60px rgba(0, 0, 0, 0.28))',
+                      transition: 'transform 0.3s ease',
+                      '&:hover': {
+                        transform: 'scale(1.005)',
+                      },
+                    }}
+                  />
+                </Box>
+              </Grid>
 
-            <HomeHeroActions
-              ctaText={heroData.cta_text}
-              ctaLink={heroData.cta_link}
-              secondaryCtaText={heroData.secondary_cta_text}
-              secondaryCtaLink={heroData.secondary_cta_link}
-              experienceText={heroData.experienceText}
-            />
-          </Box>
+              <Grid
+                size={{ xs: 12, md: 6 }}
+                sx={{
+                  order: { xs: 2, md: 2 },
+                }}
+              >
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: { xs: "center", md: "flex-start" },
+                    textAlign: { xs: "center", md: "left" },
+                    maxWidth: { xs: "100%", md: 520, lg: 560 },
+                    mx: { xs: "auto", md: 0 },
+                    mr: { md: 0 },
+                    ml: { md: 'auto' },
+                    py: { xs: 1, md: 0 },
+                  }}
+                >
+                  <HomeHeroContent
+                    headline={heroData.headline}
+                    subheadline={heroData.subheadline}
+                  />
+
+                  <HomeHeroActions
+                    ctaText={heroData.cta_text}
+                    ctaLink={heroData.cta_link}
+                    secondaryCtaText={heroData.secondary_cta_text}
+                    secondaryCtaLink={heroData.secondary_cta_link}
+                    experienceText={heroData.experienceText}
+                  />
+                </Box>
+              </Grid>
+            </Grid>
+          </Container>
         </Box>
       </Box>
     </>

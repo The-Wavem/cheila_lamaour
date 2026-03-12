@@ -38,15 +38,27 @@ const getOrCreateClientId = () => {
 };
 
 const getConsentStatus = () => localStorage.getItem(CONSENT_STATUS_KEY) || 'pending';
+const shouldTrackInCurrentEnvironment = () => {
+    if (import.meta.env.PROD) {
+        return true;
+    }
+
+    return import.meta.env.VITE_ENABLE_DEV_ANALYTICS === 'true';
+};
 
 export const useHomeAccessTracking = () => {
     const clientId = useMemo(() => getOrCreateClientId(), []);
     const [consentStatus, setConsentStatus] = useState(getConsentStatus);
     const isRegisteringUniqueRef = useRef(false);
+    const shouldTrack = useMemo(() => shouldTrackInCurrentEnvironment(), []);
 
     const uniqueAccessKey = useMemo(() => `${UNIQUE_HOME_KEY_PREFIX}:${clientId}`, [clientId]);
 
     const registerUniqueAccess = useCallback(async () => {
+        if (!shouldTrack) {
+            return;
+        }
+
         if (localStorage.getItem(uniqueAccessKey) === 'true' || isRegisteringUniqueRef.current) {
             return;
         }
@@ -65,9 +77,13 @@ export const useHomeAccessTracking = () => {
         } finally {
             isRegisteringUniqueRef.current = false;
         }
-    }, [clientId, uniqueAccessKey]);
+    }, [clientId, shouldTrack, uniqueAccessKey]);
 
     useEffect(() => {
+        if (!shouldTrack) {
+            return;
+        }
+
         ensureUtmStorage();
 
         const pageLoadId = `${window.location.pathname}:${Math.round(performance.timeOrigin || Date.now())}`;
@@ -87,7 +103,7 @@ export const useHomeAccessTracking = () => {
         }).catch((error) => {
             console.error('Erro ao registrar acesso geral da Home:', error);
         });
-    }, [clientId]);
+    }, [clientId, shouldTrack]);
 
     useEffect(() => {
         if (consentStatus === 'accepted') {

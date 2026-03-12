@@ -7,7 +7,7 @@ const HomeHeroContent = ({ headline, subheadline }) => {
     return (
         <>
             <AutoAwesomeIcon sx={{
-                fontSize: 45,
+                fontSize: { xs: 34, md: 45 },
                 color: PUBLIC_BRAND.colors.accent,
                 mb: 2,
                 filter: 'drop-shadow(0 4px 8px rgba(251, 174, 54, 0.3))'
@@ -17,24 +17,26 @@ const HomeHeroContent = ({ headline, subheadline }) => {
                 variant="h1"
                 sx={{
                     fontFamily: PUBLIC_BRAND.fonts.display,
-                    fontSize: '110px',
+                    fontSize: { xs: '52px', sm: '64px', md: '80px', lg: '96px' },
                     color: PUBLIC_BRAND.colors.textOnDark,
                     textShadow: '0 4px 20px rgba(0, 0, 0, 0.2)',
                     lineHeight: 1.1,
-                    mb: 1
+                    mb: 1,
+                    textWrap: 'balance'
                 }}
             >
                 {headline}
             </Typography>
 
             <Box sx={{
-                width: '220px',
+                width: { xs: '160px', sm: '220px' },
                 height: '6px',
                 background: PUBLIC_BRAND.gradients.accentLine,
                 mt: 2,
-                ml: 2,
+                ml: 0,
                 borderRadius: '3px',
-                boxShadow: '0 2px 10px rgba(251, 174, 54, 0.4)'
+                boxShadow: '0 2px 10px rgba(251, 174, 54, 0.4)',
+                alignSelf: { xs: 'center', md: 'flex-start' }
             }}>
             </Box>
 
@@ -44,11 +46,12 @@ const HomeHeroContent = ({ headline, subheadline }) => {
                     fontFamily: PUBLIC_BRAND.fonts.body,
                     color: PUBLIC_BRAND.colors.textOnDark,
                     mt: 3,
-                    ml: 2,
-                    fontSize: '1.3rem',
+                    ml: 0,
+                    fontSize: { xs: '1rem', sm: '1.05rem', md: '1.15rem', lg: '1.2rem' },
                     fontWeight: 400,
-                    letterSpacing: '1px',
-                    textShadow: '0 2px 10px rgba(0, 0, 0, 0.2)'
+                    letterSpacing: '0.04em',
+                    textShadow: '0 2px 10px rgba(0, 0, 0, 0.2)',
+                    maxWidth: '32ch'
                 }}
             >
                 {subheadline.includes('•') || subheadline.includes('-') ? (
