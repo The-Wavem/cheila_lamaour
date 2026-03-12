@@ -27,7 +27,6 @@ export default function Router() {
         <Route path="/" element={<Home />} />
         <Route path="/blog" element={<Blog />} />
         <Route path="/servicos" element={<Servicos />} />
-        <Route path="/training" element={<Navigate to="/servicos" replace />} />
 
         <Route
           path="/admin/login"
