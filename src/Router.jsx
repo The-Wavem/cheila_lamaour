@@ -1,9 +1,9 @@
 import React, { Suspense, lazy } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 
-import LoadingScreen from "./components/ui/LoadingScreen";
-import ProtectedRoute from "./components/ui/ProtectedRoute";
-import PublicOnlyRoute from "./components/ui/PublicOnlyRoute";
+import LoadingScreen from "./components/ui/guards/LoadingScreen";
+import ProtectedRoute from "./components/ui/guards/ProtectedRoute";
+import PublicOnlyRoute from "./components/ui/guards/PublicOnlyRoute";
 
 // Importações Lazy
 const Home = lazy(() => import("@pages/public/Home"));

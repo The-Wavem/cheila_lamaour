@@ -13,7 +13,7 @@ import SearchIcon from '@mui/icons-material/Search';
 
 // --- IMPORTS DOS COMPONENTES VISUAIS ---
 import { BRAND } from '@/theme/branding';
-import ConfirmDeleteModal from '@/components/ui/ConfirmDeleteModal';
+import ConfirmDeleteModal from '@/components/ui/overlays/ConfirmDeleteModal';
 
 const mockRows = [
   { id: 1, title: 'Liderança Feminina na Engenharia', category: 'Carreira', date: '12/08/2025', status: 'Publicado' },

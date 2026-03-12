@@ -9,7 +9,7 @@ import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import SentimentDissatisfiedIcon from '@mui/icons-material/SentimentDissatisfied';
 import { BRAND } from '@/theme/branding';
-import ConfirmDeleteModal from '@/components/ui/ConfirmDeleteModal';
+import ConfirmDeleteModal from '@/components/ui/overlays/ConfirmDeleteModal';
 
 const mockLeads = [
   { id: 1, email: 'contato@empresa.com.br', date: '04/02/2026', origin: 'Newsletter' },

@@ -24,8 +24,8 @@ import YouTubeIcon from '@mui/icons-material/YouTube';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import AddIcon from '@mui/icons-material/Add';
 import { useDirtyProtection } from '@/hooks/useDirtyProtection';
-import ToastNotification from '@/components/ui/ToastNotification';
-import UnsavedChangesModal from '@/components/ui/UnsavedChangesModal';
+import ToastNotification from '@/components/ui/overlays/ToastNotification';
+import UnsavedChangesModal from '@/components/ui/overlays/UnsavedChangesModal';
 import { BRAND } from '@/theme/branding';
 
 export default function PostEditor() {

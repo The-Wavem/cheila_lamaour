@@ -8,8 +8,8 @@ import ServicesEditor from '@/sections/admin/site-editor/forms/ServicesEditor';
 import ContactEditor from '@/sections/admin/site-editor/forms/ContactEditor';
 import AboutEditor from '@/sections/admin/site-editor/forms/AboutEditor';
 import { useDirtyProtection } from '@/hooks/useDirtyProtection';
-import UnsavedChangesModal from '@/components/ui/UnsavedChangesModal';
-import ToastNotification from '@/components/ui/ToastNotification';
+import UnsavedChangesModal from '@/components/ui/overlays/UnsavedChangesModal';
+import ToastNotification from '@/components/ui/overlays/ToastNotification';
 import { BRAND } from '@/theme/branding';
 
 export default function SiteEditor() {

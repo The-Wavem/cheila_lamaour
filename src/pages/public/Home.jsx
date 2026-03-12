@@ -4,7 +4,7 @@ import HomeAbout from '@/sections/home/HomeAbout';
 import HomeServices from '@/sections/home/HomeServices';
 import HomeTestimonials from '@/sections/home/HomeTestimonials';
 import HomeContact from '@/sections/home/HomeContact';
-import DataConsentBanner from '@/components/ui/DataConsentBanner';
+import DataConsentBanner from '@/components/ui/overlays/DataConsentBanner';
 import { useHomeAccessTracking } from '@/hooks/useHomeAccessTracking';
 
 

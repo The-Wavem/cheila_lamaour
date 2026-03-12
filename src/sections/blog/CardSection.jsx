@@ -1,4 +1,4 @@
-import CardBlog from "@/components/ui/CardBlog";
+import CardBlog from "@/components/ui/public/blog/CardBlog";
 import { Key } from "@mui/icons-material";
 import { Container} from "@mui/material";
 

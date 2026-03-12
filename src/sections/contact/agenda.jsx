@@ -5,12 +5,6 @@ import Header from '@/components/layout/Header';
 function Agenda() {
     return (
         <>
-            <style>
-                {`
-                @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
-                `}
-            </style>
-
             <Box
                 sx={{
                     minHeight: '100vh',

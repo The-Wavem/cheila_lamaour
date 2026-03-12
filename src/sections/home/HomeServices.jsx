@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Typography, Card, CardContent } from '@mui/material';
+import { Box } from '@mui/material';
 import SchoolIcon from '@mui/icons-material/School';
 import PsychologyIcon from '@mui/icons-material/Psychology';
 import GroupsIcon from '@mui/icons-material/Groups';
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import { Link } from 'react-router-dom';
+import BackgroundGlow from '@/components/ui/public/home/BackgroundGlow';
+import SectionHeader from '@/components/ui/public/base/SectionHeader';
+import ServiceCard from '@/components/ui/public/home/ServiceCard';
+import SectionLinkCTA from '@/components/ui/public/home/SectionLinkCTA';
+import { PUBLIC_BRAND } from '@/theme/branding';
 import { getServicesData } from '@/services/homeAPI';
 
 const DEFAULT_SERVICES_DATA = {
@@ -81,66 +84,39 @@ const HomeServices = () => {
             position: 'relative',
             overflow: 'hidden'
         }}>
-            <Box sx={{
-                position: 'absolute',
-                top: '10%',
-                right: '5%',
-                width: '300px',
-                height: '300px',
-                borderRadius: '50%',
-                background: 'rgba(0, 166, 166, 0.05)',
-                filter: 'blur(60px)',
-                zIndex: 0
-            }} />
-            <Box sx={{
-                position: 'absolute',
-                bottom: '20%',
-                left: '8%',
-                width: '250px',
-                height: '250px',
-                borderRadius: '50%',
-                background: 'rgba(181, 149, 32, 0.05)',
-                filter: 'blur(50px)',
-                zIndex: 0
-            }} />
+            <BackgroundGlow
+                top="10%"
+                right="5%"
+                width="300px"
+                height="300px"
+                color="rgba(0, 166, 166, 0.05)"
+                zIndex={0}
+            />
+            <BackgroundGlow
+                bottom="20%"
+                left="8%"
+                width="250px"
+                height="250px"
+                color="rgba(181, 149, 32, 0.05)"
+                zIndex={0}
+            />
 
-            <Typography
-                variant="h6"
-                sx={{
-                    color: '#B59520',
-                    fontSize: '25px',
-                    fontWeight: '600',
-                    mb: 2,
-                    textAlign: 'center',
-                    letterSpacing: '2px',
-                    textTransform: 'uppercase'
-                }}
-            >
-                {servicesData.title}
-            </Typography>
-
-            <Typography
-                variant="h3"
-                sx={{
-                    color: '#007070',
-                    fontSize: '48px',
-                    fontWeight: 'bold',
-                    mb: 2,
-                    textAlign: 'center',
-                    letterSpacing: '-0.5px'
-                }}
-            >
-                {servicesData.subtitle}
-            </Typography>
-
-            <Box sx={{
-                width: '100px',
-                height: '5px',
-                background: 'linear-gradient(90deg, transparent 0%, #007070 50%, transparent 100%)',
-                mt: 2,
-                mb: 8,
-                borderRadius: '3px'
-            }} />
+            <Box sx={{ width: '100%', maxWidth: '900px' }}>
+                <SectionHeader
+                    overline={servicesData.title}
+                    title={servicesData.subtitle}
+                    align="center"
+                    color={PUBLIC_BRAND.colors.primaryDark}
+                    decorativeLine={{
+                        width: '100px',
+                        height: '5px',
+                        background: PUBLIC_BRAND.gradients.sectionLine,
+                        borderRadius: '3px',
+                        mt: 2,
+                        mb: 8
+                    }}
+                />
+            </Box>
 
             <Box sx={{
                 display: 'flex',
@@ -153,168 +129,19 @@ const HomeServices = () => {
                 zIndex: 1
             }}>
                 {mergedServices.map((service, index) => (
-                    <Card
+                    <ServiceCard
                         key={index}
-                        sx={{
-                            flex: 1,
-                            maxWidth: '350px',
-                            bgcolor: 'white',
-                            borderRadius: '24px',
-                            boxShadow: '0 8px 30px rgba(0,0,0,0.08)',
-                            transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
-                            border: '1px solid rgba(0, 166, 166, 0.1)',
-                            position: 'relative',
-                            overflow: 'visible',
-                            '&:hover': {
-                                transform: 'translateY(-12px)',
-                                boxShadow: '0 20px 50px rgba(0, 166, 166, 0.15)',
-                                '& .icon-circle': {
-                                    transform: 'scale(1.1) rotate(10deg)',
-                                    boxShadow: '0 12px 30px rgba(0, 166, 166, 0.3)'
-                                },
-                                '& .saiba-mais': {
-                                    gap: 2
-                                }
-                            },
-                            '&::before': {
-                                content: '""',
-                                position: 'absolute',
-                                top: 0,
-                                left: 0,
-                                right: 0,
-                                height: '5px',
-                                background: 'linear-gradient(90deg, #00A6A6, #FBAE36)',
-                                borderRadius: '24px 24px 0 0',
-                                opacity: 0,
-                                transition: 'opacity 0.3s ease'
-                            },
-                            '&:hover::before': {
-                                opacity: 1
-                            }
-                        }}
-                    >
-                        <CardContent sx={{ p: 5 }}>
-                            <Box
-                                className="icon-circle"
-                                sx={{
-                                    width: '80px',
-                                    height: '80px',
-                                    background: 'linear-gradient(135deg, #00A6A6 0%, #007070 100%)',
-                                    borderRadius: '50%',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    color: 'white',
-                                    mb: 4,
-                                    boxShadow: '0 8px 20px rgba(0, 166, 166, 0.25)',
-                                    transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
-                                    position: 'relative',
-                                    '&::before': {
-                                        content: '""',
-                                        position: 'absolute',
-                                        top: '10%',
-                                        left: '10%',
-                                        width: '30%',
-                                        height: '30%',
-                                        background: 'rgba(255, 255, 255, 0.3)',
-                                        borderRadius: '50%',
-                                        filter: 'blur(8px)'
-                                    }
-                                }}
-                            >
-                                {service.icon}
-                            </Box>
-
-                            <Typography
-                                variant="h6"
-                                sx={{
-                                    color: '#007070',
-                                    fontWeight: 'bold',
-                                    fontSize: '22px',
-                                    mb: 2,
-                                    lineHeight: 1.3
-                                }}
-                            >
-                                {service.title}
-                            </Typography>
-
-                            <Typography
-                                variant="body2"
-                                sx={{
-                                    color: '#666',
-                                    lineHeight: 1.8,
-                                    mb: 4,
-                                    fontSize: '15px'
-                                }}
-                            >
-                                {service.description}
-                            </Typography>
-
-                            <Box
-                                className="saiba-mais"
-                                sx={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: 1,
-                                    color: '#B59520',
-                                    fontWeight: '600',
-                                    cursor: 'pointer',
-                                    fontSize: '15px',
-                                    transition: 'gap 0.3s ease',
-                                    '&:hover': {
-                                        color: '#007070'
-                                    }
-                                }}
-                            >
-                                <Typography sx={{ fontWeight: 600, fontSize: '15px' }}>
-                                    Saiba mais
-                                </Typography>
-                                <ArrowForwardIcon sx={{ fontSize: 18 }} />
-                            </Box>
-                        </CardContent>
-                    </Card>
+                        title={service.title}
+                        description={service.description}
+                        icon={service.icon}
+                    />
                 ))}
             </Box>
 
-            <Box sx={{
-                mt: 8,
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                position: 'relative'
-            }}>
-                <Typography
-                    component={Link}
-                    to="/servicos"
-                    sx={{
-                        textDecoration: 'none',
-                        color: '#007070',
-                        fontSize: '18px',
-                        fontWeight: '600',
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        gap: 1,
-                        cursor: 'pointer',
-                        mb: 2,
-                        transition: 'all 0.3s ease',
-                        position: 'relative',
-                        '&:hover': {
-                            color: '#00A6A6',
-                            transform: 'translateY(-2px)'
-                        }
-                    }}
-                >
-                    {servicesData.view_all_text}
-                    <ArrowForwardIcon sx={{ fontSize: 18 }} />
-                </Typography>
-
-                <Box sx={{
-                    width: '300px',
-                    height: '3px',
-                    background: 'linear-gradient(90deg, transparent 0%, #007070 50%, transparent 100%)',
-                    borderRadius: '2px'
-                }} />
-            </Box>
+            <SectionLinkCTA
+                text={servicesData.view_all_text}
+                to="/servicos"
+            />
         </Box>
     );
 };

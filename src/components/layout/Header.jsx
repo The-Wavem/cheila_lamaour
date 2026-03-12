@@ -1,6 +1,51 @@
 import React from 'react';
 import { AppBar, Toolbar, Box, Button, Divider } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
+import { PUBLIC_BRAND } from '@/theme/branding';
+
+const NAV_ITEMS = [
+  { label: 'Home', to: '/' },
+  { label: 'Sobre Mim', href: '#sobre' },
+  { label: 'Agendar Mentoria', to: '/agenda' },
+  { label: 'Blog', href: '#blog' },
+  { label: 'Serviços', to: '/servicos', hasDivider: false },
+];
+
+const APP_BAR_SX = {
+  width: '100%',
+  backdropFilter: 'blur(10px)',
+  background: 'rgba(255, 255, 255, 0.95)',
+  boxShadow: PUBLIC_BRAND.shadows.subtle,
+};
+
+const TOOLBAR_SX = {
+  position: 'relative',
+  py: 2.5,
+  px: 6,
+};
+
+const LOGO_SX = {
+  width: 50,
+  height: 50,
+  background: PUBLIC_BRAND.gradients.logo,
+  borderRadius: 3,
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  color: 'white',
+  fontWeight: 'bold',
+  fontSize: '1.4rem',
+  boxShadow: PUBLIC_BRAND.shadows.logo,
+  cursor: 'pointer',
+};
+
+const NAV_CONTAINER_SX = {
+  position: 'absolute',
+  left: '50%',
+  transform: 'translateX(-50%)',
+  display: { xs: 'none', md: 'flex' },
+  alignItems: 'center',
+};
 
 const Header = () => {
   const navigate = useNavigate();
@@ -10,78 +55,34 @@ const Header = () => {
       position="static"
       color="transparent"
       elevation={0}
-      sx={{
-        width: '100%',
-        backdropFilter: 'blur(10px)',
-        background: 'rgba(255, 255, 255, 0.95)',
-        boxShadow: '0 2px 20px rgba(0, 0, 0, 0.05)',
-      }}
+      sx={APP_BAR_SX}
     >
-      <Toolbar
-        sx={{
-          position: 'relative',
-          py: 2.5,
-          px: 6,
-        }}
-      >
-        {/* Logo esquerda */}
+      <Toolbar sx={TOOLBAR_SX}>
         <Box
           onClick={() => navigate('/')}
-          sx={{
-            width: 50,
-            height: 50,
-            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-            borderRadius: 3,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: 'white',
-            fontWeight: 'bold',
-            fontSize: '1.4rem',
-            boxShadow: '0 4px 15px rgba(102, 126, 234, 0.3)',
-            cursor: 'pointer',
-          }}
+          sx={LOGO_SX}
         >
           CL
         </Box>
 
-        {/* Nav centralizado */}
-        <Box
-          sx={{
-            position: 'absolute',
-            left: '50%',
-            transform: 'translateX(-50%)',
-            display: { xs: 'none', md: 'flex' },
-            alignItems: 'center',
-          }}
-        >
-          <Button component={Link} to="/" color="inherit" sx={btnStyle}>
-            Home
-          </Button>
+        <Box sx={NAV_CONTAINER_SX}>
+          {NAV_ITEMS.map((item) => (
+            <React.Fragment key={item.label}>
+              <Button
+                component={item.to ? Link : undefined}
+                to={item.to}
+                href={item.href}
+                color="inherit"
+                sx={btnStyle}
+              >
+                {item.label}
+              </Button>
 
-          <Divider orientation="vertical" flexItem sx={dividerStyle} />
-
-          <Button href="#sobre" color="inherit" sx={btnStyle}>
-            Sobre Mim
-          </Button>
-
-          <Divider orientation="vertical" flexItem sx={dividerStyle} />
-
-          <Button component={Link} to="/agenda" color="inherit" sx={btnStyle}>
-            Agendar Mentoria
-          </Button>
-
-          <Divider orientation="vertical" flexItem sx={dividerStyle} />
-
-          <Button href="#blog" color="inherit" sx={btnStyle}>
-            Blog
-          </Button>
-
-          <Divider orientation="vertical" flexItem sx={dividerStyle} />
-
-          <Button component={Link} to="/servicos" color="inherit" sx={btnStyle}>
-            Serviços
-          </Button>
+              {item.hasDivider !== false && (
+                <Divider orientation="vertical" flexItem sx={dividerStyle} />
+              )}
+            </React.Fragment>
+          ))}
         </Box>
       </Toolbar>
     </AppBar>
@@ -89,16 +90,16 @@ const Header = () => {
 };
 
 const btnStyle = {
-  fontFamily: "'Poppins', sans-serif",
+  fontFamily: PUBLIC_BRAND.fonts.body,
   fontWeight: 500,
   fontSize: '15px',
-  color: '#333',
+  color: PUBLIC_BRAND.colors.textPrimary,
   textTransform: 'none',
   px: 2,
   transition: 'all 0.3s ease',
   '&:hover': {
-    color: '#00A6A6',
-    bgcolor: 'rgba(0, 166, 166, 0.05)',
+    color: PUBLIC_BRAND.colors.primary,
+    bgcolor: PUBLIC_BRAND.colors.primarySoft,
   },
 };
 

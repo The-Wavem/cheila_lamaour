@@ -8,7 +8,7 @@ import AddIcon from '@mui/icons-material/Add';
 import SaveIcon from '@mui/icons-material/Save';
 import WebIcon from '@mui/icons-material/Web';
 import { useDirtyProtection } from '@/hooks/useDirtyProtection'; // Ajuste o path se necessário
-import ToastNotification from '@/components/ui/ToastNotification'; // Ajuste o path se necessário
+import ToastNotification from '@/components/ui/overlays/ToastNotification';
 import { BRAND } from '@/theme/branding';
 
 export default function ActionWidgets() {

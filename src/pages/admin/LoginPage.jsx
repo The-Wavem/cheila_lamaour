@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Box, Button, Paper, Stack, TextField, Typography } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { useLocation, useNavigate } from 'react-router-dom';
-import ToastNotification from '@components/ui/ToastNotification';
+import ToastNotification from '@components/ui/overlays/ToastNotification';
 import { signInAdmin, getAuthErrorMessage } from '@services/auth';
 import { BRAND } from '@theme/branding';
 

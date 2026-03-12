@@ -1,7 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Typography, Button } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import Imagem from '@/assets/pose1.png';
+import BackgroundGlow from '@/components/ui/public/home/BackgroundGlow';
+import PublicButton from '@/components/ui/public/base/PublicButton';
+import PublicCard from '@/components/ui/public/base/PublicCard';
+import SectionHeader from '@/components/ui/public/base/SectionHeader';
+import { PUBLIC_BRAND } from '@/theme/branding';
 import { getAboutData } from '@/services/homeAPI';
 
 const ABOUT_DEFAULTS = {
@@ -43,29 +48,23 @@ const HomeAbout = () => {
             position: 'relative',
             overflow: 'hidden'
         }}>
-            <Box sx={{
-                position: 'absolute',
-                top: '10%',
-                left: '5%',
-                width: '150px',
-                height: '150px',
-                borderRadius: '50%',
-                background: 'rgba(251, 174, 54, 0.1)',
-                filter: 'blur(40px)',
-                zIndex: 0
-            }} />
+            <BackgroundGlow
+                top="10%"
+                left="5%"
+                width="150px"
+                height="150px"
+                color={PUBLIC_BRAND.colors.accentSoft}
+                zIndex={0}
+            />
 
-            <Box sx={{
-                position: 'absolute',
-                bottom: '15%',
-                right: '10%',
-                width: '200px',
-                height: '200px',
-                borderRadius: '50%',
-                background: 'rgba(0, 169, 169, 0.1)',
-                filter: 'blur(50px)',
-                zIndex: 0
-            }} />
+            <BackgroundGlow
+                bottom="15%"
+                right="10%"
+                width="200px"
+                height="200px"
+                color="rgba(0, 169, 169, 0.1)"
+                zIndex={0}
+            />
 
             <Box sx={{
                 display: 'flex',
@@ -95,31 +94,19 @@ const HomeAbout = () => {
                         pointerEvents: 'none'
                     }
                 }}>
-                    <Typography
-                        variant="h3"
-                        sx={{
-                            fontWeight: 'bold',
-                            mb: 4,
-                            color: '#007070',
-                            lineHeight: 1.4,
-                            maxWidth: '55%',
-                            fontSize: '48px',
-                            letterSpacing: '-0.5px',
-                            position: 'relative',
-                            '&::after': {
-                                content: '""',
-                                position: 'absolute',
-                                bottom: '-15px',
-                                left: 0,
+                    <Box sx={{ maxWidth: '55%' }}>
+                        <SectionHeader
+                            title={aboutData.quote}
+                            color={PUBLIC_BRAND.colors.primaryDark}
+                            decorativeLine={{
                                 width: '100px',
                                 height: '4px',
-                                background: 'linear-gradient(90deg, #FBAE36 0%, transparent 100%)',
-                                borderRadius: '2px'
-                            }
-                        }}
-                    >
-                        {aboutData.quote}
-                    </Typography>
+                                background: PUBLIC_BRAND.gradients.accentLine,
+                                borderRadius: '2px',
+                                mt: 1.5
+                            }}
+                        />
+                    </Box>
 
                     <Typography
                         variant="body1"
@@ -139,31 +126,16 @@ const HomeAbout = () => {
                     </Typography>
 
                     <Box sx={{ display: 'flex', justifyContent: 'flex-start', maxWidth: '52%', mt: 2 }}>
-                        <Button
-                            variant="outlined"
+                        <PublicButton
+                            variant="publicOutline"
                             sx={{
-                                borderColor: '#00A9A9',
-                                borderWidth: '2px',
-                                color: '#00A9A9',
                                 padding: '14px 40px',
                                 fontSize: '18px',
-                                borderRadius: '50px',
-                                textTransform: 'none',
-                                fontWeight: '600',
                                 boxShadow: '0 4px 15px rgba(0, 169, 169, 0.2)',
-                                transition: 'all 0.3s ease',
-                                '&:hover': {
-                                    borderColor: '#007070',
-                                    borderWidth: '2px',
-                                    color: '#ffffff',
-                                    bgcolor: '#007070',
-                                    transform: 'translateY(-2px)',
-                                    boxShadow: '0 6px 20px rgba(0, 112, 112, 0.3)'
-                                }
                             }}
                         >
                             {aboutData.button_text}
-                        </Button>
+                        </PublicButton>
                     </Box>
 
                     <Box sx={{
@@ -173,7 +145,7 @@ const HomeAbout = () => {
                         width: '8px',
                         height: '8px',
                         borderRadius: '50%',
-                        bgcolor: '#FBAE36',
+                        bgcolor: PUBLIC_BRAND.colors.accent,
                         opacity: 0.4
                     }} />
                     <Box sx={{
@@ -201,7 +173,7 @@ const HomeAbout = () => {
                     borderTopRightRadius: '50px',
                     borderBottomRightRadius: '100px',
                     zIndex: 2,
-                    boxShadow: '0 20px 60px rgba(0, 169, 169, 0.3)'
+                    bgcolor: PUBLIC_BRAND.colors.textOnDark,
                 }} />
 
                 <Box sx={{
@@ -236,11 +208,10 @@ const HomeAbout = () => {
                     />
                 </Box>
 
-                <Box sx={{
+                <PublicCard sx={{
                     position: 'absolute',
                     right: 350,
                     bottom: 100,
-                    bgcolor: '#ffffff',
                     padding: '30px 55px',
                     zIndex: 4,
                     borderTopLeftRadius: '50px',
@@ -250,8 +221,7 @@ const HomeAbout = () => {
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    boxShadow: '0 15px 40px rgba(0, 0, 0, 0.15)',
-                    border: '2px solid rgba(251, 174, 54, 0.3)',
+                    border: `2px solid ${PUBLIC_BRAND.colors.accentStrongSoft}`,
                     background: 'linear-gradient(135deg, #ffffff 0%, #f9f9f9 100%)',
                     transition: 'all 0.3s ease',
                     '&:hover': {
@@ -270,7 +240,7 @@ const HomeAbout = () => {
                         borderTopRightRadius: '20px',
                         borderBottomRightRadius: '50px',
                         padding: '2px',
-                        background: 'linear-gradient(135deg, #FBAE36, #00A9A9)',
+                        background: `linear-gradient(135deg, ${PUBLIC_BRAND.colors.accent}, ${PUBLIC_BRAND.colors.primary})`,
                         WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
                         WebkitMaskComposite: 'xor',
                         maskComposite: 'exclude',
@@ -280,12 +250,12 @@ const HomeAbout = () => {
                 }}>
                     <AutoAwesomeIcon sx={{
                         fontSize: 28,
-                        color: '#FBAE36',
+                        color: PUBLIC_BRAND.colors.accent,
                         mr: 2
                     }} />
                     <Typography
                         sx={{
-                            color: '#007070',
+                            color: PUBLIC_BRAND.colors.primaryDark,
                             fontSize: '24px',
                             fontWeight: 'bold',
                             textAlign: 'center',
@@ -295,7 +265,7 @@ const HomeAbout = () => {
                     >
                         {aboutData.featured_text}
                     </Typography>
-                </Box>
+                </PublicCard>
             </Box>
         </Box>
     );
