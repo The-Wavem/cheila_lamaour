@@ -43,7 +43,7 @@ const shouldTrackInCurrentEnvironment = () => {
         return true;
     }
 
-    return import.meta.env.VITE_ENABLE_DEV_ANALYTICS === 'true';
+    return import.meta.env.VITE_ENABLE_DEV_ANALYTICS === 'true'; // Permite tracking em dev se a variável de ambiente estiver setada
 };
 
 export const useHomeAccessTracking = () => {

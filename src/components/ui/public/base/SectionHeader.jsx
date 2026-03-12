@@ -9,7 +9,10 @@ const SectionHeader = ({
     subtitle,
     align = 'left',
     color = PUBLIC_BRAND.colors.textPrimary,
-    decorativeLine = null
+    decorativeLine = null,
+    titleSx,
+    subtitleSx,
+    overlineSx
 }) => {
     const textAlign = align;
     const alignment = align === 'center' ? 'center' : align === 'right' ? 'flex-end' : 'flex-start';
@@ -54,7 +57,8 @@ const SectionHeader = ({
                             color: PUBLIC_BRAND.colors.accent,
                             letterSpacing: '0.24em',
                             fontWeight: 600,
-                            lineHeight: 1.2
+                            lineHeight: 1.2,
+                            ...overlineSx
                         }}
                     >
                         {overline}
@@ -69,7 +73,8 @@ const SectionHeader = ({
                         color,
                         fontWeight: 'bold',
                         lineHeight: 1.1,
-                        mb: subtitle ? 2 : 0
+                        mb: subtitle ? 2 : 0,
+                        ...titleSx
                     }}
                 >
                     {title}
@@ -82,7 +87,8 @@ const SectionHeader = ({
                     sx={{
                         color,
                         opacity: 0.78,
-                        maxWidth: '60ch'
+                        maxWidth: '60ch',
+                        ...subtitleSx
                     }}
                 >
                     {subtitle}

@@ -93,39 +93,6 @@ const HomeHero = () => {
             zIndex={1}
           />
 
-          <AutoAwesomeIcon
-            sx={{
-              position: "absolute",
-              top: { xs: "11%", md: "16%" },
-              left: { xs: "5%", md: "8%" },
-              fontSize: { xs: 22, md: 30 },
-              color: 'rgba(251, 174, 54, 0.6)',
-              zIndex: 1,
-            }}
-          />
-          <AutoAwesomeIcon
-            sx={{
-              position: "absolute",
-              bottom: { xs: "14%", md: "18%" },
-              right: { xs: "8%", md: "14%" },
-              fontSize: { xs: 20, md: 25 },
-              color: "rgba(255, 255, 255, 0.4)",
-              zIndex: 1,
-              display: { xs: 'none', md: 'block' },
-            }}
-          />
-          <AutoAwesomeIcon
-            sx={{
-              position: "absolute",
-              top: { xs: "46%", md: "48%" },
-              left: { xs: "8%", md: "6%" },
-              fontSize: { xs: 16, md: 20 },
-              color: 'rgba(251, 174, 54, 0.5)',
-              zIndex: 1,
-              display: { xs: 'none', sm: 'block' },
-            }}
-          />
-
           <Container
             maxWidth="xl"
             sx={{

@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Typography } from '@mui/material';
-import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
-import Imagem from '@/assets/pose1.png';
+import { Box, Container, Grid, Typography } from '@mui/material';
+import Imagem from '@/assets/Cheila-portrait-02.png';
 import BackgroundGlow from '@/components/ui/public/home/BackgroundGlow';
 import PublicButton from '@/components/ui/public/base/PublicButton';
-import PublicCard from '@/components/ui/public/base/PublicCard';
 import SectionHeader from '@/components/ui/public/base/SectionHeader';
-import { PUBLIC_BRAND } from '@/theme/branding';
+import { BRAND, PUBLIC_BRAND } from '@/theme/branding';
 import { getAboutData } from '@/services/homeAPI';
 
 const ABOUT_DEFAULTS = {
@@ -35,238 +33,189 @@ const HomeAbout = () => {
         loadAboutData();
     }, []);
 
+    const bioParagraphs = aboutData.description
+        .split('\n\n')
+        .map((paragraph) => paragraph.trim())
+        .filter(Boolean);
+
     return (
-        <Box sx={{
-            minHeight: '100vh',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            background: 'linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%)',
-            width: '100%',
-            margin: 0,
-            padding: 0,
-            position: 'relative',
-            overflow: 'hidden'
-        }}>
-            <BackgroundGlow
-                top="10%"
-                left="5%"
-                width="150px"
-                height="150px"
-                color={PUBLIC_BRAND.colors.accentSoft}
-                zIndex={0}
-            />
-
-            <BackgroundGlow
-                bottom="15%"
-                right="10%"
-                width="200px"
-                height="200px"
-                color="rgba(0, 169, 169, 0.1)"
-                zIndex={0}
-            />
-
-            <Box sx={{
-                display: 'flex',
-                width: '100%',
-                alignItems: 'stretch',
+        <Box
+            component="section"
+            id="sobre"
+            sx={{
+                py: { xs: 8, md: 12 },
                 position: 'relative',
-                zIndex: 1
-            }}>
-                <Box sx={{
-                    width: '100%',
-                    bgcolor: '#FDF2CA',
-                    padding: '80px',
-                    paddingTop: '120px',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'flex-start',
-                    minHeight: '100vh',
-                    position: 'relative',
-                    '&::before': {
-                        content: '""',
-                        position: 'absolute',
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        bottom: 0,
-                        background: 'radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.3) 0%, transparent 50%)',
-                        pointerEvents: 'none'
-                    }
-                }}>
-                    <Box sx={{ maxWidth: '55%' }}>
-                        <SectionHeader
-                            title={aboutData.quote}
-                            color={PUBLIC_BRAND.colors.primaryDark}
-                            decorativeLine={{
-                                width: '100px',
-                                height: '4px',
-                                background: PUBLIC_BRAND.gradients.accentLine,
-                                borderRadius: '2px',
-                                mt: 1.5
-                            }}
-                        />
-                    </Box>
+                overflow: 'hidden',
+                background: 'linear-gradient(135deg, #f3ebcf 0%, #f7f2dc 55%, #efe6c8 100%)'
+            }}
+        >
+            <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 1 }}>
+                <Grid container spacing={{ xs: 4, md: 8 }} alignItems="center">
+                    <Grid size={{ xs: 12, md: 6 }}>
+                        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', maxWidth: 540 }}>
+                            <SectionHeader
+                                overline="A HISTORIA"
+                                title={aboutData.quote || 'Quem e Cheila Lamour?'}
+                                subtitle="Uma trajetória construída com propósito, liderança e desenvolvimento humano."
+                                color={PUBLIC_BRAND.colors.primaryDark}
+                                overlineSx={{
+                                    letterSpacing: '0.28em',
+                                    mb: 0.5
+                                }}
+                                titleSx={{
+                                    fontSize: { xs: '2.35rem', sm: '3rem', md: '3.7rem' },
+                                    lineHeight: { xs: 1.1, md: 1.04 },
+                                    maxWidth: '9ch',
+                                    fontWeight: 500,
+                                    fontFamily: BRAND.fontFamilyBody,
+                                }}
+                                subtitleSx={{
+                                    color: BRAND.textSecondary,
+                                    opacity: 1,
+                                    fontSize: { xs: '1rem', md: '1.08rem' },
+                                    maxWidth: '38ch',
+                                }}
+                                decorativeLine={{
+                                    width: '108px',
+                                    height: '4px',
+                                    background: PUBLIC_BRAND.gradients.accentLine,
+                                    borderRadius: '999px',
+                                    mt: 2.5,
+                                    mb: 0,
+                                }}
+                            />
 
-                    <Typography
-                        variant="body1"
-                        sx={{
-                            color: '#555',
-                            lineHeight: 1.9,
-                            fontSize: '18px',
-                            maxWidth: '52%',
-                            mb: 5,
-                            mt: 4,
-                            textAlign: 'justify',
-                            position: 'relative',
-                            whiteSpace: 'pre-line'
-                        }}
-                    >
-                        {aboutData.description}
-                    </Typography>
+                            <Box sx={{ mt: 4.5 }}>
+                                {bioParagraphs.map((paragraph, index) => (
+                                    <Typography
+                                        key={`${paragraph.slice(0, 20)}-${index}`}
+                                        variant="body1"
+                                        color="text.secondary"
+                                        sx={{
+                                            mb: 2.2,
+                                            lineHeight: 1.82,
+                                            fontSize: { xs: '1rem', md: '1.05rem' },
+                                            maxWidth: '42ch'
+                                        }}
+                                    >
+                                        {paragraph}
+                                    </Typography>
+                                ))}
+                            </Box>
 
-                    <Box sx={{ display: 'flex', justifyContent: 'flex-start', maxWidth: '52%', mt: 2 }}>
-                        <PublicButton
-                            variant="publicOutline"
-                            sx={{
-                                padding: '14px 40px',
-                                fontSize: '18px',
-                                boxShadow: '0 4px 15px rgba(0, 169, 169, 0.2)',
-                            }}
-                        >
-                            {aboutData.button_text}
-                        </PublicButton>
-                    </Box>
+                            <PublicButton
+                                variant="publicOutline"
+                                sx={{
+                                    mt: 2.5,
+                                    alignSelf: 'flex-start',
+                                    px: 4,
+                                    py: 1.4,
+                                    minWidth: 170,
+                                }}
+                            >
+                                {aboutData.button_text}
+                            </PublicButton>
+                        </Box>
+                    </Grid>
 
-                    <Box sx={{
-                        position: 'absolute',
-                        top: '40%',
-                        left: '45%',
-                        width: '8px',
-                        height: '8px',
-                        borderRadius: '50%',
-                        bgcolor: PUBLIC_BRAND.colors.accent,
-                        opacity: 0.4
-                    }} />
-                    <Box sx={{
-                        position: 'absolute',
-                        top: '60%',
-                        left: '48%',
-                        width: '12px',
-                        height: '12px',
-                        borderRadius: '50%',
-                        bgcolor: '#00A9A9',
-                        opacity: 0.3
-                    }} />
-                </Box>
+                    <Grid size={{ xs: 12, md: 6 }}>
+                        <Box sx={{ position: 'relative', maxWidth: { xs: 420, md: 520 }, ml: { xs: 'auto', md: 'auto' } }}>
+                            <BackgroundGlow
+                                top="10%"
+                                left="-4%"
+                                width="150px"
+                                height="150px"
+                                color="rgba(251, 174, 54, 0.14)"
+                                zIndex={0}
+                            />
 
-                <Box sx={{
-                    position: 'absolute',
-                    right: 100,
-                    top: 80,
-                    bottom: 0,
-                    width: '40%',
-                    height: '90%',
-                    background: 'linear-gradient(135deg, rgba(0, 169, 169, 0.6) 0%, rgba(0, 112, 112, 0.4) 100%)',
-                    borderTopLeftRadius: '100px',
-                    borderBottomLeftRadius: '50px',
-                    borderTopRightRadius: '50px',
-                    borderBottomRightRadius: '100px',
-                    zIndex: 2,
-                    bgcolor: PUBLIC_BRAND.colors.textOnDark,
-                }} />
+                            <BackgroundGlow
+                                bottom="10%"
+                                right="-2%"
+                                width="180px"
+                                height="180px"
+                                color="rgba(0, 169, 169, 0.1)"
+                                zIndex={0}
+                            />
 
-                <Box sx={{
-                    position: 'absolute',
-                    right: 100,
-                    top: 80,
-                    bottom: 0,
-                    width: '40%',
-                    height: '90%',
-                    overflow: 'hidden',
-                    borderTopLeftRadius: '100px',
-                    borderBottomLeftRadius: '50px',
-                    borderTopRightRadius: '50px',
-                    borderBottomRightRadius: '100px',
-                    zIndex: 3,
-                    boxShadow: '0 25px 70px rgba(0, 0, 0, 0.25)',
-                    border: '3px solid rgba(255, 255, 255, 0.5)'
-                }}>
-                    <Box
-                        component="img"
-                        src={Imagem}
-                        alt="Cheila Lamour"
-                        sx={{
-                            width: '100%',
-                            height: '100%',
-                            objectFit: 'cover',
-                            transition: 'transform 0.3s ease',
-                            '&:hover': {
-                                transform: 'scale(1.05)'
-                            }
-                        }}
-                    />
-                </Box>
+                            <Box
+                                sx={{
+                                    position: 'relative',
+                                    borderRadius: { xs: 8, md: 10 },
+                                    bgcolor: '#c9dabc',
+                                    minHeight: { xs: 400, sm: 500, md: 620 },
+                                    display: 'flex',
+                                    alignItems: 'flex-end',
+                                    justifyContent: 'center',
+                                    overflow: 'hidden',
+                                    px: { xs: 2, sm: 3, md: 4 },
+                                    pt: { xs: 3, md: 4 },
+                                    boxShadow: '0 24px 60px rgba(61, 87, 59, 0.12)',
+                                }}
+                            >
+                                <Box
+                                    sx={{
+                                        position: 'absolute',
+                                        top: { xs: 36, md: 40 },
+                                        left: { xs: 22, md: 28 },
+                                        width: { xs: 120, md: 170 },
+                                        height: { xs: 120, md: 170 },
+                                        borderRadius: '50%',
+                                        background: 'linear-gradient(135deg, rgba(251, 174, 54, 0.6) 0%, rgba(251, 174, 54, 0.18) 100%)',
+                                        filter: 'blur(2px)',
+                                        zIndex: 0,
+                                    }}
+                                />
 
-                <PublicCard sx={{
-                    position: 'absolute',
-                    right: 350,
-                    bottom: 100,
-                    padding: '30px 55px',
-                    zIndex: 4,
-                    borderTopLeftRadius: '50px',
-                    borderBottomLeftRadius: '20px',
-                    borderTopRightRadius: '20px',
-                    borderBottomRightRadius: '50px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    border: `2px solid ${PUBLIC_BRAND.colors.accentStrongSoft}`,
-                    background: 'linear-gradient(135deg, #ffffff 0%, #f9f9f9 100%)',
-                    transition: 'all 0.3s ease',
-                    '&:hover': {
-                        transform: 'translateY(-5px)',
-                        boxShadow: '0 20px 50px rgba(0, 0, 0, 0.2)'
-                    },
-                    '&::before': {
-                        content: '""',
-                        position: 'absolute',
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        bottom: 0,
-                        borderTopLeftRadius: '50px',
-                        borderBottomLeftRadius: '20px',
-                        borderTopRightRadius: '20px',
-                        borderBottomRightRadius: '50px',
-                        padding: '2px',
-                        background: `linear-gradient(135deg, ${PUBLIC_BRAND.colors.accent}, ${PUBLIC_BRAND.colors.primary})`,
-                        WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
-                        WebkitMaskComposite: 'xor',
-                        maskComposite: 'exclude',
-                        opacity: 0.3,
-                        zIndex: -1
-                    }
-                }}>
-                    <AutoAwesomeIcon sx={{
-                        fontSize: 28,
-                        color: PUBLIC_BRAND.colors.accent,
-                        mr: 2
-                    }} />
-                    <Typography
-                        sx={{
-                            color: PUBLIC_BRAND.colors.primaryDark,
-                            fontSize: '24px',
-                            fontWeight: 'bold',
-                            textAlign: 'center',
-                            whiteSpace: 'nowrap',
-                            letterSpacing: '0.5px'
-                        }}
-                    >
-                        {aboutData.featured_text}
-                    </Typography>
-                </PublicCard>
-            </Box>
+                                <Box
+                                    component="img"
+                                    src={Imagem}
+                                    alt="Cheila Lamour"
+                                    sx={{
+                                        width: { xs: '104%', md: '108%' },
+                                        maxWidth: 'none',
+                                        height: 'auto',
+                                        borderRadius: 4,
+                                        boxShadow: BRAND.shadowHover,
+                                        position: 'relative',
+                                        zIndex: 2,
+                                        display: 'block',
+                                        objectFit: 'contain',
+                                        transform: { xs: 'translateY(10px)', md: 'translateY(14px)' },
+                                    }}
+                                />
+
+                                <Box
+                                    sx={{
+                                        position: 'absolute',
+                                        left: { xs: 18, md: 24 },
+                                        bottom: { xs: 22, md: 28 },
+                                        px: { xs: 2.5, md: 3 },
+                                        py: 1.6,
+                                        borderRadius: '22px',
+                                        bgcolor: 'rgba(255,255,255,0.9)',
+                                        backdropFilter: 'blur(10px)',
+                                        boxShadow: '0 18px 35px rgba(0,0,0,0.12)',
+                                        border: `1px solid ${PUBLIC_BRAND.colors.primaryBorderSoft}`,
+                                        zIndex: 3,
+                                        maxWidth: { xs: '78%', md: '72%' }
+                                    }}
+                                >
+                                    <Typography
+                                        sx={{
+                                            color: PUBLIC_BRAND.colors.primaryDark,
+                                            fontSize: { xs: '0.95rem', md: '1rem' },
+                                            lineHeight: 1.45,
+                                        }}
+                                    >
+                                        {aboutData.featured_text}
+                                    </Typography>
+                                </Box>
+                            </Box>
+                        </Box>
+                    </Grid>
+                </Grid>
+            </Container>
         </Box>
     );
 };
