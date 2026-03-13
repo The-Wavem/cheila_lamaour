@@ -13,25 +13,29 @@ import WorkspacePremiumRoundedIcon from '@mui/icons-material/WorkspacePremiumRou
 import TrendingUpRoundedIcon from '@mui/icons-material/TrendingUpRounded';
 import { BRAND } from '@/theme/branding';
 
-const HERO_DATA = {
-    eyebrow: 'Serviços estratégicos',
-    title: 'Soluções sob medida para desenvolver pessoas, lideranças e equipes.',
-    subtitle:
-        'A página de serviços agora organiza a atuação da Cheila com mais clareza: trilhas individuais, programas executivos e soluções corporativas, mantendo a estética editorial do projeto e abrindo espaço para captação de interesse.',
-    stats: [
+export default function ServicesHero({ data }) {
+    const heroData = {
+        title: data?.title || '',
+        subtitle: data?.subtitle || '',
+        bgImage: data?.bgImage || ''
+    };
+
+    const stats = [
         { value: '+25 anos', label: 'de vivência em gestão e liderança' },
         { value: '3 frentes', label: 'de atuação para momentos diferentes' },
         { value: '100% alinhado', label: 'ao posicionamento visual da marca' }
-    ]
-};
+    ];
 
-export default function ServicesHero() {
     return (
         <Box
             sx={{
                 position: 'relative',
                 overflow: 'hidden',
-                background: `linear-gradient(135deg, ${BRAND.secondaryLight} 0%, ${alpha(BRAND.primary, 0.12)} 100%)`,
+                background: heroData.bgImage
+                    ? `linear-gradient(135deg, ${alpha('#000000', 0.58)} 0%, ${alpha('#000000', 0.36)} 100%), url(${heroData.bgImage})`
+                    : `linear-gradient(135deg, ${BRAND.secondaryLight} 0%, ${alpha(BRAND.primary, 0.12)} 100%)`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
                 py: { xs: 8, md: 12 }
             }}
         >
@@ -56,32 +60,17 @@ export default function ServicesHero() {
                     }}
                 >
                     <Stack spacing={3.5}>
-                        <Chip
-                            icon={<AutoAwesomeRoundedIcon />}
-                            label={HERO_DATA.eyebrow}
-                            sx={{
-                                width: 'fit-content',
-                                px: 1,
-                                height: 38,
-                                fontWeight: 700,
-                                color: BRAND.primaryDark,
-                                bgcolor: alpha(BRAND.paper, 0.85),
-                                border: `1px solid ${alpha(BRAND.primary, 0.15)}`,
-                                boxShadow: BRAND.shadowSoft
-                            }}
-                        />
-
                         <Typography
                             component="h1"
                             sx={{
                                 fontFamily: BRAND.fontFamilyHeader,
                                 fontSize: { xs: '2.6rem', md: '4.4rem' },
                                 lineHeight: 1.05,
-                                color: BRAND.textPrimary,
+                                color: heroData.bgImage ? BRAND.paper : BRAND.textPrimary,
                                 maxWidth: 780
                             }}
                         >
-                            {HERO_DATA.title}
+                            {heroData.title}
                         </Typography>
 
                         <Typography
@@ -89,11 +78,11 @@ export default function ServicesHero() {
                                 fontFamily: BRAND.fontFamilyBody,
                                 fontSize: { xs: '1rem', md: '1.15rem' },
                                 lineHeight: 1.9,
-                                color: BRAND.textSecondary,
+                                color: heroData.bgImage ? alpha(BRAND.paper, 0.9) : BRAND.textSecondary,
                                 maxWidth: 720
                             }}
                         >
-                            {HERO_DATA.subtitle}
+                            {heroData.subtitle}
                         </Typography>
 
                         <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
@@ -145,7 +134,7 @@ export default function ServicesHero() {
                         sx={{
                             position: 'relative',
                             p: { xs: 3, md: 4 },
-                            borderRadius: 6,
+                            borderRadius: 2,
                             bgcolor: alpha(BRAND.paper, 0.88),
                             border: `1px solid ${alpha(BRAND.primary, 0.12)}`,
                             boxShadow: BRAND.shadowSoft,
@@ -153,16 +142,16 @@ export default function ServicesHero() {
                         }}
                     >
                         <Stack spacing={2.5}>
-                            {HERO_DATA.stats.map((item, index) => (
+                            {stats.map((item, index) => (
                                 <Box
                                     key={item.label}
                                     sx={{
                                         display: 'flex',
                                         gap: 2,
                                         alignItems: 'flex-start',
-                                        pb: index === HERO_DATA.stats.length - 1 ? 0 : 2.5,
+                                        pb: index === stats.length - 1 ? 0 : 2.5,
                                         borderBottom:
-                                            index === HERO_DATA.stats.length - 1
+                                            index === stats.length - 1
                                                 ? 'none'
                                                 : `1px solid ${alpha(BRAND.border, 0.9)}`
                                     }}

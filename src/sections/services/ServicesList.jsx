@@ -30,57 +30,6 @@ import AutoAwesomeRoundedIcon from '@mui/icons-material/AutoAwesomeRounded';
 import { saveContactMessage } from '@/services/homeAPI';
 import { BRAND } from '@/theme/branding';
 
-const servicesData = [
-    {
-        id: 0,
-        label: 'Individual',
-        title: 'Mentoria individual e desenvolvimento pessoal',
-        icon: <PsychologyIcon />,
-        image: 'https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&w=800&q=80',
-        description: 'Para quem busca clareza, reposicionamento e tomada de decisão com apoio estratégico e sensível ao momento de vida.',
-        topics: [
-            'Mapeamento de perfil comportamental e crenças de bloqueio',
-            'Plano de evolução com foco em confiança, posicionamento e consistência',
-            'Ferramentas de inteligência emocional e comunicação assertiva',
-            'Acompanhamento individual com direcionamento prático'
-        ],
-        audience: ['Transição de carreira', 'Fortalecimento da liderança', 'Recomeços pessoais'],
-        delivery: ['Sessões 1:1', 'Plano de ação', 'Acompanhamento orientado']
-    },
-    {
-        id: 1,
-        label: 'Executivo',
-        title: 'Desenvolvimento profissional e liderança executiva',
-        icon: <WorkRoundedIcon />,
-        image: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=800&q=80',
-        description: 'Uma frente desenhada para profissionais e líderes que precisam acelerar performance com método, presença e estratégia relacional.',
-        topics: [
-            'Liderança assertiva com foco em cultura e resultado',
-            'Tomada de decisão e gestão de prioridades em ambientes complexos',
-            'Comunicação não violenta aplicada ao contexto corporativo',
-            'Posicionamento executivo e influência com autenticidade'
-        ],
-        audience: ['Líderes em expansão', 'Gestoras e executivas', 'Profissionais em ascensão'],
-        delivery: ['Mentoria executiva', 'Workshops fechados', 'Trilhas customizadas']
-    },
-    {
-        id: 2,
-        label: 'Corporativo',
-        title: 'Soluções corporativas para equipes e empresas',
-        icon: <BusinessCenterRoundedIcon />,
-        image: 'https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&w=800&q=80',
-        description: 'Projetos in-company para fortalecer cultura, liderança, vendas, comunicação e performance coletiva com aplicação prática.',
-        topics: [
-            'Palestras e treinamentos com recorte comportamental e estratégico',
-            'Programas para liderança feminina, cultura e colaboração',
-            'Mentorias para gestores e times comerciais',
-            'Conteúdos adaptados ao desafio e à maturidade da equipe'
-        ],
-        audience: ['RH e desenvolvimento humano', 'Times de liderança', 'Equipes comerciais e operacionais'],
-        delivery: ['Palestras', 'Treinamentos in-company', 'Programas sob medida']
-    }
-];
-
 const differentiators = [
     {
         title: 'Visão humana com repertório executivo',
@@ -96,7 +45,7 @@ const differentiators = [
     }
 ];
 
-export default function ServicesList() {
+export default function ServicesList({ services = [] }) {
     const [activeTab, setActiveTab] = useState(0);
     const [formData, setFormData] = useState({
         nome: '',
@@ -120,6 +69,8 @@ export default function ServicesList() {
     };
 
     const handleSubmit = async () => {
+        const selectedService = services[activeTab];
+
         if (!formData.nome || !formData.email || !formData.mensagem) {
             setFeedback({
                 open: true,
@@ -135,7 +86,7 @@ export default function ServicesList() {
             await saveContactMessage({
                 ...formData,
                 origem: 'pagina_servicos',
-                interesse: servicesData[activeTab].title
+                interesse: selectedService?.title || ''
             });
 
             setFeedback({
@@ -155,7 +106,17 @@ export default function ServicesList() {
         }
     };
 
-    const activeService = servicesData[activeTab];
+    const activeService = services[activeTab] || services[0];
+
+    const getServiceIcon = (index) => {
+        if (index === 0) return <PsychologyIcon />;
+        if (index === 1) return <WorkRoundedIcon />;
+        return <BusinessCenterRoundedIcon />;
+    };
+
+    if (!activeService) {
+        return null;
+    }
 
     return (
         <Box sx={{ py: { xs: 8, md: 10 }, bgcolor: BRAND.background }}>
@@ -228,11 +189,11 @@ export default function ServicesList() {
                                     }
                                 }}
                             >
-                                {servicesData.map((service) => (
+                                {services.map((service, index) => (
                                     <Tab
                                         key={service.id}
                                         label={service.label}
-                                        icon={service.icon}
+                                        icon={getServiceIcon(index)}
                                         iconPosition="start"
                                     />
                                 ))}
@@ -286,7 +247,7 @@ export default function ServicesList() {
                                         Ideal para
                                     </Typography>
                                     <Stack direction="row" flexWrap="wrap" gap={1}>
-                                        {activeService.audience.map((item) => (
+                                        {(activeService.topics || []).slice(0, 3).map((item) => (
                                             <Chip
                                                 key={item}
                                                 label={item}
@@ -337,26 +298,12 @@ export default function ServicesList() {
                                     {activeService.description}
                                 </Typography>
 
-                                <Stack direction="row" flexWrap="wrap" gap={1} sx={{ mb: 3 }}>
-                                    {activeService.delivery.map((item) => (
-                                        <Chip
-                                            key={item}
-                                            label={item}
-                                            sx={{
-                                                bgcolor: alpha(BRAND.primary, 0.08),
-                                                color: BRAND.primaryDark,
-                                                fontWeight: 600
-                                            }}
-                                        />
-                                    ))}
-                                </Stack>
-
                                 <Typography sx={{ fontWeight: 700, color: BRAND.textPrimary, mb: 1.5 }}>
                                     O que essa trilha contempla
                                 </Typography>
 
                                 <List sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 1 }}>
-                                    {activeService.topics.map((topic) => (
+                                    {(activeService.topics || []).map((topic) => (
                                         <ListItem key={topic} disableGutters sx={{ alignItems: 'flex-start', py: 0.4 }}>
                                             <ListItemIcon sx={{ minWidth: 30, mt: 0.15 }}>
                                                 <CheckCircleIcon sx={{ color: BRAND.secondary, fontSize: 20 }} />
@@ -392,7 +339,7 @@ export default function ServicesList() {
                                         }
                                     }}
                                 >
-                                    Tenho interesse nesta trilha
+                                    {activeService.buttonText || 'Tenho interesse nesta trilha'}
                                 </Button>
                             </Box>
                         </Box>
@@ -505,7 +452,7 @@ export default function ServicesList() {
                                 <Stack spacing={1.5}>
                                     {[
                                         'Identificação da origem como pagina_servicos',
-                                        `Registro do interesse atual em ${activeService.label.toLowerCase()}`,
+                                        `Registro do interesse atual em ${(activeService.label || '').toLowerCase()}`,
                                         'Campos enxutos para facilitar conversão'
                                     ].map((item) => (
                                         <Box key={item} sx={{ display: 'flex', alignItems: 'center', gap: 1.25 }}>

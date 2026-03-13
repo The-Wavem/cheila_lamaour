@@ -21,7 +21,7 @@ const DATE_FORMATTER = new Intl.DateTimeFormat("pt-BR", {
 
 /**
  * parseTimestamp
- * Converte diferentes formatos de data em Date.
+ * @description Converte diferentes formatos de data em Date.
  * @param {unknown} value
  * @returns {Date|null}
  */

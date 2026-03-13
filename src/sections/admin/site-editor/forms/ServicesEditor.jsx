@@ -18,53 +18,89 @@ const BRAND = {
     lightGold: '#FDFCF5'
 };
 
-const initialCards = [
-    {
-        id: 1,
-        label: 'Pessoal', // Nome curto da aba
-        title: 'Desenvolvimento Pessoal',
-        image: 'https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&w=800&q=80',
-        description: 'Estratégias para sair do ponto A ao ponto B, focando em inteligência emocional.',
-        topics: ['Mapeamento de perfil', 'Mentalidade e atitude', 'Psicologia dos relacionamentos']
+const initialFormData = {
+    hero: {
+        title: 'Treinamentos | Coaching | Palestras',
+        subtitle: 'Soluções completas para o seu desenvolvimento e da sua empresa.',
+        bgImage: 'https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=1600&q=80'
     },
-    {
-        id: 2,
-        label: 'Profissional',
-        title: 'Desenvolvimento Profissional',
-        image: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=800&q=80',
-        description: 'Acelere sua carreira com ferramentas práticas de gestão e liderança.',
-        topics: ['Carreira', 'Liderança', 'Transição de Carreira']
-    }
-];
+    services: [
+        {
+            id: 1,
+            label: 'Pessoal',
+            title: 'Desenvolvimento Pessoal',
+            image: 'https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&w=800&q=80',
+            description: 'Estratégias para sair do ponto A ao ponto B, focando em inteligência emocional.',
+            topics: ['Mapeamento de perfil', 'Mentalidade e atitude', 'Psicologia dos relacionamentos'],
+            buttonText: 'Tenho Interesse'
+        },
+        {
+            id: 2,
+            label: 'Profissional',
+            title: 'Desenvolvimento Profissional',
+            image: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=800&q=80',
+            description: 'Acelere sua carreira com ferramentas práticas de gestao e lideranca.',
+            topics: ['Carreira', 'Lideranca', 'Transicao de Carreira'],
+            buttonText: 'Tenho Interesse'
+        }
+    ]
+};
 
 export default function ServicesEditor({ setIsDirty, onSaveSuccess }) {
-    const [cards, setCards] = useState(initialCards);
+    const [formData, setFormData] = useState(initialFormData);
 
     const handleChange = () => setIsDirty && setIsDirty(true);
-    const handleSave = () => onSaveSuccess && onSaveSuccess();
+    const handleSave = async () => {
+        
+        // MURILO: CHAME A API AQUI passando o formData -> await updateServicesData(formData)
+        console.log('JSON PARA O BACKEND:', formData); //lembrar de remover isso
+        onSaveSuccess && onSaveSuccess();
+    };
 
     // --- FUNÇÕES DE MANIPULAÇÃO ---
     const handleAddTopic = (cardId) => {
-        setCards(cards.map(c => c.id === cardId ? { ...c, topics: [...c.topics, ''] } : c));
+        setFormData(prev => ({
+            ...prev,
+            services: prev.services.map(c => c.id === cardId ? { ...c, topics: [...c.topics, ''] } : c)
+        }));
         handleChange();
     };
 
     const handleRemoveTopic = (cardId, idx) => {
-        setCards(cards.map(c => c.id === cardId ? { ...c, topics: c.topics.filter((_, i) => i !== idx) } : c));
+        setFormData(prev => ({
+            ...prev,
+            services: prev.services.map(c => c.id === cardId ? { ...c, topics: c.topics.filter((_, i) => i !== idx) } : c)
+        }));
         handleChange();
     };
 
     const handleTopicChange = (cardId, idx, val) => {
-        setCards(cards.map(c => c.id === cardId ? { ...c, topics: c.topics.map((t, i) => i === idx ? val : t) } : c));
+        setFormData(prev => ({
+            ...prev,
+            services: prev.services.map(c => c.id === cardId ? { ...c, topics: c.topics.map((t, i) => i === idx ? val : t) } : c)
+        }));
         handleChange();
     };
 
     const handleCardChange = (cardId, field, val) => {
-        setCards(cards.map(c => c.id === cardId ? { ...c, [field]: val } : c));
+        setFormData(prev => ({
+            ...prev,
+            services: prev.services.map(c => c.id === cardId ? { ...c, [field]: val } : c)
+        }));
         handleChange();
     };
 
-    // Estilo "Gold Accordion" para o Hero
+    const handleHeroChange = (field, val) => {
+        setFormData(prev => ({
+            ...prev,
+            hero: {
+                ...prev.hero,
+                [field]: val
+            }
+        }));
+        handleChange();
+    };
+
     const accordionStyle = {
         elevation: 0,
         sx: {
@@ -115,17 +151,20 @@ export default function ServicesEditor({ setIsDirty, onSaveSuccess }) {
                             <TextField
                                 label="TÍTULO PRINCIPAL (H1)" fullWidth variant="filled"
                                 InputProps={{ disableUnderline: true, style: { fontSize: '1.2rem', fontWeight: 'bold' } }}
-                                defaultValue="Treinamentos | Coaching | Palestras" onChange={handleChange}
+                                value={formData.hero.title}
+                                onChange={(e) => handleHeroChange('title', e.target.value)}
                                 sx={{ bgcolor: BRAND.bg, borderRadius: 1 }}
                             />
                             <TextField
                                 label="SUBTÍTULO / DESCRIÇÃO" fullWidth multiline rows={2} variant="outlined"
-                                defaultValue="Soluções completas para o seu desenvolvimento e da sua empresa." onChange={handleChange}
+                                value={formData.hero.subtitle}
+                                onChange={(e) => handleHeroChange('subtitle', e.target.value)}
                             />
                             <TextField
                                 label="IMAGEM DE FUNDO (URL)" fullWidth size="small" placeholder="https://..."
                                 InputProps={{ startAdornment: <InputAdornment position="start"><ImageIcon sx={{ color: '#ccc' }} /></InputAdornment> }}
-                                onChange={handleChange}
+                                value={formData.hero.bgImage}
+                                onChange={(e) => handleHeroChange('bgImage', e.target.value)}
                             />
                         </Stack>
                     </AccordionDetails>
@@ -140,7 +179,7 @@ export default function ServicesEditor({ setIsDirty, onSaveSuccess }) {
                 </Stack>
 
                 <Grid container spacing={3}>
-                    {cards.map((card, index) => (
+                    {formData.services.map((card, index) => (
                         <Grid size={{ xs: 12, xl: 6 }} key={card.id}>
                             <Paper
                                 elevation={0}
