@@ -1,6 +1,6 @@
 import { Dialog, Box, Typography, Button, Stack } from '@mui/material';
 import WarningAmberRoundedIcon from '@mui/icons-material/WarningAmberRounded';
-import { BRAND } from '../../theme/branding'; // Ajuste o caminho conforme necessário
+import { BRAND } from  '@theme/branding'; // Ajuste o caminho conforme necessário
 
 export default function ConfirmDeleteModal({ open, onClose, onConfirm, title, description }) {
   return (
