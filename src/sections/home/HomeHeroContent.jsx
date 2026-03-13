@@ -6,13 +6,6 @@ import { PUBLIC_BRAND } from '@/theme/branding';
 const HomeHeroContent = ({ headline, subheadline }) => {
     return (
         <>
-            <AutoAwesomeIcon sx={{
-                fontSize: { xs: 34, md: 45 },
-                color: PUBLIC_BRAND.colors.accent,
-                mb: 2,
-                filter: 'drop-shadow(0 4px 8px rgba(251, 174, 54, 0.3))'
-            }} />
-
             <Typography
                 variant="h1"
                 sx={{

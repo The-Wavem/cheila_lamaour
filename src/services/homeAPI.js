@@ -127,7 +127,9 @@ export const getHomeFullData = async () => {
             hero: hero || null,
             about: about || null,
             services: services || null,
-            testimonials: testimonialsDoc ? (testimonialsDoc.testimonials || []) : [],
+            testimonials: {
+                testimonials: testimonialsDoc ? (testimonialsDoc.testimonials || []) : []
+            },
             contact: contact || null,
         };
     } catch (error) {
@@ -143,7 +145,12 @@ export const updateHomeData = async (data = {}) => {
         if (data.hero !== undefined) tasks.push(updateDocumentData("home_hero", data.hero));
         if (data.about !== undefined) tasks.push(updateDocumentData("home_about", data.about));
         if (data.services !== undefined) tasks.push(updateDocumentData("home_services", data.services));
-        if (data.testimonials !== undefined) tasks.push(updateDocumentData("home_testimonials", { testimonials: data.testimonials }));
+        if (data.testimonials !== undefined) {
+            const testimonialsPayload = Array.isArray(data.testimonials)
+                ? data.testimonials
+                : (data.testimonials?.testimonials || []);
+            tasks.push(updateDocumentData("home_testimonials", { testimonials: testimonialsPayload }));
+        }
         if (data.contact !== undefined) tasks.push(updateDocumentData("home_contact", data.contact));
 
         await Promise.all(tasks);

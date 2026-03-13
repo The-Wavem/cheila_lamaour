@@ -1,34 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Box } from '@mui/material';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import ContactForm from '@/components/ui/public/forms/ContactForm';
 import SectionHeader from '@/components/ui/public/base/SectionHeader';
 import { PUBLIC_BRAND } from '@/theme/branding';
-import { getContactData } from '@/services/homeAPI';
-
-const DEFAULT_CONTACT_DATA = {
-    title: 'Entre em contato',
-    subtitle: 'Seu próximo passo começa aqui!',
-    submit_button_text: 'Enviar Mensagem'
-};
-
-const HomeContact = () => {
-    const [contactData, setContactData] = useState(DEFAULT_CONTACT_DATA);
-
-    useEffect(() => {
-        const loadData = async () => {
-            try {
-                const contactDoc = await getContactData();
-                if (contactDoc) {
-                    setContactData((prev) => ({ ...prev, ...contactDoc }));
-                }
-            } catch (error) {
-                console.error('Erro ao carregar dados de contato:', error);
-            }
-        };
-
-        loadData();
-    }, []);
+ 
+export default function HomeContact({ data }) {
 
     return (
         <Box sx={{
@@ -71,8 +48,8 @@ const HomeContact = () => {
 
                 <Box sx={{ maxWidth: '720px' }}>
                     <SectionHeader
-                        title={contactData.title}
-                        subtitle={contactData.subtitle}
+                        title={data?.title}
+                        subtitle={data?.subtitle}
                         color={PUBLIC_BRAND.colors.primaryDark}
                         decorativeLine={{
                             width: '60px',
@@ -85,10 +62,8 @@ const HomeContact = () => {
                     />
                 </Box>
 
-                <ContactForm submitButtonText={contactData.submit_button_text} />
+                <ContactForm submitButtonText={data?.submit_button_text} />
             </Box>
         </Box>
     );
-};
-
-export default HomeContact;
+}

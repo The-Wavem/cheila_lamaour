@@ -1,39 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Box, Container, Grid, Typography } from "@mui/material";
 import Imagem from "@/assets/Cheila-portrait-02.png";
-import BackgroundGlow from "@/components/ui/public/home/BackgroundGlow";
 import PublicButton from "@/components/ui/public/base/PublicButton";
 import SectionHeader from "@/components/ui/public/base/SectionHeader";
 import { BRAND, PUBLIC_BRAND } from "@/theme/branding";
-import { getAboutData } from "@/services/homeAPI";
 
-const ABOUT_DEFAULTS = {
-  quote: "É um prazer poder apresentar meu trabalho a você!",
-  description:
-    "Sou Cheila Lamour, Mentora, Palestrante, Especialista em Liderança Feminina.\n\nMãe, esposa, Engenheira Civil com 25 anos de experiência organizacional e mais de 150 liderados. MBA em Liderança Humanizada. Analista Comportamental, certificação em Life, Leader, Executive & Business Coach.\n\nAliando o conhecimento técnico às habilidades para lidar com gente, descobri meu propósito: ajudar outras pessoas a destravarem seu potencial.",
-  button_text: "Minha história",
-  featured_text: "Você é o seu maior investimento",
-};
-
-const HomeAbout = () => {
-  const [aboutData, setAboutData] = useState(ABOUT_DEFAULTS);
-
-  useEffect(() => {
-    const loadAboutData = async () => {
-      try {
-        const data = await getAboutData();
-        if (data) {
-          setAboutData((prev) => ({ ...prev, ...data }));
-        }
-      } catch (error) {
-        console.error("Erro ao carregar dados da seção Sobre:", error);
-      }
-    };
-
-    loadAboutData();
-  }, []);
-
-  const bioParagraphs = aboutData.description
+export default function HomeAbout({ data }) {
+  const bioParagraphs = (data?.description || "")
     .split("\n\n")
     .map((paragraph) => paragraph.trim())
     .filter(Boolean);
@@ -62,9 +35,9 @@ const HomeAbout = () => {
               }}
             >
               <SectionHeader
-                overline="A HISTORIA"
-                title={aboutData.quote || "Quem e Cheila Lamour?"}
-                subtitle="Uma trajetória construída com propósito, liderança e desenvolvimento humano."
+                overline={data?.overline}
+                title={data?.quote}
+                subtitle={data?.subtitle}
                 color={PUBLIC_BRAND.colors.primaryDark}
                 overlineSx={{
                   letterSpacing: "0.28em",
@@ -121,7 +94,7 @@ const HomeAbout = () => {
                   minWidth: 170,
                 }}
               >
-                {aboutData.button_text}
+                {data?.button_text}
               </PublicButton>
             </Box>
           </Grid>
@@ -171,7 +144,7 @@ const HomeAbout = () => {
 
                 <Box
                   component="img"
-                  src={Imagem}
+                  src={data?.image || Imagem}
                   alt="Cheila Lamour"
                   sx={{
                     width: { xs: "104%", md: "108%" },
@@ -213,7 +186,7 @@ const HomeAbout = () => {
                       lineHeight: 1.45,
                     }}
                   >
-                    {aboutData.featured_text}
+                    {data?.featured_text}
                   </Typography>
                 </Box>
               </Box>
@@ -223,6 +196,4 @@ const HomeAbout = () => {
       </Container>
     </Box>
   );
-};
-
-export default HomeAbout;
+}

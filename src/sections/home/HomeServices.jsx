@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Box } from '@mui/material';
 import SchoolIcon from '@mui/icons-material/School';
 import PsychologyIcon from '@mui/icons-material/Psychology';
@@ -8,29 +8,7 @@ import SectionHeader from '@/components/ui/public/base/SectionHeader';
 import ServiceCard from '@/components/ui/public/home/ServiceCard';
 import SectionLinkCTA from '@/components/ui/public/home/SectionLinkCTA';
 import { PUBLIC_BRAND } from '@/theme/branding';
-import { getServicesData } from '@/services/homeAPI';
-
-const DEFAULT_SERVICES_DATA = {
-    title: 'Serviços Prestados',
-    subtitle: 'Soluções completas de mentoria',
-    view_all_text: 'Ver página completa de serviços',
-    cards: [
-        {
-            title: 'Desenvolvimento Profissional',
-            description: "Estratégias para sair do ponto A ao ponto B. Evite perder tempo 'batendo cabeça' e acelere sua..."
-        },
-        {
-            title: 'Desenvolvimento Pessoas',
-            description: "Estratégias para sair do ponto A ao ponto B. Evite perder tempo 'batendo cabeça' e acelere sua..."
-        },
-        {
-            title: 'Treinamentos',
-            description: "Estratégias para sair do ponto A ao ponto B. Evite perder tempo 'batendo cabeça' e acelere sua..."
-        }
-    ]
-};
-
-const HomeServices = () => {
+export default function HomeServices({ data }) {
     const serviceIcons = [
         {
             icon: <SchoolIcon sx={{ fontSize: 40 }} />,
@@ -43,31 +21,7 @@ const HomeServices = () => {
         }
     ];
 
-    const [servicesData, setServicesData] = useState(DEFAULT_SERVICES_DATA);
-
-    useEffect(() => {
-        const loadData = async () => {
-            try {
-                const servicesDoc = await getServicesData();
-
-                if (servicesDoc) {
-                    setServicesData((prev) => ({
-                        ...prev,
-                        ...servicesDoc,
-                        cards: Array.isArray(servicesDoc.cards) && servicesDoc.cards.length
-                            ? servicesDoc.cards
-                            : prev.cards
-                    }));
-                }
-            } catch (error) {
-                console.error('Erro ao carregar dados de serviços:', error);
-            }
-        };
-
-        loadData();
-    }, []);
-
-    const mergedServices = (servicesData.cards || DEFAULT_SERVICES_DATA.cards).map((service, index) => ({
+    const mergedServices = (Array.isArray(data?.cards) ? data.cards : []).map((service, index) => ({
         ...service,
         icon: serviceIcons[index]?.icon || <SchoolIcon sx={{ fontSize: 40 }} />
     }));
@@ -103,8 +57,8 @@ const HomeServices = () => {
 
             <Box sx={{ width: '100%', maxWidth: '900px' }}>
                 <SectionHeader
-                    overline={servicesData.title}
-                    title={servicesData.subtitle}
+                    overline={data?.title}
+                    title={data?.subtitle}
                     align="center"
                     color={PUBLIC_BRAND.colors.primaryDark}
                     decorativeLine={{
@@ -139,11 +93,9 @@ const HomeServices = () => {
             </Box>
 
             <SectionLinkCTA
-                text={servicesData.view_all_text}
+                text={data?.view_all_text}
                 to="/servicos"
             />
         </Box>
     );
-};
-
-export default HomeServices;
+}

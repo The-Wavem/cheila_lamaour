@@ -1,35 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import TestimonialHighlight from '@/components/ui/public/home/TestimonialHighlight';
 import PublicSection from '@/components/ui/public/base/PublicSection';
-import { getTestimonialsData } from '@/services/homeAPI';
-
-const DEFAULT_TESTIMONIAL = {
-    client_name: 'Nome Cliente',
-    text: 'A mentoria com a Cheila foi um divisor de águas na minha carreira. A clareza que obtive sobre meus objetivos e a confiança para liderar mudaram minha trajetória.'
-};
-
-const HomeTestimonials = () => {
-    const [testimonial, setTestimonial] = useState(DEFAULT_TESTIMONIAL);
-
-    useEffect(() => {
-        const loadData = async () => {
-            try {
-                const testimonialsDoc = await getTestimonialsData();
-
-                if (Array.isArray(testimonialsDoc?.testimonials) && testimonialsDoc.testimonials.length) {
-                    const firstTestimonial = testimonialsDoc.testimonials[0];
-                    setTestimonial({
-                        client_name: firstTestimonial.client_name || firstTestimonial.name || DEFAULT_TESTIMONIAL.client_name,
-                        text: firstTestimonial.text || DEFAULT_TESTIMONIAL.text
-                    });
-                }
-            } catch (error) {
-                console.error('Erro ao carregar depoimentos:', error);
-            }
-        };
-
-        loadData();
-    }, []);
+ 
+export default function HomeTestimonials({ data }) {
+    const testimonials = Array.isArray(data?.testimonials) ? data.testimonials : [];
 
     return (
         <PublicSection
@@ -37,12 +11,13 @@ const HomeTestimonials = () => {
             padding="0 60px"
             justifyContent="center"
         >
-            <TestimonialHighlight
-                clientName={testimonial.client_name}
-                text={testimonial.text}
-            />
+            {testimonials.map((testimonial, index) => (
+                <TestimonialHighlight
+                    key={testimonial.id || `${testimonial.client_name || 'cliente'}-${index}`}
+                    clientName={testimonial.client_name || testimonial.name}
+                    text={testimonial.text}
+                />
+            ))}
         </PublicSection>
     );
-};
-
-export default HomeTestimonials;
+}

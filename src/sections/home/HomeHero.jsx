@@ -1,45 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Box, Container, Grid } from "@mui/material";
-import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 import Imagem from "@/assets/pose1.png";
 import BackgroundGlow from "@/components/ui/public/home/BackgroundGlow";
 import DecorativeOrb from "@/components/ui/public/home/DecorativeOrb";
 import HomeHeroContent from "@/sections/home/HomeHeroContent";
 import HomeHeroActions from "@/sections/home/HomeHeroActions";
-import { getHeroData } from "@/services/homeAPI";
 import { PUBLIC_BRAND } from '@/theme/branding';
 import { useUtm } from "@/hooks/capturaURL";
 import Header from "@/components/layout/Header";
 
-const HERO_DEFAULTS = {
-  headline: "Cheila Lamour",
-  subheadline: "Mentorias - Escritora - Treinamentos",
-  experienceText: "+25 anos de experiência",
-  cta_text: "Entre em contato",
-  cta_link: "/contato",
-  secondary_cta_text: "Minha história",
-  secondary_cta_link: "#sobre",
-};
-
-const HomeHero = () => {
+export default function HomeHero({ data }) {
   useUtm();
-
-  const [heroData, setHeroData] = useState(HERO_DEFAULTS);
-
-  useEffect(() => {
-    const loadSchema = async () => {
-      try {
-        const data = await getHeroData();
-        if (data) {
-          setHeroData((prev) => ({ ...prev, ...data }));
-        }
-      } catch (error) {
-        console.error("Erro ao carregar dados do Hero:", error);
-      }
-    };
-
-    loadSchema();
-  }, []);
 
   return (
     <>
@@ -129,7 +100,7 @@ const HomeHero = () => {
                 >
                   <Box
                     component="img"
-                    src={Imagem}
+                    src={data?.image || Imagem}
                     alt="Cheila Lamour"
                     sx={{
                       width: '100%',
@@ -167,16 +138,16 @@ const HomeHero = () => {
                   }}
                 >
                   <HomeHeroContent
-                    headline={heroData.headline}
-                    subheadline={heroData.subheadline}
+                    headline={data?.headline}
+                    subheadline={data?.subheadline}
                   />
 
                   <HomeHeroActions
-                    ctaText={heroData.cta_text}
-                    ctaLink={heroData.cta_link}
-                    secondaryCtaText={heroData.secondary_cta_text}
-                    secondaryCtaLink={heroData.secondary_cta_link}
-                    experienceText={heroData.experienceText}
+                    ctaText={data?.cta_text}
+                    ctaLink={data?.cta_link}
+                    secondaryCtaText={data?.secondary_cta_text}
+                    secondaryCtaLink={data?.secondary_cta_link}
+                    experienceText={data?.experienceText}
                   />
                 </Box>
               </Grid>
@@ -186,6 +157,4 @@ const HomeHero = () => {
       </Box>
     </>
   );
-};
-
-export default HomeHero;
+}
