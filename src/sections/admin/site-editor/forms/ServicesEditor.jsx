@@ -1,14 +1,15 @@
 import { useState } from 'react';
 import {
-    Box, TextField, Typography, Button, IconButton, Paper, Grid, Stack,
-    Accordion, AccordionSummary, AccordionDetails, Divider, InputAdornment
+    Box, TextField, Typography, Button, IconButton, Stack, CircularProgress,
+    Accordion, AccordionSummary, AccordionDetails, InputAdornment
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import SaveIcon from '@mui/icons-material/Save';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import ImageIcon from '@mui/icons-material/Image';
 import LabelIcon from '@mui/icons-material/Label'; // Ícone para o "Rótulo"
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 
 // --- PALETA DA MARCA ---
 const BRAND = {
@@ -20,9 +21,8 @@ const BRAND = {
 
 const initialFormData = {
     hero: {
-        title: 'Treinamentos | Coaching | Palestras',
-        subtitle: 'Soluções completas para o seu desenvolvimento e da sua empresa.',
-        bgImage: 'https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=1600&q=80'
+        title: 'Treinamentos | Coaching',
+        subtitle: 'Soluções completas para o seu desenvolvimento e da sua empresa.'
     },
     services: [
         {
@@ -30,17 +30,17 @@ const initialFormData = {
             label: 'Pessoal',
             title: 'Desenvolvimento Pessoal',
             image: 'https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&w=800&q=80',
-            description: 'Estratégias para sair do ponto A ao ponto B, focando em inteligência emocional.',
-            topics: ['Mapeamento de perfil', 'Mentalidade e atitude', 'Psicologia dos relacionamentos'],
+            description: 'Estrategias para sair do ponto A ao ponto B com foco em desenvolvimento pessoal.',
+            topics: ['Foco', 'Disciplina'],
             buttonText: 'Tenho Interesse'
         },
-        {
+          {
             id: 2,
-            label: 'Profissional',
+            label: 'Proficional',
             title: 'Desenvolvimento Profissional',
-            image: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=800&q=80',
-            description: 'Acelere sua carreira com ferramentas práticas de gestao e lideranca.',
-            topics: ['Carreira', 'Lideranca', 'Transicao de Carreira'],
+            image: 'https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&w=800&q=80',
+            description: 'Estrategias para sair do ponto A ao ponto B com foco em desenvolvimento pessoal.',
+            topics: ['Foco', 'Disciplina'],
             buttonText: 'Tenho Interesse'
         }
     ]
@@ -48,12 +48,12 @@ const initialFormData = {
 
 export default function ServicesEditor({ setIsDirty, onSaveSuccess }) {
     const [formData, setFormData] = useState(initialFormData);
+    const [imageLoadState, setImageLoadState] = useState({});
 
     const handleChange = () => setIsDirty && setIsDirty(true);
     const handleSave = async () => {
-        
-        // MURILO: CHAME A API AQUI passando o formData -> await updateServicesData(formData)
-        console.log('JSON PARA O BACKEND:', formData); //lembrar de remover isso
+        // MURILO: CHAME A API AQUI enviando o formData
+        console.log('JSON Serviços:', formData); //remover futuramente
         onSaveSuccess && onSaveSuccess();
     };
 
@@ -82,11 +82,58 @@ export default function ServicesEditor({ setIsDirty, onSaveSuccess }) {
         handleChange();
     };
 
-    const handleCardChange = (cardId, field, val) => {
+    const handleServiceChange = (serviceId, field, value) => {
+        if (field === 'image') {
+            setImageLoadState(prev => ({
+                ...prev,
+                [serviceId]: value ? 'loading' : 'empty'
+            }));
+        }
+
         setFormData(prev => ({
             ...prev,
-            services: prev.services.map(c => c.id === cardId ? { ...c, [field]: val } : c)
+            services: prev.services.map(service =>
+                service.id === serviceId ? { ...service, [field]: value } : service
+            )
         }));
+        handleChange();
+    };
+
+    const handleAddService = () => {
+        setFormData(prev => {
+            const nextId = prev.services.length
+                ? Math.max(...prev.services.map(service => service.id || 0)) + 1
+                : 1;
+
+            return {
+                ...prev,
+                services: [
+                    ...prev.services,
+                    {
+                        id: nextId,
+                        label: '',
+                        title: '',
+                        image: '',
+                        description: '',
+                        topics: [''],
+                        buttonText: 'Tenho Interesse'
+                    }
+                ]
+            };
+        });
+        handleChange();
+    };
+
+    const handleRemoveService = (serviceId) => {
+        setFormData(prev => ({
+            ...prev,
+            services: prev.services.filter(service => service.id !== serviceId)
+        }));
+        setImageLoadState(prev => {
+            const next = { ...prev };
+            delete next[serviceId];
+            return next;
+        });
         handleChange();
     };
 
@@ -160,12 +207,6 @@ export default function ServicesEditor({ setIsDirty, onSaveSuccess }) {
                                 value={formData.hero.subtitle}
                                 onChange={(e) => handleHeroChange('subtitle', e.target.value)}
                             />
-                            <TextField
-                                label="IMAGEM DE FUNDO (URL)" fullWidth size="small" placeholder="https://..."
-                                InputProps={{ startAdornment: <InputAdornment position="start"><ImageIcon sx={{ color: '#ccc' }} /></InputAdornment> }}
-                                value={formData.hero.bgImage}
-                                onChange={(e) => handleHeroChange('bgImage', e.target.value)}
-                            />
                         </Stack>
                     </AccordionDetails>
                 </Accordion>
@@ -178,104 +219,257 @@ export default function ServicesEditor({ setIsDirty, onSaveSuccess }) {
                     </Typography>
                 </Stack>
 
-                <Grid container spacing={3}>
-                    {formData.services.map((card, index) => (
-                        <Grid size={{ xs: 12, xl: 6 }} key={card.id}>
-                            <Paper
-                                elevation={0}
-                                sx={{
-                                    p: 3, borderRadius: 2,
-                                    borderTop: `4px solid ${BRAND.gold}`,
-                                    boxShadow: '0 4px 20px rgba(0,0,0,0.05)',
+                <Stack spacing={2.5}>
+                    {formData.services.map((service) => (
+                        
+                        <Accordion
+                            key={service.id}
+                            elevation={0}
+                            sx={{
+                                borderRadius: '10px !important',
+                                border: '1px solid #e7e7e7',
+                                '&:before': { display: 'none' },
+                                '&.Mui-expanded': {
+                                    borderLeft: `4px solid ${BRAND.gold}`,
                                     bgcolor: 'white'
-                                }}
-                            >
+                                }
+                            }}
+                        >
+                            <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: BRAND.gold }} />}>
+                                <Typography fontWeight="bold" color={BRAND.teal}>
+                                    {service.label || 'Novo Serviço'}
+                                </Typography>
+                                <Box sx={{ flexGrow: 1 }} />
+                                <IconButton
+                                    color="error"
+                                    size="small"
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleRemoveService(service.id);
+                                    }}
+                                >
+                                    <DeleteIcon fontSize="small" />
+                                </IconButton>
+                            </AccordionSummary>
 
-                                {/* Cabeçalho Visual da Aba */}
-                                <Box sx={{ mb: 3, bgcolor: BRAND.lightGold, p: 2, borderRadius: 2, border: '1px dashed #e0d0a0' }}>
-                                    <Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 2 }}>
-                                        <Box sx={{ bgcolor: BRAND.teal, color: 'white', width: 24, height: 24, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 'bold' }}>
-                                            {index + 1}
-                                        </Box>
-                                        <Typography variant="caption" fontWeight="bold" color={BRAND.gold}>
-                                            CONFIGURAÇÃO DA ABA
-                                        </Typography>
-                                    </Stack>
-
-                                    <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+                            <AccordionDetails sx={{ pt: 0, pb: 3 }}>
+                                <Stack spacing={3}>
+                                    <Stack direction={{ xs: 'column', md: 'row' }} spacing={2}>
                                         <TextField
-                                            label="Rótulo do Botão (Aba)" size="small"
-                                            value={card.label || ''} onChange={(e) => handleCardChange(card.id, 'label', e.target.value)}
-                                            InputProps={{ startAdornment: <InputAdornment position="start"><LabelIcon sx={{ fontSize: 16, color: BRAND.gold }} /></InputAdornment> }}
-                                            helperText="Ex: Pessoal (Curto)"
-                                            sx={{ bgcolor: 'white', width: { xs: '100%', sm: '40%' } }}
+                                            label="Nome da Aba"
+                                            size="small"
+                                            value={service.label || ''}
+                                            onChange={(e) => handleServiceChange(service.id, 'label', e.target.value)}
+                                            InputProps={{
+                                                startAdornment: (
+                                                    <InputAdornment position="start">
+                                                        <LabelIcon sx={{ fontSize: 16, color: BRAND.gold }} />
+                                                    </InputAdornment>
+                                                )
+                                            }}
+                                            sx={{ width: { xs: '100%', md: '35%' } }}
                                         />
                                         <TextField
-                                            label="Título Completo (H1)" fullWidth size="small"
-                                            value={card.title} onChange={(e) => handleCardChange(card.id, 'title', e.target.value)}
-                                            sx={{ bgcolor: 'white' }}
+                                            label="Título Interno"
+                                            fullWidth
+                                            size="small"
+                                            value={service.title || ''}
+                                            onChange={(e) => handleServiceChange(service.id, 'title', e.target.value)}
                                         />
                                     </Stack>
-                                </Box>
 
-                                {/* Imagem e Descrição */}
-                                <Stack spacing={3} sx={{ mb: 3 }}>
-                                    <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} alignItems="flex-start">
+                                    <Stack direction={{ xs: 'column', md: 'row' }} spacing={2}>
+                                        <TextField
+                                            label="URL da Imagem"
+                                            fullWidth
+                                            size="small"
+                                            placeholder="https://..."
+                                            value={service.image || ''}
+                                            onChange={(e) => handleServiceChange(service.id, 'image', e.target.value)}
+                                        />
+                                        <TextField
+                                            label="Texto do Botão"
+                                            fullWidth
+                                            size="small"
+                                            value={service.buttonText || ''}
+                                            onChange={(e) => handleServiceChange(service.id, 'buttonText', e.target.value)}
+                                        />
+                                    </Stack>
+
+                                    <Box
+                                        sx={{
+                                            border: '1px dashed #d9d9d9',
+                                            borderRadius: 2,
+                                            p: 1.5,
+                                            bgcolor: '#fcfcfc'
+                                        }}
+                                    >
                                         <Box
                                             sx={{
-                                                width: { xs: '100%', sm: 100 }, height: { xs: 120, sm: 80 }, 
-                                                bgcolor: '#f0f0f0', borderRadius: 2, flexShrink: 0,
-                                                backgroundImage: `url(${card.image})`, backgroundSize: 'cover', backgroundPosition: 'center',
-                                                border: '1px solid #ddd'
+                                                width: '100%',
+                                                height: 170,
+                                                borderRadius: 1.5,
+                                                overflow: 'hidden',
+                                                bgcolor: '#f2f2f2',
+                                                border: '1px solid #ececec',
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                position: 'relative'
                                             }}
-                                        />
-                                        <Stack spacing={2} sx={{ width: '100%' }}>
-                                            <TextField
-                                                label="URL da Imagem de Destaque" fullWidth size="small"
-                                                value={card.image} onChange={(e) => handleCardChange(card.id, 'image', e.target.value)}
-                                                placeholder="https://..."
-                                            />
-                                            <TextField
-                                                label="Descrição do Serviço" fullWidth multiline rows={2} size="small"
-                                                value={card.description} onChange={(e) => handleCardChange(card.id, 'description', e.target.value)}
-                                                placeholder="Resumo..."
-                                            />
+                                        >
+                                            {service.image ? (
+                                                <Box
+                                                    component="img"
+                                                    key={service.image}
+                                                    src={service.image}
+                                                    alt={service.title || 'Preview do serviço'}
+                                                    onLoad={() => setImageLoadState(prev => ({ ...prev, [service.id]: 'loaded' }))}
+                                                    onError={() => setImageLoadState(prev => ({ ...prev, [service.id]: 'error' }))}
+                                                    sx={{
+                                                        width: '100%',
+                                                        height: '100%',
+                                                        objectFit: 'cover',
+                                                        display: imageLoadState[service.id] === 'error' ? 'none' : 'block'
+                                                    }}
+                                                />
+                                            ) : (
+                                                <Typography variant="body2" sx={{ color: '#8a8a8a' }}>
+                                                    Cole uma URL para visualizar a imagem
+                                                </Typography>
+                                            )}
+
+                                            {service.image && imageLoadState[service.id] !== 'loaded' && imageLoadState[service.id] !== 'error' && (
+                                                <Box
+                                                    sx={{
+                                                        position: 'absolute',
+                                                        inset: 0,
+                                                        display: 'flex',
+                                                        alignItems: 'center',
+                                                        justifyContent: 'center',
+                                                        bgcolor: 'rgba(255,255,255,0.65)'
+                                                    }}
+                                                >
+                                                    <CircularProgress size={24} sx={{ color: BRAND.teal }} />
+                                                </Box>
+                                            )}
+
+                                            {imageLoadState[service.id] === 'error' && (
+                                                <Typography variant="body2" sx={{ color: '#c0392b', fontWeight: 600 }}>
+                                                    Nao foi possivel carregar esta imagem
+                                                </Typography>
+                                            )}
+                                        </Box>
+
+                                        <Stack direction="row" alignItems="center" spacing={1} sx={{ mt: 1 }}>
+                                            {!service.image && (
+                                                <Typography variant="caption" sx={{ color: '#8a8a8a' }}>
+                                                    Aguardando URL da imagem
+                                                </Typography>
+                                            )}
+
+                                            {service.image && imageLoadState[service.id] === 'loaded' && (
+                                                <>
+                                                    <CheckCircleOutlineIcon sx={{ fontSize: 18, color: '#2e7d32' }} />
+                                                    <Typography variant="caption" sx={{ color: '#2e7d32', fontWeight: 600 }}>
+                                                        Imagem carregada com sucesso
+                                                    </Typography>
+                                                </>
+                                            )}
+
+                                            {service.image && imageLoadState[service.id] === 'error' && (
+                                                <>
+                                                    <ErrorOutlineIcon sx={{ fontSize: 18, color: '#c0392b' }} />
+                                                    <Typography variant="caption" sx={{ color: '#c0392b', fontWeight: 600 }}>
+                                                        URL invalida ou imagem indisponivel
+                                                    </Typography>
+                                                </>
+                                            )}
+
+                                            {service.image && (!imageLoadState[service.id] || imageLoadState[service.id] === 'loading') && (
+                                                <Typography variant="caption" sx={{ color: '#6b7280' }}>
+                                                    Carregando preview...
+                                                </Typography>
+                                            )}
                                         </Stack>
-                                    </Stack>
-                                </Stack>
+                                    </Box>
 
-                                <Divider sx={{ my: 2 }} />
+                                    <TextField
+                                        label="Descrição"
+                                        fullWidth
+                                        multiline
+                                        rows={3}
+                                        value={service.description || ''}
+                                        onChange={(e) => handleServiceChange(service.id, 'description', e.target.value)}
+                                        placeholder="Resumo do serviço..."
+                                    />
 
-                                {/* Lista Dinâmica de Tópicos */}
-                                <Typography variant="caption" fontWeight="bold" color={BRAND.teal}>O QUE ESTÁ INCLUSO (LISTA):</Typography>
-                                <Stack spacing={1.5} sx={{ mt: 2 }}>
-                                    {card.topics.map((topic, index) => (
-                                        <Stack direction="row" spacing={1} key={index} alignItems="center">
-                                            <Box sx={{ width: 6, height: 6, borderRadius: '50%', bgcolor: BRAND.gold }} />
-                                            <TextField
-                                                fullWidth size="small" placeholder="Item do serviço..." variant="standard"
-                                                InputProps={{ disableUnderline: true, style: { fontSize: '0.95rem' } }}
-                                                sx={{ bgcolor: '#FAFAFA', px: 2, py: 0.5, borderRadius: 1 }}
-                                                value={topic} onChange={(e) => handleTopicChange(card.id, index, e.target.value)}
-                                            />
-                                            <IconButton size="small" sx={{ color: '#ffcccb', '&:hover': { color: 'error.main' } }} onClick={() => handleRemoveTopic(card.id, index)}>
-                                                <DeleteIcon fontSize="small" />
-                                            </IconButton>
+                                    <Box>
+                                        <Typography variant="caption" fontWeight="bold" color={BRAND.teal}>
+                                            O QUE ESTÁ INCLUSO (LISTA):
+                                        </Typography>
+                                        <Stack spacing={1.5} sx={{ mt: 2 }}>
+                                            {(service.topics || []).map((topic, index) => (
+                                                <Stack direction="row" spacing={1} key={index} alignItems="center">
+                                                    <Box sx={{ width: 6, height: 6, borderRadius: '50%', bgcolor: BRAND.gold }} />
+                                                    <TextField
+                                                        fullWidth
+                                                        size="small"
+                                                        placeholder="Item do serviço..."
+                                                        variant="standard"
+                                                        InputProps={{ disableUnderline: true, style: { fontSize: '0.95rem' } }}
+                                                        sx={{ bgcolor: '#FAFAFA', px: 2, py: 0.5, borderRadius: 1 }}
+                                                        value={topic}
+                                                        onChange={(e) => handleTopicChange(service.id, index, e.target.value)}
+                                                    />
+                                                    <IconButton
+                                                        size="small"
+                                                        sx={{ color: '#ffcccb', '&:hover': { color: 'error.main' } }}
+                                                        onClick={() => handleRemoveTopic(service.id, index)}
+                                                    >
+                                                        <DeleteIcon fontSize="small" />
+                                                    </IconButton>
+                                                </Stack>
+                                            ))}
+
+                                            <Button
+                                                startIcon={<AddCircleIcon />}
+                                                size="small"
+                                                onClick={() => handleAddTopic(service.id)}
+                                                sx={{ alignSelf: 'flex-start', color: BRAND.gold, fontWeight: 'bold', mt: 1 }}
+                                            >
+                                                Adicionar Tópico
+                                            </Button>
                                         </Stack>
-                                    ))}
-
-                                    <Button
-                                        startIcon={<AddCircleIcon />} size="small" onClick={() => handleAddTopic(card.id)}
-                                        sx={{ alignSelf: 'flex-start', color: BRAND.gold, fontWeight: 'bold', mt: 1 }}
-                                    >
-                                        Adicionar Item
-                                    </Button>
+                                    </Box>
                                 </Stack>
-
-                            </Paper>
-                        </Grid>
+                            </AccordionDetails>
+                        </Accordion>
                     ))}
-                </Grid>
+
+                    <Box sx={{ display: 'flex', justifyContent: 'center', pt: 1 }}>
+                        <Button
+                            onClick={handleAddService}
+                            startIcon={<AddCircleIcon />}
+                            sx={{
+                                border: `2px dashed ${BRAND.gold}`,
+                                color: BRAND.teal,
+                                fontWeight: 'bold',
+                                px: 4,
+                                py: 1.2,
+                                borderRadius: 2,
+                                textTransform: 'none',
+                                bgcolor: BRAND.lightGold,
+                                '&:hover': {
+                                    bgcolor: '#f7f0dd',
+                                    borderColor: BRAND.teal
+                                }
+                            }}
+                        >
+                            + Adicionar Nova Aba de Serviço
+                        </Button>
+                    </Box>
+                </Stack>
 
             </Box>
         </Box>

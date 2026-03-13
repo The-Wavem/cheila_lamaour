@@ -148,7 +148,7 @@ export default function ServicesList({ services = [] }) {
                                         }
                                     }}
                                 >
-                                    {activeService.buttonText || 'Tenho interesse neste servico'}
+                                    {activeService.buttonText || 'Tenho Interesse'}
                                 </Button>
                             </Grid>
                         </Grid>
