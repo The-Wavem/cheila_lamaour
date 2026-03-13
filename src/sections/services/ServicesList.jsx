@@ -1,287 +1,102 @@
 import { useState } from 'react';
 import {
-    Alert,
     Box,
-    Card,
-    CardContent,
-    Chip,
-    Container,
-    Typography,
     Button,
+    Container,
+    Grid,
     List,
     ListItem,
     ListItemIcon,
     ListItemText,
-    Snackbar,
-    Stack,
-    Tabs,
-    Tab,
     Paper,
-    TextField
+    Tab,
+    Tabs,
+    Typography
 } from '@mui/material';
-import { alpha } from '@mui/material/styles';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import PsychologyIcon from '@mui/icons-material/Psychology';
-import WorkRoundedIcon from '@mui/icons-material/WorkRounded';
-import BusinessCenterRoundedIcon from '@mui/icons-material/BusinessCenterRounded';
-import EastRoundedIcon from '@mui/icons-material/EastRounded';
-import TaskAltRoundedIcon from '@mui/icons-material/TaskAltRounded';
-import AutoAwesomeRoundedIcon from '@mui/icons-material/AutoAwesomeRounded';
-import { saveContactMessage } from '@/services/homeAPI';
-import { BRAND } from '@/theme/branding';
-
-const differentiators = [
-    {
-        title: 'Visão humana com repertório executivo',
-        description: 'A condução une experiência organizacional real com leitura comportamental para produzir transformação aplicável.'
-    },
-    {
-        title: 'Estrutura clara de evolução',
-        description: 'Cada trilha organiza diagnóstico, foco de atuação, entregáveis e próximos passos para evitar processos genéricos.'
-    },
-    {
-        title: 'Estética coerente com a marca',
-        description: 'A nova página trabalha a mesma paleta, elegância e contraste usados no home e no admin para fortalecer consistência.'
-    }
-];
+import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
+import { BRAND } from '../../theme/branding.js';
 
 export default function ServicesList({ services = [] }) {
     const [activeTab, setActiveTab] = useState(0);
-    const [formData, setFormData] = useState({
-        nome: '',
-        email: '',
-        telefone: '',
-        mensagem: ''
-    });
-    const [feedback, setFeedback] = useState({
-        open: false,
-        severity: 'success',
-        message: ''
-    });
-    const [isSending, setIsSending] = useState(false);
 
-    const handleChange = (_, newValue) => {
+    const handleTabChange = (_, newValue) => {
         setActiveTab(newValue);
     };
 
-    const handleInputChange = ({ target: { name, value } }) => {
-        setFormData((prev) => ({ ...prev, [name]: value }));
-    };
-
-    const handleSubmit = async () => {
-        const selectedService = services[activeTab];
-
-        if (!formData.nome || !formData.email || !formData.mensagem) {
-            setFeedback({
-                open: true,
-                severity: 'error',
-                message: 'Preencha nome, e-mail e objetivo para enviar seu interesse.'
-            });
-            return;
-        }
-
-        setIsSending(true);
-
-        try {
-            await saveContactMessage({
-                ...formData,
-                origem: 'pagina_servicos',
-                interesse: selectedService?.title || ''
-            });
-
-            setFeedback({
-                open: true,
-                severity: 'success',
-                message: 'Interesse enviado com sucesso. Em breve você recebe um retorno.'
-            });
-            setFormData({ nome: '', email: '', telefone: '', mensagem: '' });
-        } catch (error) {
-            setFeedback({
-                open: true,
-                severity: 'error',
-                message: 'Não foi possível enviar agora. Tente novamente em instantes.'
-            });
-        } finally {
-            setIsSending(false);
-        }
-    };
-
-    const activeService = services[activeTab] || services[0];
-
-    const getServiceIcon = (index) => {
-        if (index === 0) return <PsychologyIcon />;
-        if (index === 1) return <WorkRoundedIcon />;
-        return <BusinessCenterRoundedIcon />;
-    };
-
-    if (!activeService) {
+    if (!services.length) {
         return null;
     }
+
+    const safeTabIndex = Math.min(activeTab, services.length - 1);
+    const activeService = services[safeTabIndex];
 
     return (
         <Box sx={{ py: { xs: 8, md: 10 }, bgcolor: BRAND.background }}>
             <Container maxWidth="lg">
-                <Stack spacing={{ xs: 6, md: 8 }}>
-                    <Box id="trilhas" sx={{ scrollMarginTop: 120 }}>
-                        <Stack spacing={2} sx={{ mb: 4, textAlign: { xs: 'left', md: 'center' } }}>
-                            <Typography
-                                sx={{
-                                    color: BRAND.secondary,
-                                    textTransform: 'uppercase',
-                                    letterSpacing: 3,
+                <Box id="trilhas" sx={{ scrollMarginTop: 120 }}>
+                    <Box sx={{ display: 'flex', justifyContent: 'center', mb: { xs: 3, md: 4 } }}>
+                        <Tabs
+                            value={safeTabIndex}
+                            onChange={handleTabChange}
+                            variant="scrollable"
+                            scrollButtons="auto"
+                            allowScrollButtonsMobile
+                            sx={{
+                                '& .MuiTabs-indicator': {
+                                    height: 3,
+                                    borderRadius: '3px',
+                                    backgroundColor: BRAND.secondary
+                                },
+                                '& .MuiTab-root': {
+                                    textTransform: 'none',
                                     fontWeight: 700,
-                                    fontSize: '0.82rem'
-                                }}
-                            >
-                                Trilhas de atuação
-                            </Typography>
-                            <Typography
-                                sx={{
-                                    fontFamily: BRAND.fontFamilyHeader,
-                                    fontSize: { xs: '2rem', md: '3rem' },
-                                    color: BRAND.textPrimary,
-                                    lineHeight: 1.1
-                                }}
-                            >
-                                Escolha o formato que melhor responde ao seu momento.
-                            </Typography>
-                            <Typography
-                                sx={{
-                                    maxWidth: 760,
-                                    mx: { xs: 0, md: 'auto' },
                                     color: BRAND.textSecondary,
-                                    lineHeight: 1.8
-                                }}
-                            >
-                                A estrutura abaixo organiza a oferta de forma mais estratégica, com linguagem clara, blocos de apoio e espaço real para conversão.
-                            </Typography>
-                        </Stack>
+                                    minHeight: 52,
+                                    px: { xs: 1.5, md: 2.5 }
+                                },
+                                '& .MuiTab-root.Mui-selected': {
+                                    color: BRAND.primary
+                                }
+                            }}
+                        >
+                            {services.map((service, index) => (
+                                <Tab key={service.id || index} label={service.label || service.title || `Servico ${index + 1}`} />
+                            ))}
+                        </Tabs>
+                    </Box>
 
-                        <Box sx={{ display: 'flex', justifyContent: 'center', mb: 4 }}>
-                            <Tabs
-                                value={activeTab}
-                                onChange={handleChange}
-                                variant="scrollable"
-                                scrollButtons="auto"
-                                allowScrollButtonsMobile
-                                sx={{
-                                    minHeight: 62,
-                                    borderRadius: '999px',
-                                    p: 1,
-                                    bgcolor: alpha(BRAND.paper, 0.75),
-                                    border: `1px solid ${alpha(BRAND.border, 0.9)}`,
-                                    boxShadow: BRAND.shadowSoft,
-                                    '& .MuiTabs-indicator': {
-                                        display: 'none'
-                                    },
-                                    '& .MuiTab-root': {
-                                        minHeight: 46,
-                                        borderRadius: '999px',
-                                        fontWeight: 700,
-                                        fontSize: '0.95rem',
-                                        textTransform: 'none',
-                                        color: BRAND.textSecondary,
-                                        '&.Mui-selected': {
-                                            color: BRAND.paper,
-                                            bgcolor: BRAND.primary,
-                                            boxShadow: `0 8px 20px ${alpha(BRAND.primary, 0.25)}`
-                                        }
-                                    }
-                                }}
-                            >
-                                {services.map((service, index) => (
-                                    <Tab
-                                        key={service.id}
-                                        label={service.label}
-                                        icon={getServiceIcon(index)}
-                                        iconPosition="start"
-                                    />
-                                ))}
-                            </Tabs>
-                        </Box>
-
-                        <Paper
+                    <Paper
                         elevation={0}
                         sx={{
-                            overflow: 'hidden',
-                            borderRadius: 6,
-                            bgcolor: BRAND.paper,
-                            border: `1px solid ${alpha(BRAND.border, 0.95)}`,
-                            boxShadow: BRAND.shadowSoft
+                            bgcolor: 'white',
+                            borderRadius: 3,
+                            border: `1px solid ${BRAND.border}`,
+                            p: { xs: 3, md: 6 }
                         }}
                     >
-                        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '0.95fr 1.05fr' } }}>
-                            <Box
-                                sx={{
-                                    minHeight: { xs: 320, md: '100%' },
-                                    position: 'relative'
-                                }}
-                            >
+                        <Grid container spacing={4} alignItems="stretch">
+                            <Grid size={{ xs: 12, md: 5 }}>
                                 <Box
                                     component="img"
                                     src={activeService.image}
                                     alt={activeService.title}
-                                    sx={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                                />
-                                <Box
                                     sx={{
-                                        position: 'absolute',
-                                        inset: 0,
-                                        background: 'linear-gradient(180deg, rgba(0,0,0,0.02) 0%, rgba(0,0,0,0.46) 100%)'
+                                        width: '100%',
+                                        height: '100%',
+                                        minHeight: { xs: 240, md: 360 },
+                                        borderRadius: 2,
+                                        objectFit: 'cover'
                                     }}
                                 />
-                                <Box
-                                    sx={{
-                                        position: 'absolute',
-                                        left: 24,
-                                        right: 24,
-                                        bottom: 24,
-                                        p: 2.5,
-                                        borderRadius: 4,
-                                        bgcolor: alpha('#FFFFFF', 0.14),
-                                        backdropFilter: 'blur(10px)',
-                                        border: `1px solid ${alpha('#FFFFFF', 0.22)}`
-                                    }}
-                                >
-                                    <Typography sx={{ color: '#FFFFFF', fontWeight: 700, mb: 1 }}>
-                                        Ideal para
-                                    </Typography>
-                                    <Stack direction="row" flexWrap="wrap" gap={1}>
-                                        {(activeService.topics || []).slice(0, 3).map((item) => (
-                                            <Chip
-                                                key={item}
-                                                label={item}
-                                                sx={{
-                                                    color: '#FFFFFF',
-                                                    bgcolor: alpha('#FFFFFF', 0.14),
-                                                    border: `1px solid ${alpha('#FFFFFF', 0.18)}`
-                                                }}
-                                            />
-                                        ))}
-                                    </Stack>
-                                </Box>
-                            </Box>
+                            </Grid>
 
-                            <Box sx={{ p: { xs: 3, md: 5 } }}>
-                                <Typography
-                                    sx={{
-                                        color: BRAND.secondary,
-                                        fontWeight: 800,
-                                        letterSpacing: 2,
-                                        textTransform: 'uppercase',
-                                        fontSize: '0.78rem',
-                                        mb: 1
-                                    }}
-                                >
-                                    Serviço em destaque
-                                </Typography>
-
+                            <Grid size={{ xs: 12, md: 7 }}>
                                 <Typography
                                     sx={{
                                         fontFamily: BRAND.fontFamilyHeader,
-                                        fontSize: { xs: '1.9rem', md: '2.6rem' },
+                                        fontSize: { xs: '1.9rem', md: '2.5rem' },
+                                        lineHeight: 1.15,
                                         color: BRAND.textPrimary,
-                                        lineHeight: 1.1,
                                         mb: 2
                                     }}
                                 >
@@ -292,27 +107,21 @@ export default function ServicesList({ services = [] }) {
                                     sx={{
                                         color: BRAND.textSecondary,
                                         lineHeight: 1.8,
-                                        mb: 3
+                                        mb: 2.5
                                     }}
                                 >
                                     {activeService.description}
                                 </Typography>
 
-                                <Typography sx={{ fontWeight: 700, color: BRAND.textPrimary, mb: 1.5 }}>
-                                    O que essa trilha contempla
-                                </Typography>
-
-                                <List sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 1 }}>
+                                <List sx={{ p: 0, mb: 2.5 }}>
                                     {(activeService.topics || []).map((topic) => (
-                                        <ListItem key={topic} disableGutters sx={{ alignItems: 'flex-start', py: 0.4 }}>
-                                            <ListItemIcon sx={{ minWidth: 30, mt: 0.15 }}>
-                                                <CheckCircleIcon sx={{ color: BRAND.secondary, fontSize: 20 }} />
+                                        <ListItem key={topic} disableGutters sx={{ alignItems: 'flex-start', py: 0.5 }}>
+                                            <ListItemIcon sx={{ minWidth: 30, mt: 0.2 }}>
+                                                <CheckRoundedIcon sx={{ color: BRAND.secondary, fontSize: 20 }} />
                                             </ListItemIcon>
                                             <ListItemText
                                                 primary={topic}
                                                 primaryTypographyProps={{
-                                                    variant: 'body2',
-                                                    fontWeight: 500,
                                                     color: BRAND.textPrimary,
                                                     lineHeight: 1.7
                                                 }}
@@ -325,220 +134,27 @@ export default function ServicesList({ services = [] }) {
                                     component="a"
                                     href="#conversa"
                                     variant="contained"
-                                    endIcon={<EastRoundedIcon />}
                                     sx={{
-                                        mt: 4,
+                                        mt: 1,
                                         bgcolor: BRAND.primary,
-                                        px: 4,
-                                        py: 1.4,
-                                        borderRadius: '999px',
+                                        color: BRAND.paper,
                                         textTransform: 'none',
                                         fontWeight: 700,
+                                        px: 3,
+                                        py: 1.2,
+                                        borderRadius: 2,
                                         '&:hover': {
                                             bgcolor: BRAND.primaryDark
                                         }
                                     }}
                                 >
-                                    {activeService.buttonText || 'Tenho interesse nesta trilha'}
+                                    {activeService.buttonText || 'Tenho interesse neste servico'}
                                 </Button>
-                            </Box>
-                        </Box>
-                        </Paper>
-                    </Box>
-
-                    <Box
-                        sx={{
-                            display: 'grid',
-                            gridTemplateColumns: { xs: '1fr', md: 'repeat(3, 1fr)' },
-                            gap: 3
-                        }}
-                    >
-                        {differentiators.map((item) => (
-                            <Card
-                                key={item.title}
-                                sx={{
-                                    borderRadius: 5,
-                                    boxShadow: 'none',
-                                    border: `1px solid ${alpha(BRAND.border, 0.95)}`,
-                                    bgcolor: alpha(BRAND.paper, 0.96)
-                                }}
-                            >
-                                <CardContent sx={{ p: 3.5 }}>
-                                    <Box
-                                        sx={{
-                                            width: 54,
-                                            height: 54,
-                                            borderRadius: '18px',
-                                            display: 'grid',
-                                            placeItems: 'center',
-                                            bgcolor: alpha(BRAND.secondary, 0.16),
-                                            color: BRAND.secondary,
-                                            mb: 2.5
-                                        }}
-                                    >
-                                        <AutoAwesomeRoundedIcon />
-                                    </Box>
-                                    <Typography
-                                        sx={{
-                                            fontFamily: BRAND.fontFamilyHeader,
-                                            fontSize: '1.5rem',
-                                            color: BRAND.textPrimary,
-                                            mb: 1.5,
-                                            lineHeight: 1.15
-                                        }}
-                                    >
-                                        {item.title}
-                                    </Typography>
-                                    <Typography sx={{ color: BRAND.textSecondary, lineHeight: 1.8 }}>
-                                        {item.description}
-                                    </Typography>
-                                </CardContent>
-                            </Card>
-                        ))}
-                    </Box>
-
-                    <Paper
-                        id="conversa"
-                        elevation={0}
-                        sx={{
-                            scrollMarginTop: 120,
-                            borderRadius: 6,
-                            overflow: 'hidden',
-                            background: `linear-gradient(135deg, ${BRAND.primary} 0%, ${BRAND.primaryDark} 100%)`,
-                            boxShadow: `0 24px 60px ${alpha(BRAND.primary, 0.25)}`
-                        }}
-                    >
-                        <Box
-                            sx={{
-                                display: 'grid',
-                                gridTemplateColumns: { xs: '1fr', md: '0.9fr 1.1fr' },
-                                gap: 0
-                            }}
-                        >
-                            <Box
-                                sx={{
-                                    p: { xs: 3, md: 5 },
-                                    color: BRAND.paper,
-                                    background:
-                                        `linear-gradient(180deg, ${alpha('#FFFFFF', 0.06)} 0%, transparent 100%)`
-                                }}
-                            >
-                                <Typography
-                                    sx={{
-                                        color: alpha('#FFFFFF', 0.72),
-                                        textTransform: 'uppercase',
-                                        letterSpacing: 3,
-                                        fontWeight: 700,
-                                        fontSize: '0.82rem',
-                                        mb: 2
-                                    }}
-                                >
-                                    Próximo passo
-                                </Typography>
-                                <Typography
-                                    sx={{
-                                        fontFamily: BRAND.fontFamilyHeader,
-                                        fontSize: { xs: '2rem', md: '3rem' },
-                                        lineHeight: 1.05,
-                                        mb: 2.5
-                                    }}
-                                >
-                                    Conte o que você precisa e a página já envia esse interesse para o fluxo de leads.
-                                </Typography>
-                                <Typography sx={{ color: alpha('#FFFFFF', 0.82), lineHeight: 1.9, mb: 3 }}>
-                                    Em vez de uma vitrine passiva, a seção agora fecha com uma captação objetiva. O interesse segue com origem identificada e a trilha escolhida já vai no payload enviado.
-                                </Typography>
-
-                                <Stack spacing={1.5}>
-                                    {[
-                                        'Identificação da origem como pagina_servicos',
-                                        `Registro do interesse atual em ${(activeService.label || '').toLowerCase()}`,
-                                        'Campos enxutos para facilitar conversão'
-                                    ].map((item) => (
-                                        <Box key={item} sx={{ display: 'flex', alignItems: 'center', gap: 1.25 }}>
-                                            <TaskAltRoundedIcon sx={{ color: BRAND.secondary }} />
-                                            <Typography sx={{ color: alpha('#FFFFFF', 0.88) }}>{item}</Typography>
-                                        </Box>
-                                    ))}
-                                </Stack>
-                            </Box>
-
-                            <Box sx={{ p: { xs: 3, md: 5 }, bgcolor: BRAND.paper }}>
-                                <Stack spacing={2}>
-                                    <TextField
-                                        label="Nome"
-                                        name="nome"
-                                        value={formData.nome}
-                                        onChange={handleInputChange}
-                                        fullWidth
-                                    />
-                                    <TextField
-                                        label="E-mail"
-                                        name="email"
-                                        type="email"
-                                        value={formData.email}
-                                        onChange={handleInputChange}
-                                        fullWidth
-                                    />
-                                    <TextField
-                                        label="Telefone"
-                                        name="telefone"
-                                        value={formData.telefone}
-                                        onChange={handleInputChange}
-                                        fullWidth
-                                    />
-                                    <TextField
-                                        label="Qual desafio você quer trabalhar?"
-                                        name="mensagem"
-                                        value={formData.mensagem}
-                                        onChange={handleInputChange}
-                                        fullWidth
-                                        multiline
-                                        minRows={4}
-                                        placeholder="Descreva o contexto, o objetivo e o tipo de apoio que você espera."
-                                    />
-                                    <Button
-                                        variant="contained"
-                                        onClick={handleSubmit}
-                                        disabled={isSending}
-                                        sx={{
-                                            mt: 1,
-                                            alignSelf: 'flex-start',
-                                            bgcolor: BRAND.primary,
-                                            px: 4,
-                                            py: 1.3,
-                                            borderRadius: '999px',
-                                            textTransform: 'none',
-                                            fontWeight: 700,
-                                            '&:hover': {
-                                                bgcolor: BRAND.primaryDark
-                                            }
-                                        }}
-                                    >
-                                        {isSending ? 'Enviando...' : 'Enviar interesse'}
-                                    </Button>
-                                </Stack>
-                            </Box>
-                        </Box>
+                            </Grid>
+                        </Grid>
                     </Paper>
-                </Stack>
+                </Box>
             </Container>
-
-            <Snackbar
-                open={feedback.open}
-                autoHideDuration={4500}
-                onClose={() => setFeedback((prev) => ({ ...prev, open: false }))}
-                anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-            >
-                <Alert
-                    onClose={() => setFeedback((prev) => ({ ...prev, open: false }))}
-                    severity={feedback.severity}
-                    variant="filled"
-                    sx={{ width: '100%' }}
-                >
-                    {feedback.message}
-                </Alert>
-            </Snackbar>
         </Box>
     );
 }
